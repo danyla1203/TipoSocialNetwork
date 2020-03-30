@@ -1,0 +1,18 @@
+div.comments {
+    margin-top: 10px;
+    margin-left: 20px;
+
+    div.comment {
+        width: 50%;
+        border-bottom: 1px solid #E2E3EC;
+        padding: 5px;
+        margin-top: 5px;
+
+        h4 {
+            margin-bottom: 0;
+        }
+    }
+    div.comment:first-child {
+        border-top: 1px solid #E2E3EC;
+    }
+}

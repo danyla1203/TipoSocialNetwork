@@ -1,0 +1,50 @@
+div.message_prev {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid;
+
+    div#user_info {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+        align-items: center;
+        img {
+            margin-right: 10px;
+            border: 1px solid;
+            border-radius: 100%;
+        }
+    }
+}
+
+div#send {
+    display: flex;
+    flex-direction: column;
+
+    div {
+        margin-top: 3px;
+        margin-bottom: 3px;
+        border-radius: 10%;
+        padding: 5px;
+        min-width: 50px;
+        max-width: 200px;
+    }
+
+    div.my_message {
+        align-self: flex-end;
+        background-color: blue;
+        
+        h3 {
+            color: white;
+        }
+        
+    }
+    div.user_message {
+        align-self: flex-start;
+        background-color: gray;
+        
+        h3 {
+            color: white;
+        }
+        
+    }
+}

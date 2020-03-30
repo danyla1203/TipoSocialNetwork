@@ -1,0 +1,28 @@
+div#autorisation {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+    justify-content: center;
+
+    form {
+        width: 300px;
+        display: flex;
+        
+        fieldset {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+
+            input {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+        }
+    }
+}
+form#reg {
+    margin-top: 20px;
+}

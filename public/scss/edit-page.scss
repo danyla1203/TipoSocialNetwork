@@ -1,0 +1,25 @@
+div#edit-data {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    form {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        
+        * {
+            margin-bottom: 5px;
+        }
+        button {
+            background-color: blue;
+            border: 0;
+            color: yellow;
+            margin-top: 10px;
+            height: 30px;
+            border-radius: 10px;
+        }
+    }
+}

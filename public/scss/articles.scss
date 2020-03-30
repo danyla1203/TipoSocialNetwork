@@ -1,0 +1,136 @@
+div#article_list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    > a {
+         background-color: white;
+        border: 1px solid blue;
+        color: black;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding: 5px;
+        width: 100px;
+        border-radius: 10px;
+        text-align: center;
+        transition: 0.3s;
+    }
+    > a:hover {
+        background-color: blue;
+        color: yellow;
+        transition: 0.3s;
+    }
+}
+
+
+div#create {
+    display: flex;
+    justify-content: center;
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        padding: 10px;
+
+        input {
+            margin-bottom: 10px;
+            height: 20px;
+        }
+        textarea {
+            height: 400px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        button {
+            width: 30%;
+            border: 0;
+            background-color: blue;
+            color: yellow;
+            height: 30px;
+        }
+    }
+}
+
+div#output {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+
+    div#content {
+        padding: 10px;
+        width: 81%;
+        height: 700px;
+        border: 1px solid;
+        box-shadow: 2px 2px 6px;
+
+        h3#titleOut {
+            margin-bottom: 5px;
+        }
+
+        div#textOut {
+            p {
+                margin-top: 3px;
+                bold {
+                    font: bold 16px sans-serfif;
+                }
+            }
+        }
+
+    }
+}
+
+div#articles {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    > h3 {
+        align-self: center;
+        margin: 50px;
+        font: 20px sans-serif;
+    }
+}   
+div.article {   
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid;
+
+    div.buttons {
+        margin-top: 3px;
+        button {
+            margin-left: 4px;
+            background-color: blue;
+            border: 0px;
+            height: 20px;
+            color: yellow;
+        }
+        
+        button:first-child {
+            margin-left: 0;
+        }
+    }
+
+    h4 {
+        font: 13px sans-serif;
+        margin-bottom: 10px;    
+    }
+
+    h3 {
+        font: 18px sans-serif;
+        margin-bottom: 5px;
+    }
+
+    div {
+        padding: 10px;   
+        p {
+            font: 15px sans-serif;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
+    }
+    h5 {
+        font: 14px sans-serif;
+    }
+}
