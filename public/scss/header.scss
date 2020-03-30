@@ -4,7 +4,6 @@ header ul {
     background-color: #303B44;
     transition: 0.3s;
 
-    
     a {
         margin-left: 10px;
         margin-top: 5px;
@@ -31,40 +30,44 @@ header ul {
         }
     }
 }
-
+header button {
+    display: none;
+}
 @media screen and (max-width: 1200px) {
-    header ul {
-        display: none;
-    }
     div#user {
         margin-top: 10px;
     }
+    
     header {
-        width: 30px;
-        border: 1px solid;
-        top: 10px;
-        left: 50vw;
-        border-radius: 100%;
-        height: 30px;
-        position: fixed;
-
-    }
-    header.open {
-        width: 0;
-        height: 0;
-        border: 0;
-        top: 0;
-        left: 0;
-    }
-    ul.open {
+        position: absolute;
         width: 100vw;
-        display: flex;
-        flex-direction: column;
-        padding: 0;
+        height: 100vh;
         transition: 0.3s;
-        a {
-            align-self: center;
+        button {
+            position: absolute;
+            
+        }
+        ul {
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            width: 50vw;
+            padding: 0;
+            justify-content: center;
         }
     }
-    
+
+    header.close {
+        left: -100vw;
+        button {
+            left: 100vw;
+        }
+    }
+    header.open {
+        position: fixed;;
+        left: 0;
+        button {
+            display: none;
+        }
+    }
 }

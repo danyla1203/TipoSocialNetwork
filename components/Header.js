@@ -4,24 +4,25 @@ import { Link } from "react-router-dom";
 function Header(e) {
     let toggleHeaderForMobile = (e) => {
         e.persist();
-        console.log(e);
-        let ul = document.getElementById("header-ul");
-        let header = document.getElementsByTagName("header")[0];
-
-        if (e.target.id == "header-ul") {
-            ul.className = "";
-            header.className = "";
-            return;
+        let header = document.getElementById("header");
+        if (header.className == "close") {
+            header.className = "open";
+            
+        } else {
+            header.className = "close";
+            
         }
-        if (window.screen.width <= 1300) {
-            ul.className = "open";
-            header.className = "open"
-                
+    }
+    let test = (e) => {
+        if (e.target.id == "header") {
+            let header = document.getElementById("header");
+            header.className = "close";
         }
     }
     return (
-        <header onClick={ toggleHeaderForMobile }>
-            <ul id="header-ul" onClick={ toggleHeaderForMobile }>
+        <header id="header" className="close" onClick={ test }>
+            <button onClick={ toggleHeaderForMobile }>X</button>
+            <ul>
                 <Link to="/user"><li>Home</li></Link>           
                 <Link to="/news"><li>News</li></Link> 
                 <Link to="/add-article"><li>Add article</li></Link>
