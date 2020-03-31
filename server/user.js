@@ -139,7 +139,8 @@ app.all("/user/check", (req, res) => {
         res.end("{}");
 
     } else if (user.name && user.password) {
-        let user = req.session.user;
+        let user = Object.assign({}, req.session.user);
+        delete user.password;
         res.end(JSON.stringify(user));
 
     } else if (pass && name) {
@@ -155,6 +156,7 @@ app.all("/user/check", (req, res) => {
             if (result[0]) {
                 req.session.user = setSessionData(result[0], user);
                 console.log(req.session.user);
+                delete result[0].password;
                 res.end(JSON.stringify(result[0]));
 
             } else {

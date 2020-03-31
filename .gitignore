@@ -3,3 +3,4 @@ node_modules
 .eslintrc
 dist
 public/css
+public/img
