@@ -62,7 +62,15 @@ function Settings(props) {
 }
 
 Settings.propTypes = {
-    userData: propTypes.object.isRequired
+    userData: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_full: propTypes.string,
+    }),
+    changeUserData: propTypes.func.isRequired
 }
 
 export default Settings

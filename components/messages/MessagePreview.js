@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import propTypes from "prop-types";
+
 import UserMessages from "./UserMessages";
 
 function MessagePreview(props) {
@@ -37,6 +39,18 @@ function MessagePreview(props) {
             { messagesToRender }
         </div>
     )
+}
+
+MessagePreview.propTypes = {
+    user_data: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_icon: propTypes.string,
+    }),
+    all_messages: propTypes.array.isRequired
 }
 
 export default MessagePreview;

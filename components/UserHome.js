@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import UserArticleList from './articles/UserArticleList'
 import propTypes from "prop-types"
 
-
 function UserHome(props) {
     const [ messageState, setMessageState ] = useState("Close");  
     const [ userData, setUser ] = useState(false);  
@@ -114,7 +113,14 @@ function UserHome(props) {
 }
 
 UserHome.propTypes = {
-    guest_user: propTypes.object.isRequired
+    guest_user: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_icon: propTypes.string,
+    })
 }
 
 export default UserHome;

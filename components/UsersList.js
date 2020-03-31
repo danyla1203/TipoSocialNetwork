@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-function UsersList(props) {
+function UsersList() {
     const [ usersList, setUsers ] = useState("Nothing here");
 
     let addFriend = (user_id) => {
@@ -53,5 +53,7 @@ function UsersList(props) {
         </div>
     )
 }
+
+//no props
 
 export default UsersList;

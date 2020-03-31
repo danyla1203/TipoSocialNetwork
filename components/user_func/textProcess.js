@@ -1,18 +1,3 @@
-let boldHandler = (el) => {
-    if (el[0] == "*" && el[1] == "*" && el[el.length - 1] == "*" && el[el.length - 2] == "*") {
-        return `<b>${ el.substr(2, el.length - 4) }</b>`;
-    } else {
-        return el;
-    }
-}
-let warningHandler = (el) => {
-    if (el[0] == "!" && el[el.length - 1] == "!") {
-        return `<mark>${ el.substr(1, el.length - 2) }</mark>`;
-    } else {
-        return el;
-    }
-}
-
 let formatText = (string)  => {
     for (let i = 0; i < string.length; i++) {
         
@@ -81,19 +66,7 @@ let processInputData = (text, isOneParagraph) => {
     console.time(lable);
 
     for (let i = 0; i < newStrArray.length; i++) {
-        for (let j = 0; j < newStrArray[i].length; j++) {
-            if (newStrArray[i][j] == "\n") {
-                newStrArray[i] = newStrArray[i].replace("\n", " ");
-            }
-                
-            let splitedStr = newStrArray[i].split(" ");
-
-            //pass text handlers here
-            splitedStr = splitedStr.map(boldHandler);
-            splitedStr = splitedStr.map(warningHandler);
-
-            newStrArray[i] = splitedStr.join(" ");
-        }
+        newStrArray[i] = formatText(newStrArray[i]);
     }
     console.timeEnd();
     if (isOneParagraph) {
@@ -129,5 +102,4 @@ function findAffectedRow(oldArr, newArr) {
 module.exports.formatText = formatText;
 module.exports.processInputData = processInputData;
 module.exports.editText = editArticle;
-module.exports.boldHandler = boldHandler;
 module.exports.findAffectedRow = findAffectedRow;

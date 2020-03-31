@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import propTypes from "prop-types";
 
 import UserArticle from "./articles/UserArticle";
 
@@ -95,7 +96,17 @@ function News(props) {
     )
 }
 
-//no props to component
+News.propTypes = {
+    guest_user: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_icon: propTypes.string,
+    })
+}
+
 export default News;
 
 

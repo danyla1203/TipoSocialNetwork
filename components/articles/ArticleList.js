@@ -173,10 +173,12 @@ class ArticleList extends Component {
 
 ArticleList.propTypes = {
     user: propTypes.exact({
-        id: propTypes.number,
+        user_id: propTypes.number,
         name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
         avatar_url_full: propTypes.string,
-        avatar_url_icon: propTypes.string,
     })
 }
 

@@ -86,12 +86,17 @@ UserArticleList.propTypes = {
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
-        avatar_url_full: propTypes.string
+        avatar_url_full: propTypes.string,
+        country: propTypes.string,
+        gender: propTypes.string
     }),
     guest_user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
-        avatar_url_icon: propTypes.string
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_icon: propTypes.string,
     })
 }
 export default UserArticleList; 

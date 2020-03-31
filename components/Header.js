@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 
-function Header(e) {
+function Header() {
     let toggleHeaderForMobile = (e) => {
         e.persist();
         let header = document.getElementById("header");
@@ -34,4 +34,7 @@ function Header(e) {
         </header>
     )
 }
+
+//no props
+
 export default Header;

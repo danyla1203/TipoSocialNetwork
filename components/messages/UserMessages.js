@@ -1,4 +1,6 @@
-import React, { useState }  from 'react'
+import React, { useState }  from 'react';
+import propTypes from "prop-types";
+
 import Message from "./Message";
 
 function UserMessages(props) {
@@ -100,6 +102,23 @@ function UserMessages(props) {
             </div>
         </div>
     )
+}
+
+UserMessages.propTypes = {
+    user_data: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        avatar_url_icon: propTypes.string,
+    }),
+    user2: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        avatar_url: propTypes.string,
+    }),
+    messages: propTypes.array.isRequired
 }
 
 export default UserMessages;

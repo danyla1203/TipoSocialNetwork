@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from "react-router-dom";
+import propTypes from "prop-types";
 
 import countries from "./countryList";
 
@@ -54,6 +54,10 @@ function RegForm(props) {
         </form>
         </div>
     )
+}
+
+RegForm.propTypes = {
+    sendError: propTypes.func.isRequired
 }
 
 export default RegForm;

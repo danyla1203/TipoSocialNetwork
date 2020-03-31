@@ -21,8 +21,8 @@ function ArticleEditForm(props) {
 
     return (
         <form>
-            <input value={ title } onChange={ titleHandler }/>
-            <textarea onChange={ textHandler }>{ text }</textarea>
+            <input defaultValue={ title } onChange={ titleHandler }/>
+            <textarea onChange={ textHandler } defaultValue={ text }></textarea>
             <button onClick={ saveChanges } type="button">Save changes!</button>
             <button type="button" onClick={ props.closeWithoutChanges }>Close without changes</button>
         </form>
@@ -32,7 +32,8 @@ function ArticleEditForm(props) {
 ArticleEditForm.propTypes = {
     title: propTypes.string.isRequired,
     text: propTypes.string.isRequired,
-    saveChanges: propTypes.func.isRequired
+    saveChanges: propTypes.func.isRequired,
+    closeWithoutChanges: propTypes.func.isRequired
 }
 
 export default ArticleEditForm;

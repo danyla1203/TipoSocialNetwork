@@ -105,6 +105,9 @@ class App extends Component {
         if ( this.state.isLogin ) { 
 
             let user = Object.assign({}, stateUser);
+            console.log(user);
+            delete user.avatar_url_full;
+            delete user.avatar_url_icon;
             let fullUser = Object.assign({}, user, { avatar_url_full: stateUser.avatar_url_full });
             let smallUser = Object.assign({}, user, { avatar_url_icon: stateUser.avatar_url_icon });
 

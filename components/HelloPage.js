@@ -1,5 +1,7 @@
 import React from 'react'
-import Header from './Header'
+import propTypes from "prop-types";
+
+import Header from './Header';
 
 function HelloPage(props) {
     return (
@@ -10,6 +12,10 @@ function HelloPage(props) {
             </div>
         </div>
     )
+}
+
+HelloPage.propTypes = {
+    name: propTypes.string.isRequired
 }
 
 export default HelloPage;

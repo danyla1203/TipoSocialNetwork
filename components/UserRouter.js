@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import propTypes from "prop-types";
 
 import Home from "./Home";
 import UsersList from "./UsersList";
@@ -69,5 +70,26 @@ function UserRouter(props) {
         </Router>   
     )
 }
+
+UserRouter.propTypes = {
+    changeUserData: propTypes.func.isRequired,
+    fullUser: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        email: propTypes.string,
+        country: propTypes.string,
+        gender: propTypes.string,
+        avatar_url_full: propTypes.string,
+    }),
+    smallUser: propTypes.exact({
+        user_id: propTypes.number,
+        name: propTypes.string,
+        country: propTypes.string,
+        email: propTypes.string,
+        gender: propTypes.string,
+        avatar_url_icon: propTypes.string,
+    }),
+}
+
 
 export default UserRouter;

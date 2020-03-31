@@ -63,7 +63,7 @@ function AddArticle(props) {
 
                 } else if (splitedText.length < oldStringArray.length) {
                     //done for 50%. If user will delete many p tags?
-                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);
+                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);e
                     let p = document.querySelectorAll(`p[data_id="${pIndexForDelete}"`)[0];
                     p.remove();
                     normalizeNameForP();
