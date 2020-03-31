@@ -30,9 +30,6 @@ header ul {
         }
     }
 }
-header button {
-    display: none;
-}
 @media screen and (max-width: 1200px) {
     div#user {
         margin-top: 10px;
@@ -45,7 +42,6 @@ header button {
         transition: 0.3s;
         button {
             position: absolute;
-            
         }
         ul {
             flex-direction: column;
@@ -60,7 +56,8 @@ header button {
     header.close {
         left: -100vw;
         button {
-            left: 100vw;
+            position: fixed;
+            left: 0;
         }
     }
     header.open {
