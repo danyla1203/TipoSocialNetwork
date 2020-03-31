@@ -1,7 +1,7 @@
 import React, { useState }  from 'react';
 import propTypes from "prop-types";
 
-import { formatText, processInputData } from "../user_func/textProcess";
+import { formatText, findAffectedRow } from "../user_func/textProcess";
 import { Redirect } from 'react-router';
 
 function AddArticle(props) {
@@ -29,10 +29,17 @@ function AddArticle(props) {
         }
     }
 
+    let normalizeNameForP = () => {
+        let pTags = document.getElementsByClassName("output_p");
+        for (let i = 0; i < pTags.length; i++) {    
+            pTags[i].attributes[0].value = i;
+        }
+    }
+
+
     let formHandler = (event) => {
         let lable;
         event.persist();
-        console.log(event);
         let titleOutput = document.getElementById("titleOut");
         let textOutput = document.getElementById("textOut");
         
@@ -45,47 +52,48 @@ function AddArticle(props) {
             
             console.log(oldStringArray, splitedText);
 
-            if (oldStringArray.length > 1) {
-
-                for (let i = 0; i < splitedText.length; i++) {
-                    let oldStringArrayLength;
-
-                    if (!oldStringArray[i] && !document.getElementsByName(i)[0]) {
-                        let p = document.getElementsByName(i - 1)[0];
-                        p.insertAdjacentHTML("afterend", `<p name="${i}"></p>`);
-                        oldStringArrayLength = 0;
-                        debugger;
-
-                    } else if (!oldStringArray[i] && document.getElementsByName(i)[0]) {
-                        oldStringArrayLength = 0;
-                        debugger;
-                        
-                    } else {
-                        oldStringArrayLength = oldStringArray[i].length;
-                        debugger;
-                    }
+            if (oldStringArray.length >= 1) {              
+                if (splitedText.length > oldStringArray.length) {
+                    let pIndexForAdd = findAffectedRow(splitedText, oldStringArray);
                     debugger;
-                    if (splitedText[i].length != oldStringArrayLength) {
-                        console.log("change", i);
-                        let dataToP = formatText(splitedText[i] || "");
-                        let p = document.getElementsByName(i)[0];
-                        p.innerHTML = dataToP;
-                        debugger;
-                        break;
+
+                    let pBefore = document.querySelector(`p[data_id="${pIndexForAdd - 1}"]`);
+                    pBefore.insertAdjacentHTML("afterend", `<p data_id="${pIndexForAdd}" class="output_p"></p>`);
+                    normalizeNameForP();
+
+                } else if (splitedText.length < oldStringArray.length) {
+                    //done for 50%. If user will delete many p tags?
+                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);
+                    let p = document.querySelectorAll(`p[data_id="${pIndexForDelete}"`)[0];
+                    p.remove();
+                    normalizeNameForP();
+                    
+
+                } else if (splitedText.length == oldStringArray.length) {
+                    //done
+                    for (let i = 0; i < splitedText.length; i++) {
+                        if (splitedText[i] != oldStringArray[i]) {
+                            let formatedText = formatText(splitedText[i]);
+                            
+                            let pTags = document.getElementsByTagName("p");
+                            pTags[i].innerHTML = formatedText === undefined ? "" : formatedText;
+                        }
                     }
+                    
+                    
                 }
                 oldStringArray = splitedText;
 
             } else {
                 let pTags = "";
                 for (let i = 0; i < splitedText.length; i++) {
-                    pTags += `<p name="${i}"></p>`;
+                    pTags += `<p data_id="${i}" class="output_p"></p>`;
                 }
                 textOutput.innerHTML = pTags;
 
                 for (let i = 0; i < splitedText.length; i++) {
                     let dataToP = formatText(splitedText[i]);
-                    let p = document.getElementsByName(i)[0];
+                    let p = document.querySelector(`p[data_id="${i}"]`);
                     p.innerHTML = dataToP;
                 }
                 oldStringArray = splitedText;

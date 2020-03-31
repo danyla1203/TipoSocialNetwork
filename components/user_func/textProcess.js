@@ -107,7 +107,27 @@ let processInputData = (text, isOneParagraph) => {
     return content;
 }
 
+function findAffectedRow(oldArr, newArr) {
+    for (let i = 0; i < oldArr.length; i++) {
+        switch(i) {
+            case 0:
+                if (oldArr[i] != newArr[i]) {
+                    return 0;
+                }
+                break;
+                
+            default:
+                if (oldArr[i] != newArr[i]) {
+                    return i;
+                    break;
+                } 
+                break;
+        }
+    }
+}
+
 module.exports.formatText = formatText;
 module.exports.processInputData = processInputData;
 module.exports.editText = editArticle;
 module.exports.boldHandler = boldHandler;
+module.exports.findAffectedRow = findAffectedRow;
