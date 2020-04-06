@@ -72,11 +72,29 @@ app.get("/data/users", (req, res) => {
         .select(["user_id", "name", "avatar_url_icon"])
         .from("users")
         .where(`user_id <> ${req.session.user.user_id}`);
-    console.log(sql);
-    pool.query(sql, (err, result) => {
+   
+    pool.query(sql, (err, usersList) => {
         if (err) throw err;
-        res.setHeader("Cache-Control", "public, max-age=3600");
-        res.end(JSON.stringify(result));
+        //select friends from userList
+        let sql = testPool
+                    .select(["id", "user_id", "avatar_url_icon", "name"])
+                    .from("friends")
+                    .join("users")
+                    .on("friends.user2_id = users.user_id")
+                    .where(`user1_id = ${req.session.user.user_id}`);
+        pool.query(sql, (err, friendsList) => {
+            if (err) throw err;
+            for (let i = 0; i < usersList.length; i++) {
+                for (let j = 0; j < friendsList.length; j++) {
+                    if (usersList[i].user_id == friendsList[j].user_id) {
+                        usersList[i].isFriend = true;
+                        break;
+                    }
+                }
+            }
+            res.setHeader("Cache-Control", "public, max-age=3600");
+            res.end(JSON.stringify(usersList));
+        });
     });
 })
 
@@ -106,4 +124,4 @@ app.all("*", (req, res) => {
     });
 })
 
-app.listen(3001 );
+app.listen(3001);

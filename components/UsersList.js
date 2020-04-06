@@ -8,9 +8,40 @@ function UsersList() {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/add/friends/${user_id}`);
         xhr.send();
+
+        let newState = [];
+        for (let i = 0; i < usersList.length; i++) {
+            newState.push(usersList[i]);
+            if (usersList[i].user_id == user_id) {
+                newState[i].isFriend = true;
+            }
+        }
+        setUsers(newState);
+    }
+
+    let deleteFriend = (user_id) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", `/data/delete/friends/${user_id}`);
+        xhr.send();
+
+        let newState = [];
+        for (let i = 0; i < usersList.length; i++) {
+            newState.push(usersList[i]);
+            if (usersList[i].user_id == user_id) {
+                newState[i].isFriend = false;
+            }
+        }
+        setUsers(newState);
     }
 
     let renderUser = (user) => {
+        let addFriendBtn;
+        if (!user.isFriend) {
+            addFriendBtn = <button onClick={ () => { addFriend(user.user_id) } }>Add friend</button>;
+        } else {
+            addFriendBtn =  <button onClick={ () => { deleteFriend(user.user_id) } }>Delete friend</button>;
+        }
+
         return (
             <div className="user_small" key={ user.user_id }>
                 <h3>{ user.name }</h3>
@@ -18,7 +49,7 @@ function UsersList() {
                     <img src={ "/assets/img/" + user.avatar_url_icon } />
                 </div>
                 <Link to={"/users/" + user.user_id}>Go to profile</Link>
-                <button onClick={ addFriend }>Add friend</button>
+                { addFriendBtn }
             </div>
         )
     } 
@@ -55,5 +86,4 @@ function UsersList() {
 }
 
 //no props
-
 export default UsersList;
