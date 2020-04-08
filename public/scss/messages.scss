@@ -11,7 +11,7 @@ div.message_prev {
         img {
             margin-right: 10px;
             border: 1px solid;
-            border-radius: 100%;
+            border-radius: 100px;
         }
     }
 }
@@ -23,15 +23,15 @@ div#send {
     div {
         margin-top: 3px;
         margin-bottom: 3px;
-        border-radius: 10%;
-        padding: 5px;
+        border-radius: 20px;
+        padding: 10px;
         min-width: 50px;
         max-width: 200px;
     }
 
     div.my_message {
         align-self: flex-end;
-        background-color: blue;
+        background-color: #93bcff;
         
         h3 {
             color: white;

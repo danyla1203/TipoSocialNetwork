@@ -1,5 +1,6 @@
 import React, { useState }  from 'react';
 import propTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import Message from "./Message";
 
@@ -27,16 +28,14 @@ function UserMessages(props) {
         let forms = document.querySelectorAll("form");
         let form;
         for (let i = 0; i < forms.length; i++) {
-            
             if (parseInt(forms[i].id) == form_id){
                 form = forms[i];
                 break;
             }
             
         }
-        console.log(form);
         let formData = new FormData(form);
-        
+
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/messages/add/${props.user2.user_id}/${props.user2.name}`);
         xhr.send(formData);
@@ -88,16 +87,16 @@ function UserMessages(props) {
     return (
         <div className="message_prev">
             <div id='user_info'>
-                <img src={ "/assets/img/" + user.avatar_url }/>
+            <Link to={ "/users/" + user.user_id }><img src={ "/assets/img/" + user.name + "_icon.webp" } /></Link>
                 <h3>{ user.name }</h3>
             </div>
             <div className="messages">
                 <div id="send">
                     { rendered }
                 </div>
-                <form name="send_message" id={ props.user2.user_id }>
+                <form name="send_message" id={ user.user_id }>
                     <input name="text"></input>
-                    <button type="button" onClick={ () => sendMessage(props.user2.user_id) }>Send</button>
+                    <button type="button" onClick={ () => sendMessage(user.user_id) }>Send</button>
                 </form>
             </div>
         </div>

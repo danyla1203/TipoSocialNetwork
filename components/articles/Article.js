@@ -88,8 +88,8 @@ function Article(props) {
             <h5>{ props.date }</h5>
             <div className="buttons">
                 { showFullBtn }
-                <button onClick={ () => props.delete(props.article_id)   }>DELETE THIS CRAP</button>
-                <button onClick={ () => isEdit == "Read" ? setMode("Edit") : setMode("Read") }>Add some changes to article</button>
+                <button onClick={ () => props.delete(props.article_id)   }>Delete</button>
+                <button onClick={ () => isEdit == "Read" ? setMode("Edit") : setMode("Read") }>Add some changes</button>
                 <button><Link to={"/edit-article/" + props.article_id}>Full edit</Link></button>
                 { btnGetComments }
             </div>

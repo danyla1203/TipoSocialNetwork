@@ -44,11 +44,16 @@ div#create {
             margin-bottom: 5px;
         }
         button {
-            width: 30%;
-            border: 0;
-            background-color: blue;
-            color: yellow;
-            height: 30px;
+            border: 0px;
+            font: 20px "Roboto", sans-serif;
+            background-color: #fff;
+            border-radius: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border: 1px solid #93bcff;
+            transition: 0.2s;
         }
     }
 }
@@ -99,13 +104,22 @@ div.article {
     div.buttons {
         margin-top: 3px;
         button {
-            margin-left: 4px;
-            background-color: blue;
             border: 0px;
-            height: 20px;
-            color: yellow;
+            font: 15px "Roboto", sans-serif;
+            background-color: #fff;
+            border-radius: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border: 1px solid #93bcff;
+            transition: 0.2s;
+            cursor: pointer;
         }
-        
+        button:hover {
+            background-color: #93bcff;
+        }
+
         button:first-child {
             margin-left: 0;
         }

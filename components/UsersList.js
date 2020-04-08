@@ -44,12 +44,13 @@ function UsersList() {
 
         return (
             <div className="user_small" key={ user.user_id }>
-                <h3>{ user.name }</h3>
                 <div className="img">
-                    <img src={ "/assets/img/" + user.avatar_url_icon } />
+                    <Link to={"/users/" + user.user_id}><img src={ "/assets/img/" + user.avatar_url_icon } /></Link>
                 </div>
-                <Link to={"/users/" + user.user_id}>Go to profile</Link>
-                { addFriendBtn }
+                <div>
+                    <h3>{ user.name }</h3>
+                    { addFriendBtn }
+                </div>
             </div>
         )
     } 

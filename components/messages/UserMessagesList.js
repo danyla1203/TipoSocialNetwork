@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import propTypes from "prop-types";
 
 import MessagePreview from "./MessagePreview";
 
 function UserMessagesList(props) {
     const [messages, setMessages] = useState(null);
+    const [socketInstance, setSocket] = useState(null);
 
     let getMessages = () => {
         if (messages) return;

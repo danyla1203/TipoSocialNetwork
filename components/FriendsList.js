@@ -8,11 +8,12 @@ function FriendsList() {
         console.log(data);
         return (
             <div key={ data.id } className="user_small">
-                <h3>{ data.name }</h3>
                 <div className="img">
-                    <img src={ "/assets/img/" + data.avatar_url_icon } />
+                <Link to={ "/users/" + data.user_id }><img src={ "/assets/img/" + data.avatar_url_icon } /></Link>
                 </div>
-                <Link to={ "/users/" + data.user_id }>Go to profile</Link>
+                <div>
+                    <h3>{ data.name }</h3>
+                </div>
             </div>
         )
     }

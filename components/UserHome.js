@@ -89,21 +89,22 @@ function UserHome(props) {
         <div>
             
             <div id="user">
-                <div>
-                    <h3>{ userData.name }</h3>
-                    
+                <div>                    
                     <div id="img" >
                         <img src={ "/assets/img/" + userData.avatar_url_full } />    
                     </div>
-                    <div id="user-data">
-                        <h5>User data:</h5>
-                        <h5>Country: { userData.country }</h5>
-                        <h5>Gender: { userData.gender }</h5>
+                    <div>
+                        <div id="user-data">
+                            <h5>{ userData.name }</h5>
+                            <h5>Country: { userData.country }</h5>
+                            <h5>Gender: { userData.gender }</h5>
+                            { addFriendBtn }
+                            { deleteFriendBtn }
+                            <button onClick={ sendMessageButton }>Send message!</button>
+                        </div>
+                        { form }
                     </div>
-                    { addFriendBtn }
-                    { deleteFriendBtn }
-                    <button onClick={ sendMessageButton }>Send message!</button>
-                    { form }
+                    
                 </div>
                 
             </div>

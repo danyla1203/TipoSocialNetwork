@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import propTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import UserMessages from "./UserMessages";
 
@@ -33,7 +34,7 @@ function MessagePreview(props) {
 
     return (
         <div className="message_prev">
-            <img src={ "/assets/img/" + secondUser.avatar_url }></img>
+            <Link to={ "/users/" + secondUser.user_id }><img src={ "/assets/img/" + secondUser.name + "_icon.webp" }/></Link>
             <h4>{ secondUser.name }</h4>
             <button onClick={ showMessages }>See all</button>
             { messagesToRender }

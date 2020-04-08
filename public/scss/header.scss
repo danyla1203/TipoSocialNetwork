@@ -30,6 +30,11 @@ header ul {
         }
     }
 }
+
+header button {
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
     div#user {
         margin-top: 10px;
@@ -56,6 +61,7 @@ header ul {
     header.close {
         left: -100vw;
         button {
+            display: block;
             position: fixed;
             left: 0;
         }
