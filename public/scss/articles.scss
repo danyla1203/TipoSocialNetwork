@@ -23,6 +23,31 @@ div#article_list {
         transition: 0.3s;
     }
 }
+div#slider_img {
+    padding: 0;
+}
+div#slider_img div{
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        width: 60% ;
+        max-height: 500px;
+    }
+}
+
+div#slider_img > div > div {
+    display: none;
+    
+
+}
+
+div#slider_img > div > div[data-current] {
+    display: flex !important;
+    justify-content: center;
+}
 
 
 div#create {

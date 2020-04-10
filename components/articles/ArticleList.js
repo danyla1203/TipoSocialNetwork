@@ -93,6 +93,7 @@ class ArticleList extends Component {
                                 title={ el.title } 
                                 text={ el.text } 
                                 date={ toRender }
+                                photos={ el.photos_list }
                                 delete={ this.deleteArticle } 
                                 like_count={ el.likes }
                                 key={ el.article_id }         

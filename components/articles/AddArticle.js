@@ -6,9 +6,11 @@ import { Redirect } from 'react-router';
 
 function AddArticle(props) {
     const [ isDone, setDone ] = useState(false);
-    let oldStringArray = [];
+    const [ uploadedPhotos, setUploadedPhotos ] = useState([]);
 
+    let oldStringArray = [];
     let toSend = "";
+
     let addArticle = () => {
         let xhr = new XMLHttpRequest();
 
@@ -16,6 +18,10 @@ function AddArticle(props) {
         body.append("text", document.getElementById("text").value);
         body.append("title", document.getElementById("title").value);
 
+        let photos = uploadedPhotos.map((el) => {
+            return el.fileName;
+        });
+        body.append("photos_list", photos.join());
         if (props.isEdit) {
             xhr.open("POST", `/data/article/update/${props.match.params.article_id}`);
             xhr.send(body);
@@ -35,7 +41,9 @@ function AddArticle(props) {
             pTags[i].attributes[0].value = i;
         }
     }
+    let searchChangesInNextP = () => {
 
+    }
 
     let formHandler = (event) => {
         let lable;
@@ -48,29 +56,37 @@ function AddArticle(props) {
 
         } else if (event.target.name == "text") {
             let inputText = event.target.value;
+            if (inputText == "") {
+                textOutput.value = ""; 
+            }
+
             let splitedText = inputText.split("\n");
             
             console.log(oldStringArray, splitedText);
 
             if (oldStringArray.length >= 1) {              
                 if (splitedText.length > oldStringArray.length) {
+                    //many bugs...
                     let pIndexForAdd = findAffectedRow(splitedText, oldStringArray);
-                    debugger;
-
                     let pBefore = document.querySelector(`p[data_id="${pIndexForAdd - 1}"]`);
                     pBefore.insertAdjacentHTML("afterend", `<p data_id="${pIndexForAdd}" class="output_p"></p>`);
-                    normalizeNameForP();
 
                 } else if (splitedText.length < oldStringArray.length) {
-                    //done for 50%. If user will delete many p tags?
-                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);e
-                    let p = document.querySelectorAll(`p[data_id="${pIndexForDelete}"`)[0];
-                    p.remove();
-                    normalizeNameForP();
-                    
+                    //done for 85%.
+                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);
+                    let pTags = document.getElementsByClassName(`output_p`);
+                    let nextPTagIndex = pIndexForDelete + countPForDelete;
+                    console.log(nextPTagIndex, splitedText);
+                    debugger;
 
+                    let countPForDelete = oldStringArray.length - splitedText.length;
+                    for (let i = 0; i < countPForDelete; i++) {
+                        pTags[pIndexForDelete].remove();
+                    }
+
+                
                 } else if (splitedText.length == oldStringArray.length) {
-                    //done
+                    //done 100%
                     for (let i = 0; i < splitedText.length; i++) {
                         if (splitedText[i] != oldStringArray[i]) {
                             let formatedText = formatText(splitedText[i]);
@@ -82,6 +98,7 @@ function AddArticle(props) {
                     
                     
                 }
+                normalizeNameForP();
                 oldStringArray = splitedText;
 
             } else {
@@ -102,6 +119,32 @@ function AddArticle(props) {
         }
     }
 
+    let uploadPhoto = (e) => {
+        let target = e.target;
+        let formData = new FormData();
+        formData.append("picture-to-article", target.files[0]);
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", `/data/add-picture`);
+        xhr.send(formData);
+        
+        xhr.onload = () => {
+            let buttons = [...uploadedPhotos];
+            let referenceId = buttons.length > 0 ? buttons[buttons.length - 1] : 0;
+            buttons.push({
+                id: referenceId,
+                fileName: xhr.response
+            });
+            setUploadedPhotos(buttons);
+        }
+    }
+    let deleteImg = (filename) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", `/data/delete-picture/${filename}`);
+        xhr.send();
+
+    } 
+
     if (isDone) {
         return <Redirect to="/user" />
     }
@@ -119,17 +162,42 @@ function AddArticle(props) {
         textOut = result.text;  
     }
 
+
+    let uploadedPhotosRendered = uploadedPhotos.map((el) => {
+        return (
+            <button key={ el.id } onClick={ () => { deleteImg(el.filename) } }>Delete img</button>
+        )
+    });
+
+    let imgTags = uploadedPhotos.map((el) => {
+        return (
+            <img src={ "/assets/img/" + el.fileName + ".webp" }/>
+        )
+    })
+
     let buttonText = props.isEdit ? "Change" : "Create";
     return (
         <div>
             <div id="create">
                 <form id="addArticle" name="addArticles" onChange={ formHandler }>
-                    <input id="title" type="text" name="title" placeholder="Title:" defaultValue={ title }/>
+                    <input 
+                        id="title" 
+                        type="text" 
+                        name="title" 
+                        placeholder="Title:" defaultValue={ title }
+                    />
                     <textarea id="text" name="text" defaultValue={ textOut } ></textarea>
                     <button type="button" onClick={ addArticle }>{ buttonText }</button>
                 </form>
+                <input type="file" onChange={ uploadPhoto } />
+                <div id="img-container">
+                    { uploadedPhotosRendered }
+                </div>
             </div>
             <div id="output">
+                <div>
+                    { imgTags }
+                </div>
                 <div id="content">
                     <h3 id="titleOut">{ title }</h3>
                     <div id="textOut"></div>

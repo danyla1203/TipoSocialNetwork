@@ -2,10 +2,12 @@ const app = require("./server").app;
 const upload = require("./server").upload;
 const pool = require("./server").pool;
 const makeSql = require("./server").makeSql;
+const fs = require("fs");
 
 app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
     let title = req.body.title;
     let text = req.body.text;
+    let photos_list = req.body.photos_list;
     let ts = Date.now();
 
     let date_ob = new Date(ts);
@@ -24,6 +26,7 @@ app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
                             title: title,
                             text: text,
                             user_id: req.session.user.user_id,
+                            photos_list: photos_list,
                             date: insertDate
                         })
                         
@@ -33,12 +36,13 @@ app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
         });
     }
 })
+
 app.get("/data/article/delete/:article_id", (req, res) => {
     let sql = makeSql
                     .delete("articles")
                     .where(`article_id = ${req.params.article_id}`);
 
-    pool.query(sql, (err, result) => {
+    pool.query(sql, (err) => {
         if (err) throw err;
         res.end("deleted");
     })
@@ -62,11 +66,21 @@ app.post("/data/article/update/:article_id", upload.none(), (req, res) => {
                         .set({title: title, text: text})
                         .where(`article_id = ${req.params.article_id}`);
 
-
             pool.query(sql, (err) => { if(err) throw err; res.end("Updated") });
             
         }
     })
+})
+
+app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) => {
+    let oldPath = `/home/daniil/Desktop/Node projects/AuthTest/server/uploads/${req.file.filename}`;
+    let newPath = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.file.filename}_article.webp`;
+
+    fs.rename(oldPath, newPath, (err) => {
+        if (err) throw err;
+    });
+    
+    res.end(`${req.file.filename}_article`);
 })
 
 app.get("/data/article/:article_id", (req, res) => {
