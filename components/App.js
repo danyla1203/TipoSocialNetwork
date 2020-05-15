@@ -18,33 +18,24 @@ class App extends Component {
 
     check() {
         let form = document.forms.test;
-        let name = form.elements.name.value;
-        let pass = form.elements.password.value;
+        let userData = new FormData(form);
 
-        let xhr = new XMLHttpRequest();
-        
+        let xhr = new XMLHttpRequest();        
         xhr.open("POST", "/user/check");
-        var body = 'name=' + encodeURIComponent(name) +
-        '&pass=' + encodeURIComponent(pass);
-        xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
 
-        xhr.send(body);
+        xhr.send(userData);
         xhr.onload = () => {
             let result = JSON.parse(xhr.response);
-
             if (xhr.status == 404) {
                 this.setError("Login Error");
-                return;
-
             } else {
-                let obj = Object.assign({}, result);
-                this.setState({isLogin: true, userData: obj});
+                this.setState({isLogin: true, userData: result});
             }
         }
     }
 
     setError(message) {
-        let errorsCopy = this.state.errors;
+        let errorsCopy = Object.assign([], this.state.errors);
         for (let i = 0; i < errorsCopy.length; i++) {
             if (errorsCopy[i] == message) {
                 return;
@@ -55,13 +46,10 @@ class App extends Component {
     }
 
     changeUserData(userData) {
-        
         let newUserData = {};
         for (let column in userData) {
             if (userData[column].length < 2) {
                 newUserData[column] = this.state.userData[column];
-                debugger;
-                continue;
             }
             newUserData[column] = userData[column];
         }
@@ -86,7 +74,7 @@ class App extends Component {
             } else {
                 this.setState({
                     isLogin: true,
-                    userData: Object.assign({}, result)
+                    userData: result
                 })
             }
         }
@@ -102,15 +90,12 @@ class App extends Component {
             });
         }
 
-        if ( this.state.isLogin ) { 
-
-            let user = Object.assign({}, stateUser);
-            console.log(user);
-            delete user.avatar_url_full;
-            delete user.avatar_url_icon;
-            let fullUser = Object.assign({}, user, { avatar_url_full: stateUser.avatar_url_full });
-            let smallUser = Object.assign({}, user, { avatar_url_icon: stateUser.avatar_url_icon });
-
+        if (this.state.isLogin) { 
+            let smallUser = Object.assign({}, stateUser);
+            let fullUser = Object.assign({}, stateUser);   
+            
+            delete fullUser.avatar_url_icon;
+            delete smallUser.avatar_url_full;
             return (
                 <UserRouter fullUser={ fullUser } smallUser = { smallUser } changeUserData = { this.changeUserData }/>
             )
