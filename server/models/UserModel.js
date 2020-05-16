@@ -27,6 +27,35 @@ class UserModel {
             .where(`user1_id = ${user_id}`);
         this.pool.query(frinendsList, callback);
     }
+
+    setUser(data, callback) {
+        let user = this.sqlMaker
+            .insert("users")
+            .set(data);
+        this.pool.query(user, callback)
+    }
+
+    getEmails(callback) {
+        let emails = this.sqlMaker
+            .select(["email", "name"])
+            .from("users")
+        this.pool.query(emails, callback)
+    }
+
+    updateUserData(newData, user_id, callback) {
+        let newUser = this.sqlMaker
+            .update("users")
+            .set(newData)
+            .where(`user_id = ${user_id}`);
+        this.pool.query(newUser, callback);
+    }
+    checkUser(name, pass, callback) {
+        let sql = this.sqlMaker
+            .select()
+            .from("users")
+            .where(`name = "${name}" AND password = "${pass}"`);
+        this.pool.query(sql, callback);
+    }
 }
 
 module.exports.UserModel = UserModel;
