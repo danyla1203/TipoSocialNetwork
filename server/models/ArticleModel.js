@@ -1,9 +1,5 @@
-class ArticleModel {
-    constructor(connection, sqlMaker) {
-        this.pool = connection;
-        this.sqlMaker = sqlMaker;
-    }
-
+const Model = require("./Model");
+class ArticleModel extends Model {
     getArticle(article_id, user_id, callback) {
         let article = this.sqlMaker
             .select(["*"])

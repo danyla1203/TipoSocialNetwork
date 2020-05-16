@@ -1,8 +1,6 @@
-class UserModel {
-    constructor(connection, sqlMaker) {
-        this.pool = connection;
-        this.sqlMaker = sqlMaker;
-    }
+const Model = require("./Model");
+
+class UserModel extends Model {
     getUsers(user_id, callback) {
         let users = this.sqlMaker
             .select(["user_id", "name", "avatar_url_icon"])
