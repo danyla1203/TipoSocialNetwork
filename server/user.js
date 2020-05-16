@@ -2,19 +2,17 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
-const app = require("./server").app;
-const upload = require("./server").upload;
-const pool = require("./server").pool;
-const makeSql = require("./server").makeSql;
+const app = require(".").app;
+const upload = require(".").upload;
+const pool = require(".").pool;
+const userModel = require("./index").userModel;
 
 function setSessionData(body, session) {
     let sessionCopy = Object.assign({}, session);
-
     for (let column in body) {
         if (typeof body[column] == "string" && body[column].length < 1) {
             continue;
         }
-        
         sessionCopy[column] = body[column]
     }
     return sessionCopy;
@@ -26,21 +24,20 @@ app.post("/user/signin", upload.single("avatar"), (req, res) => {
     
     if (req.file) {
         let filePath = req.file.path;
-        let targetPath_icon = path.join("/home/daniil/Desktop/Node projects/AuthTest", "/public/img/" + name + "_icon" + ".webp");
-        let targetPath_full = path.join("/home/daniil/Desktop/Node projects/AuthTest", "/public/img/" + name + "_full" + ".webp");
+        let targetPath_icon = path.join("/home/daniil/Desktop/NodeProjects/AuthTest", "/public/img/" + name + "_icon" + ".webp");
+        let targetPath_full = path.join("/home/daniil/Desktop/NodeProjects/AuthTest", "/public/img/" + name + "_full" + ".webp");
 
         sharp(filePath).resize(70, 80).toFile(targetPath_icon);
         sharp(filePath).resize(300, 300).toFile(targetPath_full);
     }
     
-    pool.query(makeSql.select().from("users"), (err, result) => {
+    userModel.getEmails((err, result) => {
         if (err) throw err;
-        console.log(result.length);
+        
         for (let i = 0; i < result.length; i++) {
             if (result[i].name == name || result[i].email == email) {
                 res.status(418);
                 res.end("User already exist");
-                return;
             }
         }
 
@@ -51,15 +48,10 @@ app.post("/user/signin", upload.single("avatar"), (req, res) => {
         let values = Object.assign({}, req.body, img_names);
         let data = setSessionData(values, {});
 
-        let sql = makeSql
-                .insert("users")
-                .set(data)
-
-        pool.query(sql, (err, result) => {
+        userModel.setUser(data, (err, result) => {
             if (err) throw err;
             
             req.session.user = data;
-            
             req.session.user.user_id = result.insertId;
             req.session.user.avatar_url_full = `${name}_full.webp`;
             req.session.user.avatar_url_icon = `${name}_icon.webp`;
@@ -115,28 +107,22 @@ app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) 
     }
     let values = Object.assign({}, req.body, img_names);
     let dataToInsert = setSessionData(values, req.session.user || {});
-
-    let sql = makeSql
-                .update("users")
-                .set(dataToInsert)
-                .where(`user_id = ${req.session.user.user_id}`);
         
-    pool.query(sql, (err, result) => {
+    userModel.updateUserData(dataToInsert, req.session.user.user_id, (err, result) => {
         if (err) throw err;
         res.end("Succesfull");
     });
-
     req.session.user = dataToInsert;
 })
 
-app.all("/user/check", (req, res) => {
+app.all("/user/check", upload.none(), (req, res) => {
     let user = req.session.user || {};
-    let pass = req.body.pass;
+    let pass = req.body.password;
     let name = req.body.name;
-
+    
     if ( !(name && pass) && !(user.name && user.password) ) {  
         res.status(404);
-        res.end("{}");
+        res.end();
 
     } else if (user.name && user.password) {
         let user = Object.assign({}, req.session.user);
@@ -144,14 +130,8 @@ app.all("/user/check", (req, res) => {
         res.end(JSON.stringify(user));
 
     } else if (pass && name) {
-        let sql = makeSql
-                    .select()
-                    .from("users")
-                    .where(`name = "${name}" AND password = "${pass}"`);
-            
-        pool.query(sql, (err, result) => {
+        userModel.checkUser(name, pass, (err, result) => {
             if (err) throw err;
-            console.log(result[0], "IF LOGIN");
 
             if (result[0]) {
                 req.session.user = setSessionData(result[0], user);
@@ -161,8 +141,23 @@ app.all("/user/check", (req, res) => {
 
             } else {
                 res.status(404);
-                res.end("{}");
+                res.end();
             }
         });
     }    
+})
+
+app.get("/data/news", (req, res) => {
+    let sql = testPool
+        .select(["id", "article_id", "user2_id", "avatar_url_icon", "title", "text", "name", "date"])
+        .from("friends")
+        .join("articles")
+        .on("user2_id = articles.user_id")
+        .join("users")
+        .on("user2_id = users.user_id")
+        .where(`user1_id = ${req.session.user.user_id}`);
+    pool.query(sql, (err, result) => {
+        if (err) throw err;
+        res.end(JSON.stringify(result));
+    })
 })
