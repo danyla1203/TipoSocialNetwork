@@ -1,8 +1,9 @@
-const app = require("./server").app;
-const upload = require("./server").upload;
-const pool = require("./server").pool;
-const makeSql = require("./server").makeSql;
+const app = require(".").app;
+const upload = require(".").upload;
+const pool = require(".").pool;
+const makeSql = require(".").makeSql;
 const fs = require("fs");
+const articleModel = require("./index").articleModel;
 
 app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
     let title = req.body.title;
@@ -21,60 +22,39 @@ app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
     let insertDate = `${year}-${month}-${date} ${hour}:${minutes}:${seconds}.00`;
     
     if (req.session.user.user_id == req.params.user_id) {
-        let sql = makeSql.insert("articles")
-                        .set({
-                            title: title,
-                            text: text,
-                            user_id: req.session.user.user_id,
-                            photos_list: photos_list,
-                            date: insertDate
-                        })
-                        
-        pool.query(sql, (err) => {
-            if (err) throw err;
-            res.end("Added");
-        });
+        articleModel.insertArticle(title, text, req.params.user_id, photos_list, insertDate);
     }
 })
 
 app.get("/data/article/delete/:article_id", (req, res) => {
-    let sql = makeSql
-                    .delete("articles")
-                    .where(`article_id = ${req.params.article_id}`);
-
-    pool.query(sql, (err) => {
+   articleModel.deleteArticle(req.params.article_id, (err) => {
         if (err) throw err;
         res.end("deleted");
-    })
+   })
 })
 
 app.post("/data/article/update/:article_id", upload.none(), (req, res) => {
-    let sql = makeSql
-                    .select(["*"])
-                    .from("articles")
-                    .where(`article_id = ${req.params.article_id} AND user_id = ${req.session.user.user_id}`);
-    
-    pool.query(sql, (err, result) => {
+    let article = req.params.article_id;
+    let user = req.session.user;
+
+    articleModel.getArticle(article, user.user_id, (err, result) => {
         if (err) throw err;
 
         if (result.length > 0) {
             let title = req.body.title;
             let text = req.body.text;
-            console.log(title);
-            let sql = makeSql
-                        .update("articles")
-                        .set({title: title, text: text})
-                        .where(`article_id = ${req.params.article_id}`);
+            let article_id = req.params.article_id;
+            let photos_list = req.body.photos_list;
 
-            pool.query(sql, (err) => { if(err) throw err; res.end("Updated") });
-            
+            articleModel.updatePhotos(article_id, photos_list, (err) => { if(err) throw err });
+            articleModel.updateArticle(article_id, title, text, (err) => { if(err) throw err });
         }
     })
 })
 
 app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) => {
-    let oldPath = `/home/daniil/Desktop/Node projects/AuthTest/server/uploads/${req.file.filename}`;
-    let newPath = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.file.filename}_article.webp`;
+    let oldPath = `/home/daniil/Desktop/NodeProjects/AuthTest/server/uploads/${req.file.filename}`;
+    let newPath = `/home/daniil/Desktop/NodeProjects/AuthTest/public/img/${req.file.filename}_article.webp`;
 
     fs.rename(oldPath, newPath, (err) => {
         if (err) throw err;
@@ -84,49 +64,16 @@ app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) =>
 })
 
 app.get("/data/article/:article_id", (req, res) => {
-    let sql = makeSql
-                .select(["*"])
-                .from("articles")
-                .where(`article_id = ${req.params.article_id} AND user_id = ${req.session.user.user_id}`);
-    pool.query(sql, (err, result) => {
+    articleModel.getArticle(req.params.article_id, req.session.user.user_id, (err, result) => {
         if (err) throw err;
-        
         res.end(JSON.stringify(result));
     })
 })
 
 app.get("/data/articles/:user_id", (req, res) => { 
-    let sql = makeSql
-                .select(["*"])
-                .from("articles")
-                .where(`user_id = ${req.params.user_id} ORDER BY article_id DESC`);
-
-    pool.query(sql, (err, result) => {
+    articleModel.getArticles(req.params.user_id, (err, result) => {
         if (err) throw err;
-        
         res.setHeader("Cache-Control", "public, max-age=60");
         res.end(JSON.stringify(result));
-    });
-})
-
-app.get("/data/article/likes/:article_id", (req, res) => {
-    let sql = makeSql
-                .select(["*"])
-                .from("likes")
-                where(`article_id = ${article_id}`);
-    
-    pool.query(sql, (err, result) => {
-        if (err) throw err;
-
-        res.end(JSON.stringify(result));
     })
-});
-
-app.get("/data/article/set-like/:article_id", (req, res) => {
-    let sql = `INSERT INTO likes(article_id, user_id)` + 
-              `VALUES(${req.params.article_id}, ${req.session.user.user_id})`;
-
-    pool.query(sql, (err, result) => {
-        if (err) throw err;
-    });
-});
+})
