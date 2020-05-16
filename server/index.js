@@ -7,7 +7,7 @@ const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
 const sqlMaker = require("./test_liba").createDb();
-
+const UserModel = require("./models/UserModel").UserModel;
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
 const app = express();
@@ -19,6 +19,9 @@ const pool = mysql.createPool({
     password: "root"
 })
 
+let userModel = new UserModel(pool, sqlMaker);
+
+module.exports.userModel = userModel;
 module.exports.app = app;
 module.exports.upload = upload;
 module.exports.pool = pool;
