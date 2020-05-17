@@ -4,7 +4,7 @@ const pool = require("./index").pool;
 const makeSql = require("./index").makeSql;
 
 app.get("/data/messages/list", (req, res) => {
-    let user = req.session.user.user_id;
+    let user = req.user.user_id;
     let sql = makeSql
                 .select(["message_id", "recipient_id", "sender_id", "text", "time", "user_id", "name", "avatar_url_icon"])
                 .from("messages") 
@@ -19,7 +19,7 @@ app.get("/data/messages/list", (req, res) => {
 })
 
 app.post("/data/messages/add/:user_id/:user_name", upload.none(), (req, res) => {
-    let sender_id = req.session.user.user_id;
+    let sender_id = req.user.user_id;
     let recipient_id = req.params.user_id;
 
     let text = req.body.text;

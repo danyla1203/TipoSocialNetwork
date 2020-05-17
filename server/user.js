@@ -1,12 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const jwt = require("jsonwebtoken");
 
 const app = require("./index").app;
 const upload = require("./index").upload;
 const pool = require("./index").pool;
 const sqlMaker = require("./index").makeSql;
 const userModel = require("./index").userModel;
+const jwtKey = require("./index").jwtKey;
 
 function setSessionData(body, session) {
     let sessionCopy = Object.assign({}, session);
@@ -52,21 +54,21 @@ app.post("/user/signin", upload.single("avatar"), (req, res) => {
         userModel.setUser(data, (err, result) => {
             if (err) throw err;
             
-            req.session.user = data;
-            req.session.user.user_id = result.insertId;
-            req.session.user.avatar_url_full = `${name}_full.webp`;
-            req.session.user.avatar_url_icon = `${name}_icon.webp`;
-
+            let token = jwt.sign({
+                id: result.insertedId,
+                email: email 
+            }, jwtKey, { expiresIn: "30m" })
+            res.setHeader("Authetication", token);
             res.end("Added user");
         });
     })
 })
 
 app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) => {
-    if (req.params.user_id != req.session.user.user_id) {
+    if (req.params.user_id != req.user.user_id) {
         res.end("Go to hell, хацкер");
     }
-    let name = req.body.name.length > 1 ? req.body.name : req.session.user.name;
+    let name = req.body.name.length > 1 ? req.body.name : req.user.name;
     let filePath;
     let targetPath_icon;
     let targetPath_full
@@ -80,7 +82,7 @@ app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) 
         sharp(filePath).resize(300, 300).toFile(targetPath_full);
 
     } else if(!req.file && req.body.name.length > 1) {
-        let oldPath = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.session.user.name}`;
+        let oldPath = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.user.name}`;
         let newPath = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.body.name}`;
 
         fs.rename(`${oldPath}_full.webp`, `${newPath}_full.webp`, (err) => {
@@ -92,7 +94,7 @@ app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) 
     }
 
     if (req.file && req.body.name.length > 1) {
-        let path = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.session.user.name}`;
+        let path = `/home/daniil/Desktop/Node projects/AuthTest/public/img/${req.user.name}`;
 
         fs.unlink(`${path}_icon.webp`, (err) => {
             if (err) throw err;
@@ -107,45 +109,59 @@ app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) 
         avatar_url_icon: `${name}_icon.webp`
     }
     let values = Object.assign({}, req.body, img_names);
-    let dataToInsert = setSessionData(values, req.session.user || {});
+    let dataToInsert = setSessionData(values, req.user || {});
         
-    userModel.updateUserData(dataToInsert, req.session.user.user_id, (err, result) => {
+    userModel.updateUserData(dataToInsert, req.user.user_id, (err, result) => {
         if (err) throw err;
         res.end("Succesfull");
     });
-    req.session.user = dataToInsert;
+    req.user = dataToInsert;
 })
 
-app.all("/user/check", upload.none(), (req, res) => {
-    let user = req.session.user || {};
+function isLogin(req, res, next) {
+    let token = req.headers.authorization;
+    if (token) {
+        try {
+            let userData = jwt.verify(token, jswKey);
+            req.user = userData;
+        } catch(err) { throw err }
+    }
+    next();
+}
+
+app.all("/user/check", isLogin, upload.none(), (req, res) => {
     let pass = req.body.password;
     let name = req.body.name;
     
-    if ( !(name && pass) && !(user.name && user.password) ) {  
-        res.status(404);
-        res.end();
-
-    } else if (user.name && user.password) {
-        let user = Object.assign({}, req.session.user);
-        delete user.password;
-        res.end(JSON.stringify(user));
-
-    } else if (pass && name) {
-        userModel.checkUser(name, pass, (err, result) => {
+    if (req.user) {
+        userModel.getSecretUserData(req.userData.id, (err, result) => {
             if (err) throw err;
+            res.end(result);
+        })
+    }
 
-            if (result[0]) {
-                req.session.user = setSessionData(result[0], user);
-                console.log(req.session.user);
-                delete result[0].password;
-                res.end(JSON.stringify(result[0]));
+    if ( !(name && pass) ) {  
+        res.status(404);
+        res.end("Input data");
+    }
+    userModel.checkUser(name, pass, (err, result) => {
+        if (err) throw err;
 
-            } else {
-                res.status(404);
-                res.end();
-            }
-        });
-    }    
+        if (result[0]) {
+            let token = jwt.sign({
+                id: result[0].user_id,
+                email: result[0].email
+            }, jwtKey, { expiresIn: "30m" });
+
+            delete result[0].password;
+            res.set("Authentication", token);
+            res.end(JSON.stringify(result[0]));
+
+        } else {
+            res.status(404);
+            res.end();
+        }
+    })  
 })
 
 app.get("/data/news", (req, res) => {
@@ -156,7 +172,7 @@ app.get("/data/news", (req, res) => {
         .on("user2_id = articles.user_id")
         .join("users")
         .on("user2_id = users.user_id")
-        .where(`user1_id = ${req.session.user.user_id}`);
+        .where(`user1_id = ${req.user.user_id}`);
     pool.query(sql, (err, result) => {
         if (err) throw err;
         res.end(JSON.stringify(result));

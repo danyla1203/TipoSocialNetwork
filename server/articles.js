@@ -19,7 +19,7 @@ app.post("/data/insert/:user_id", upload.none(),  (req, res) => {
 
     let insertDate = `${year}-${month}-${date} ${hour}:${minutes}:${seconds}.00`;
     
-    if (req.session.user.user_id == req.params.user_id) {
+    if (req.user.user_id == req.params.user_id) {
         articleModel.insertArticle(title, text, req.params.user_id, photos_list, insertDate);
     }
 })
@@ -33,7 +33,7 @@ app.get("/data/article/delete/:article_id", (req, res) => {
 
 app.post("/data/article/update/:article_id", upload.none(), (req, res) => {
     let article = req.params.article_id;
-    let user = req.session.user;
+    let user = req.user;
 
     articleModel.getArticle(article, user.user_id, (err, result) => {
         if (err) throw err;
@@ -62,7 +62,7 @@ app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) =>
 })
 
 app.get("/data/article/:article_id", (req, res) => {
-    articleModel.getArticle(req.params.article_id, req.session.user.user_id, (err, result) => {
+    articleModel.getArticle(req.params.article_id, req.user.user_id, (err, result) => {
         if (err) throw err;
         res.end(JSON.stringify(result));
     })

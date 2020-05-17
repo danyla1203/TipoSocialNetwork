@@ -7,10 +7,13 @@ const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
 const sqlMaker = require("./test_liba").createDb();
+const jwt = require("jsonwebtoken");
 
 const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
 const FriendsModel = require("./models/FriendsModel").FriendsModel;
+
+const jwtKey = "myKey";
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
 const app = express();
@@ -33,6 +36,7 @@ module.exports.app = app;
 module.exports.upload = upload;
 module.exports.pool = pool;
 module.exports.makeSql = sqlMaker;
+module.exports.jwtKey = jwtKey;
 
 app.use(cookieParser());
 app.use(session({ secret: 'danyla1203' }));
@@ -40,12 +44,17 @@ app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public,
 app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/data/*", (req, res, next) => {
-    if (req.session.user.name && req.session.user.password || req.baseUrl == "/data/user/signin") {
-        next();
-    } else {
-        res.status(403);
-        res.end();
-    }
+    let token = req.headers.authentication;
+    try {
+        let data = jwt.verify(token, jwtKey);
+        userModel.getSecretUserData(data.id, (err, result) => {
+            if (err) throw err;
+            delete result.password;
+            req.user = result;
+            next();
+        })
+    } catch(err) { throw err }
+    
 });
 
 //require handlers

@@ -17,7 +17,7 @@ app.get("/data/comments/:article_id", (req, res) => {
 app.post("/data/comments/add/:article_id", upload.none(), (req, res) => {
     //insert into comments table sql
     let article_id = req.params.article_id;
-    let autor = req.session.user.user_id;
+    let autor = req.user.user_id;
     let date = "2009-12-30 12:30:23";
     let text = req.body.text;
 

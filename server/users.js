@@ -2,10 +2,10 @@ const app = require("./index").app;
 const userModel = require("./index").userModel;
 
 app.get("/data/users", (req, res) => { 
-    userModel.getUsers(req.session.user.user_id, (err, usersList) => {
+    userModel.getUsers(req.user.user_id, (err, usersList) => {
         if (err) throw err;
 
-        userModel.getFriendsList(req.session.user.user_id, (err, friendsList) => {
+        userModel.getFriendsList(req.user.user_id, (err, friendsList) => {
             if (err) throw err;
             for (let i = 0; i < usersList.length; i++) {
                 for (let j = 0; j < friendsList.length; j++) {
@@ -23,7 +23,7 @@ app.get("/data/users", (req, res) => {
 
 app.get("/data/user/:user_id", (req, res) => {
     let id =  parseInt(req.params.user_id);
-    if (id == req.session.user.user_id){
+    if (id == req.user.user_id){
         res.end();
     } 
     userModel.getUserData(id, (err, result) => {
