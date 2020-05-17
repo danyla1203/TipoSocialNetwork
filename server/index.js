@@ -7,8 +7,10 @@ const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
 const sqlMaker = require("./test_liba").createDb();
+
 const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
+const FriendsModel = require("./models/FriendsModel").FriendsModel;
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
 const app = express();
@@ -22,9 +24,11 @@ const pool = mysql.createPool({
 
 let userModel = new UserModel(pool, sqlMaker);
 let articleModel = new ArticleModel(pool, sqlMaker);
+let friendsModel = new FriendsModel(pool, sqlMaker);
 
 module.exports.userModel = userModel;
 module.exports.articleModel = articleModel;
+module.exports.friendsModel = friendsModel;
 module.exports.app = app;
 module.exports.upload = upload;
 module.exports.pool = pool;
