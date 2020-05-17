@@ -2,7 +2,7 @@ const app = require("./index").app;
 const friendsModel = require("./index").friendsModel;
 
 app.get("/data/friends", (req, res) => {
-    friendsModel.getFriends(req.session.user_id, (err, result) => {
+    friendsModel.getFriends(req.session.user.user_id, (err, result) => {
         if (err) throw err;
         res.end(JSON.stringify(result));
     })    
@@ -23,7 +23,7 @@ app.get("/data/is-friend/:user2_id", (req ,res) => {
 app.get("/data/add/friends/:user_id", (req, res) => {
     friendsModel.addFriend(req.session.user.user_id, req.params.user_id, (err, result) => {
         if (err) throw err;
-        res.end(result)
+        res.end("added");
     })
 });
 

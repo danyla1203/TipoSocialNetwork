@@ -18,7 +18,7 @@ class FriendsModel extends Model {
                 .from("friends")
                 .where(`user1_id = ${user1_id} AND user2_id = ${user2_id}`);
 
-        pool.query(sql, callback);
+        this.pool.query(sql, callback);
     }
     
     addFriend(user1_id, user2_id, callback) {
@@ -43,7 +43,7 @@ class FriendsModel extends Model {
             
             this.pool.query(sql, callback);
         } else {
-            callback("User is your friend already");
+            callback(null, "User is your friend already");
         }
     }
 
@@ -52,7 +52,7 @@ class FriendsModel extends Model {
             .delete("friends")
             .where(`user1_id = ${user1_id} AND user2_id = ${user2_id}`);
     
-        pool.query(sql, callback);
+        this.pool.query(sql, callback);
     }
 }
 
