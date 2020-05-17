@@ -1,7 +1,7 @@
-const app = require("./server").app;
-const upload = require("./server").upload;
-const pool = require("./server").pool;
-const makeSql = require("./server").makeSql;
+const app = require("./index").app;
+const upload = require("./index").upload;
+const pool = require("./index").pool;
+const makeSql = require("./index").makeSql;
 
 app.get("/data/messages/list", (req, res) => {
     let user = req.session.user.user_id;
@@ -20,10 +20,7 @@ app.get("/data/messages/list", (req, res) => {
 
 app.post("/data/messages/add/:user_id/:user_name", upload.none(), (req, res) => {
     let sender_id = req.session.user.user_id;
-    let sender_name = req.session.user.name;
-    
     let recipient_id = req.params.user_id;
-    let recipient_name = req.params.user_name;
 
     let text = req.body.text;
     let date = "2009-05-12 10:10:23";

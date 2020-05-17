@@ -1,7 +1,5 @@
-const app = require(".").app;
-const upload = require(".").upload;
-const pool = require(".").pool;
-const makeSql = require(".").makeSql;
+const app = require("./index").app;
+const upload = require("./index").upload;
 const fs = require("fs");
 const articleModel = require("./index").articleModel;
 

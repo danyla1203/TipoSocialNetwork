@@ -1,6 +1,6 @@
-const app = require("./server").app;
-const upload = require("./server").upload;
-const pool = require("./server").pool;
+const app = require("./index").app;
+const upload = require("./index").upload;
+const pool = require("./index").pool;
 
 app.get("/data/comments/:article_id", (req, res) => {
     let sql = "SELECT comment_id, autor_id, text, date, article_id, name, avatar_url_icon FROM comments " +

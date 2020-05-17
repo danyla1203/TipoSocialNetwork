@@ -2,9 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
-const app = require(".").app;
-const upload = require(".").upload;
-const pool = require(".").pool;
+const app = require("./index").app;
+const upload = require("./index").upload;
+const pool = require("./index").pool;
+const sqlMaker = require("./index").makeSql;
 const userModel = require("./index").userModel;
 
 function setSessionData(body, session) {
@@ -148,7 +149,7 @@ app.all("/user/check", upload.none(), (req, res) => {
 })
 
 app.get("/data/news", (req, res) => {
-    let sql = testPool
+    let sql = sqlMaker
         .select(["id", "article_id", "user2_id", "avatar_url_icon", "title", "text", "name", "date"])
         .from("friends")
         .join("articles")
