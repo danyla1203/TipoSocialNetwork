@@ -46,7 +46,7 @@ class ArticleList extends Component {
 
     deleteArticle(id) {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/article/delete/${id}`);
+        xhr.open("DELETE", `/data/delete/${id}`);
         xhr.setRequestHeader("Authentication", this.props.token);
         xhr.send();
 
@@ -111,7 +111,7 @@ class ArticleList extends Component {
         let formData = new FormData(form); 
 
         let xhr = new XMLHttpRequest();  
-        xhr.open("POST", "/data/insert/" + this.props.user.user_id);
+        xhr.open("POST", "/data/article/" + this.props.user.user_id);
         xhr.setRequestHeader("Authentication", this.props.token);
         xhr.send(formData);
         

@@ -11,7 +11,7 @@ function UserHome(props) {
         let id = userData.user_id;
 
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/add/friends/${id}`);
+        xhr.open("POST", `/data/friends/${id}`);
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
@@ -25,7 +25,7 @@ function UserHome(props) {
         let id = userData.user_id;
 
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/delete/friends/${id}`);
+        xhr.open("DELETE", `/data/friends/${id}`);
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 

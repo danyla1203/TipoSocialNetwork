@@ -39,8 +39,7 @@ app.post("/user/signin", upload.single("avatar"), (req, res) => {
         
         for (let i = 0; i < result.length; i++) {
             if (result[i].name == name || result[i].email == email) {
-                res.status(418);
-                res.end("User already exist");
+                res.status(409);
             }
         }
 
@@ -64,7 +63,7 @@ app.post("/user/signin", upload.single("avatar"), (req, res) => {
     })
 })
 
-app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) => {
+app.put("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) => {
     if (req.params.user_id != req.user.user_id) {
         res.end("Go to hell, хацкер");
     }
@@ -113,7 +112,7 @@ app.post("/data/user/change-data/:user_id", upload.single("avatar"), (req, res) 
         
     userModel.updateUserData(dataToInsert, req.user.user_id, (err, result) => {
         if (err) throw err;
-        res.end("Succesfull");
+        res.end();
     });
     req.user = dataToInsert;
 })
@@ -141,8 +140,8 @@ app.all("/user/check", isLogin, upload.none(), (req, res) => {
     }
 
     if ( !(name && pass) ) {  
-        res.status(404);
-        res.end("Input data");
+        res.status(400);
+        res.end("{}");
     }
     userModel.checkUser(name, pass, (err, result) => {
         if (err) throw err;
@@ -159,12 +158,13 @@ app.all("/user/check", isLogin, upload.none(), (req, res) => {
 
         } else {
             res.status(404);
-            res.end();
+            res.end("{}");
         }
     })  
 })
 
 app.get("/data/news", (req, res) => {
+    console.log(req.user);
     let sql = sqlMaker
         .select(["id", "article_id", "user2_id", "avatar_url_icon", "title", "text", "name", "date"])
         .from("friends")

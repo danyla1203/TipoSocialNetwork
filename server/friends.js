@@ -20,14 +20,14 @@ app.get("/data/is-friend/:user2_id", (req ,res) => {
     })
 });
 
-app.get("/data/add/friends/:user_id", (req, res) => {
+app.post("/data/friends/:user_id", (req, res) => {
     friendsModel.addFriend(req.user.user_id, req.params.user_id, (err, result) => {
         if (err) throw err;
         res.end("added");
     })
 });
 
-app.get("/data/delete/friends/:user_id", (req, res) => {
+app.delete("/data/friends/:user_id", (req, res) => {
     friendsModel.deleteFriend(req.user.user_id, req.params.user_id, (err, result) => {
         if (err) throw err;
         res.end("deleted");

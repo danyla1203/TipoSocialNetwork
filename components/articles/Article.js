@@ -36,7 +36,7 @@ function Article(props) {
     }
     function saveChangedArticle (title, text) {
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", `/data/article/update/${props.article_id}`);
+        xhr.open("PUT", `/data/article/${props.article_id}`);
         xhr.setRequestHeader("Authentication", props.token);
         let body = new FormData();
         body.append("title", title);
