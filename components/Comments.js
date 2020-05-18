@@ -19,6 +19,7 @@ function Comments(props) {
         
         let xhr = new XMLHttpRequest();        
         xhr.open("POST", "/data/comments/add/" + props.article_id);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send(formData);
 
         xhr.onload = (result) => {

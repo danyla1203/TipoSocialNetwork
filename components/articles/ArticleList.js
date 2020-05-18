@@ -18,15 +18,13 @@ class ArticleList extends Component {
     }
 
     componentDidMount() {       
-        console.log(this.props);
         let url = "/data/articles/" + this.props.user.user_id;
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url);
+        xhr.setRequestHeader("Authentication", this.props.token);
         xhr.send();
-
         
         xhr.onload = () => {
-            console.log(JSON.parse(xhr.response));    
             this.setState({
                 articles: JSON.parse(xhr.response)
             });
@@ -43,13 +41,13 @@ class ArticleList extends Component {
                 return el;
             }
         });
-        console.log(article);
         this.setState({article: [article[0]]});
     }
 
     deleteArticle(id) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/article/delete/${id}`);
+        xhr.setRequestHeader("Authentication", this.props.token);
         xhr.send();
 
         let newArticles = this.state.articles.filter((el) => {
@@ -57,8 +55,7 @@ class ArticleList extends Component {
                 return el;
             }
         });
-
-        console.log(newArticles);
+ 
         if (newArticles[0] === undefined) {
             newArticles = [];
         }
@@ -79,20 +76,19 @@ class ArticleList extends Component {
                     name: userProps.name,
                     avatar_url: userProps.avatar_url_full
                 }
-                console.log(el);
                 let date = el.date.split(/[A-z]{1}/);
                 date[1] = date[1].split(":");
-                let toRender = `Date: ${date[0]}, Time: ${parseInt(date[1][0]) + 2}:${date[1][1]}`;
-                
+                let date2Render = `Date: ${date[0]}, Time: ${parseInt(date[1][0]) + 2}:${date[1][1]}`;
                 let isFull = isOne ? true : false;
                 return <Article user={ user } 
                                 article_id={ el.article_id }
+                                token={ this.props.token }
                                 openArticle={ this.showFullArticle }
                                 closeArticle={ this.closeArticle }
                                 isFull={ isFull }
                                 title={ el.title } 
                                 text={ el.text } 
-                                date={ toRender }
+                                date={ date2Render }
                                 photos={ el.photos_list }
                                 delete={ this.deleteArticle } 
                                 like_count={ el.likes }
@@ -106,28 +102,22 @@ class ArticleList extends Component {
     setLike(article_id) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/article/like" + article_id);
-        xhr.send();
-        xhr.onload = () => {
-            console.log(xhr.response);
-        }
+        xhr.send()
     }
 
     addArticle() {
         let articles = this.state.articles;
         let form = document.forms.addArticles;
-        let title = form.elements.title.value;
-        let text = form.elements.text.value;
+        let formData = new FormData(form); 
 
-        let xhr = new XMLHttpRequest();
-        let body = `title=${title}&text=${text}`;
-       
+        let xhr = new XMLHttpRequest();  
         xhr.open("POST", "/data/insert/" + this.props.user.user_id);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
-        xhr.send(body);
+        xhr.setRequestHeader("Authentication", this.props.token);
+        xhr.send(formData);
         
         let id = null;
         if (articles.length == 0) {
-            id = 1
+            id = 1;
         } else {
             id = articles[articles.length - 1].article_id + 1;
         }
@@ -143,7 +133,6 @@ class ArticleList extends Component {
     }
 
     render() {
-
         if (this.state.article) {
             return (
                 <div id="article_list">

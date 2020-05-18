@@ -45,16 +45,21 @@ app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/data/*", (req, res, next) => {
     let token = req.headers.authentication;
-    try {
-        let data = jwt.verify(token, jwtKey);
-        userModel.getSecretUserData(data.id, (err, result) => {
-            if (err) throw err;
-            delete result.password;
-            req.user = result;
-            next();
-        })
-    } catch(err) { throw err }
-    
+    if (token) {
+        try {
+            let data = jwt.verify(token, jwtKey);
+            userModel.getSecretUserData(data.id, (err, result) => {
+                if (err) throw err;
+                delete result.password;
+                console.log(result);
+                req.user = result[0];
+                next();
+            })
+        } catch(err) { throw err }
+    } else {
+        res.sendStatus(403);
+        res.end("");
+    }
 });
 
 //require handlers

@@ -17,6 +17,7 @@ function UserArticle(props) {
         }
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/comments/" + props.article_id);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
         xhr.onload = () => {
             setComments(JSON.parse(xhr.response));

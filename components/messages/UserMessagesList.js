@@ -12,6 +12,7 @@ function UserMessagesList(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/messages/list");
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {

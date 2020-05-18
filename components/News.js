@@ -23,6 +23,7 @@ function News(props) {
     if (!newsList) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/news");
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {

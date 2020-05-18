@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
 
-function FriendsList() {
+function FriendsList(props) {
     const [ friendsList, setFriends ] = useState(false);
 
     let getFriend = (data) => {
-        console.log(data);
         return (
             <div key={ data.id } className="user_small">
                 <div className="img">
@@ -24,6 +23,7 @@ function FriendsList() {
         } else {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", "/data/friends");
+            xhr.setRequestHeader("Authentication", props.token);
             xhr.send();
             
             xhr.onload = () => {

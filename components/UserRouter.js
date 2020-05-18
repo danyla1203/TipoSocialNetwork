@@ -17,52 +17,53 @@ import Header from './Header';
 function UserRouter(props) {
     let user = props.smallUser;
     let fullUser = props.fullUser;
-
+    let thisProps = props;
+    let token = props.token;
     return (
         <Router>
             <Header />
             <Switch>
                 <Route exact path="/" >
-                    <HelloPage name={ user.name } />
+                    <HelloPage token={token} name={ user.name } />
                 </Route>
                 <Route exact path="/user" >
-                    <Home user={ fullUser }/>
+                    <Home user={ fullUser } token={token}/>
                 </Route>
 
                 <Route exact path="/users/list" >
-                    <UsersList user={ user }/> 
+                    <UsersList token={token} user={ user }/> 
                 </Route>
 
                 <Route exact path="/messages/" 
-                    render={ (props) => <UserMessagesList {...props} user_data={ user } /> } 
+                    render={ (props) => <UserMessagesList {...thisProps} token={ token } user_data={ user } /> } 
                 />
 
                 <Route exact path="/users/message/:user_id"
-                    render={(props) => <UserMessages {...props} user={ user } />}
+                    render={(props) => <UserMessages {...props} token={token} user={ user } />}
                 />
                     
                 <Route exact path="/edit-article/:article_id" 
-                    render={(props) => <AddArticle {...props} user={user} isEdit={ true } />}                        
+                    render={(props) => <AddArticle {...props} user={user} isEdit={ true } token={token} />}                        
                 />
 
                 <Route exact path="/settings">
-                    <Settings userData={ fullUser } changeUserData={ props.changeUserData }/>
+                    <Settings token={token} userData={ fullUser } changeUserData={ props.changeUserData }/>
                 </Route>
 
                 <Route exact path="/add-article">
-                    <AddArticle user_id={ user.user_id } isEdit={ false }/>
+                    <AddArticle token={token} user_id={ user.user_id } isEdit={ false }/>
                 </Route>
 
                <Route path="/users/:userID" 
-                    render={(props) => <UserHome {...props} guest_user={ user } />} 
+                    render={(props) => <UserHome {...props} token={ token } guest_user={ user } />} 
                 />
 
                 <Route exact path="/friends">
-                    <FriendsList user_id={ user.user_id }/>
+                    <FriendsList user_id={ user.user_id } token={token} />
                 </Route>
 
                 <Route exact path="/news">
-                    <News guest_user={ user }/>
+                    <News guest _user={ user } token={token}/>
                 </Route>
                 
                 <Route>Error 404.</Route>

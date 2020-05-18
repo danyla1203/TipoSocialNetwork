@@ -38,6 +38,7 @@ function UserMessages(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/messages/add/${props.user2.user_id}/${props.user2.name}`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send(formData);
         
         let id = messages[messages.length - 1].key ? messages[messages.length - 1].key + 1 : 0

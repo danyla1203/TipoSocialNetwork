@@ -22,6 +22,7 @@ function Settings(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/user/change-data/${ props.userData.user_id }`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send(data);
 
         let changedData = {

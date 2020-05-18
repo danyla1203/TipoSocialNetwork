@@ -12,6 +12,7 @@ function UserHome(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/add/friends/${id}`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {
@@ -25,6 +26,7 @@ function UserHome(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/delete/friends/${id}`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {
@@ -45,6 +47,7 @@ function UserHome(props) {
             let xhr = new XMLHttpRequest();
             
             xhr.open("POST", `/data/messages/add/${userData.user_id}/${userData.name}`);
+            xhr.setRequestHeader("Authentication", props.token);
             xhr.send(form);
 
             xhr.onload = () => {
@@ -63,6 +66,7 @@ function UserHome(props) {
     if (!userData) {
         let xhr = new XMLHttpRequest(); 
         xhr.open("GET", `/data/user/${props.match.params.userID}`, false);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
         setUser(JSON.parse(xhr.response)[0]);
     }
@@ -70,6 +74,7 @@ function UserHome(props) {
     if (isFriend == "no") {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/is-friend/${props.match.params.userID}`, false);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
         setFriend(JSON.parse(xhr.response));
     }
@@ -108,7 +113,7 @@ function UserHome(props) {
                 </div>
                 
             </div>
-            <UserArticleList userData={ userData } guest_user={ props.guest_user } />            
+            <UserArticleList userData={ userData } guest_user={ props.guest_user } token={ props.token }/>            
         </div>
     )
 }

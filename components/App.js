@@ -29,7 +29,8 @@ class App extends Component {
             if (xhr.status == 404) {
                 this.setError("Login Error");
             } else {
-                this.setState({isLogin: true, userData: result});
+                let token = xhr.getResponseHeader("Authentication");
+                this.setState({isLogin: true, userData: result, token: token});
             }
         }
     }
@@ -65,16 +66,17 @@ class App extends Component {
     componentDidMount() {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/user/check");
-
         xhr.send();
         xhr.onload = () => {
             let result = JSON.parse(xhr.response);
             if (Object.keys(result).length === 0 && result.constructor === Object) {
                 return;
             } else {
+                let token = xhr.getResponseHeader("Authentication")
                 this.setState({
                     isLogin: true,
-                    userData: result
+                    userData: result,
+                    token: token
                 })
             }
         }
@@ -97,7 +99,12 @@ class App extends Component {
             delete fullUser.avatar_url_icon;
             delete smallUser.avatar_url_full;
             return (
-                <UserRouter fullUser={ fullUser } smallUser = { smallUser } changeUserData = { this.changeUserData }/>
+                <UserRouter 
+                    fullUser={ fullUser } 
+                    smallUser = { smallUser } 
+                    changeUserData = { this.changeUserData }
+                    token = { this.state.token }
+                />
             )
         }
 

@@ -10,7 +10,7 @@ function PhotosList(props) {
                 currentDiv = i;
             }
         }
-        return currentDiv;
+        return currentDiv || 0;
     }
     function nextImg (article_id) {
         let divs = document.getElementsByClassName(`slider_img|${article_id}`);
@@ -36,14 +36,13 @@ function PhotosList(props) {
         divs[currentDiv].removeAttribute("data-current")
         divs[currentDiv - 1].setAttribute("data-current", "");
     }
-
-    if (props.photosString.length < 2) {
+    console.log(props);
+    if (!props.photosString) {
         return "";
     }
 
     let i = 0;
     let renderedPhotos = props.photosString.split(",").map((el) => {     
-        console.log(el);
         if (i == 0) {
             i++
             return (

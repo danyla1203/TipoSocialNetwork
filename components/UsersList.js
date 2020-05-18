@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-function UsersList() {
+function UsersList(props) {
     const [ usersList, setUsers ] = useState("Nothing here");
 
     let addFriend = (user_id) => {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/add/friends/${user_id}`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         let newState = [];
@@ -70,6 +71,7 @@ function UsersList() {
     if (typeof usersList == "string") {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/users");
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {

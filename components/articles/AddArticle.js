@@ -1,15 +1,15 @@
 import React, { useState }  from 'react';
 import propTypes from "prop-types";
+import { Redirect } from 'react-router';
 
 import { formatText, findAffectedRow } from "../user_func/textProcess";
-import { Redirect } from 'react-router';
+import PhotosList from "./PhotosList";
 
 function AddArticle(props) {
     const [ isDone, setDone ] = useState(false);
-    const [ uploadedPhotos, setUploadedPhotos ] = useState([]);
+    const [ articleData, setArticleData ] = useState(false);
 
     let oldStringArray = [];
-    let toSend = "";
 
     let addArticle = () => {
         let xhr = new XMLHttpRequest();
@@ -18,14 +18,14 @@ function AddArticle(props) {
         body.append("text", document.getElementById("text").value);
         body.append("title", document.getElementById("title").value);
 
-        let photos = uploadedPhotos.map((el) => {
+        let photos = articleData.photos.map((el) => {
             return el.fileName;
         });
         body.append("photos_list", photos.join());
+
         if (props.isEdit) {
             xhr.open("POST", `/data/article/update/${props.match.params.article_id}`);
             xhr.send(body);
-
         } else {
             xhr.open("POST", `/data/insert/${props.user_id}`);
             xhr.send(body);
@@ -41,10 +41,6 @@ function AddArticle(props) {
             pTags[i].attributes[0].value = i;
         }
     }
-    let searchChangesInNextP = () => {
-
-    }
-
     let formHandler = (event) => {
         let lable;
         event.persist();
@@ -77,7 +73,6 @@ function AddArticle(props) {
                     let pTags = document.getElementsByClassName(`output_p`);
                     let nextPTagIndex = pIndexForDelete + countPForDelete;
                     console.log(nextPTagIndex, splitedText);
-                    debugger;
 
                     let countPForDelete = oldStringArray.length - splitedText.length;
                     for (let i = 0; i < countPForDelete; i++) {
@@ -129,13 +124,15 @@ function AddArticle(props) {
         xhr.send(formData);
         
         xhr.onload = () => {
-            let buttons = [...uploadedPhotos];
-            let referenceId = buttons.length > 0 ? buttons[buttons.length - 1] : 0;
+            let buttons = articleData.photos ? [...articleData.photos] : [];
+            let referenceId = buttons.length > 0 ? buttons[buttons.length - 1].id + 1: 0;
             buttons.push({
                 id: referenceId,
                 fileName: xhr.response
             });
-            setUploadedPhotos(buttons);
+            let newState = Object.assign({}, articleData);
+            newState.photos = buttons;
+            setArticleData(newState);
         }
     }
     let deleteImg = (filename) => {
@@ -143,37 +140,79 @@ function AddArticle(props) {
         xhr.open("GET", `/data/delete-picture/${filename}`);
         xhr.send();
 
-    } 
+        let newState = Object.assign({}, articleData);
+        let newPhotosList = newState.photos.filter((el) => {
+            if (el.fileName != filename) {
+                return el;
+            }
+        });
+        newState.photos = newPhotosList;
+        debugger;
+        setArticleData(newState);
+    }
+
+    let getDeleteButtons = () => {
+        let result;
+        if (articleData.photos) {
+            result = articleData.photos.map((el) => {
+                return (
+                    <button key={ el.id } onClick={ () => { deleteImg(el.fileName) } }>Delete img</button>
+                )
+            });
+        } else {
+            result = "";
+        }
+        return result;
+    }
+    let getImgTags = () => {
+        let result;
+        if (articleData.photos) {
+            result = articleData.photos.map((el) => {
+                return el.fileName
+            });
+            result = result.join();
+        } else {
+            result = "";
+        }
+        return result;
+    }
+
 
     if (isDone) {
         return <Redirect to="/user" />
     }
 
-    let title = "";
-    let textOut = "";
-
-    if (props.isEdit) {
+    if (props.isEdit & !articleData) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/article/${props.match.params.article_id}`, false);
         xhr.send();
 
         let result = JSON.parse(xhr.response)[0];
-        title = result.title;
-        textOut = result.text;  
+        let title = result.title;
+        let textOut = result.text;
+        let photosList = result.photos_list || "";
+
+        let i = 0;
+        photosList = photosList.split(",").map((el) => {
+            i++;
+            return {
+                id: i,
+                fileName: el,
+            }
+        })
+
+        setArticleData({
+            title: title,
+            text: textOut,
+            photos: photosList[0].fileName.length > 2 ? photosList : []
+        });
+    } else if (!props.isEdit & Object.keys(articleData).length > 1) {
+        debugger;
+        setArticleData([]);
     }
 
-
-    let uploadedPhotosRendered = uploadedPhotos.map((el) => {
-        return (
-            <button key={ el.id } onClick={ () => { deleteImg(el.filename) } }>Delete img</button>
-        )
-    });
-
-    let imgTags = uploadedPhotos.map((el) => {
-        return (
-            <img src={ "/assets/img/" + el.fileName + ".webp" }/>
-        )
-    })
+    let deleteBtns = getDeleteButtons();
+    let imgString = getImgTags();
 
     let buttonText = props.isEdit ? "Change" : "Create";
     return (
@@ -184,22 +223,21 @@ function AddArticle(props) {
                         id="title" 
                         type="text" 
                         name="title" 
-                        placeholder="Title:" defaultValue={ title }
+                        placeholder="Title:"
+                        value={ articleData.title }
                     />
-                    <textarea id="text" name="text" defaultValue={ textOut } ></textarea>
+                    <textarea id="text" name="text" defaultValue={ articleData.text } ></textarea>
                     <button type="button" onClick={ addArticle }>{ buttonText }</button>
                 </form>
                 <input type="file" onChange={ uploadPhoto } />
                 <div id="img-container">
-                    { uploadedPhotosRendered }
+                    { deleteBtns } 
                 </div>
             </div>
             <div id="output">
-                <div>
-                    { imgTags }
-                </div>
+                <PhotosList photosString={ imgString } article_id={ 0 }/>
                 <div id="content">
-                    <h3 id="titleOut">{ title }</h3>
+                    <h3 id="titleOut">{ articleData.title }</h3>
                     <div id="textOut"></div>
                 </div>
             </div>

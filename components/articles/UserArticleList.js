@@ -22,6 +22,7 @@ function UserArticleList(props) {
     if(!articles) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/articles/" + props.userData.user_id);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {

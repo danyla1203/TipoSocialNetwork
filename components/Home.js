@@ -5,7 +5,6 @@ import ArticleList from './articles/ArticleList';
 
 function Home(props) {
     let userData = props.user;
-    
     return (
         <div>
             <div id="user">
@@ -24,7 +23,10 @@ function Home(props) {
 
                 </div>
             </div>
-            <ArticleList user={ userData }/>
+            <ArticleList
+                user={ userData } 
+                token={ props.token }
+            />
         </div>
     )
 }

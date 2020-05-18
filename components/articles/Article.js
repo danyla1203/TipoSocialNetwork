@@ -23,6 +23,7 @@ function Article(props) {
         }
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/comments/" + props.article_id);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
         
         xhr.onload = () => {
@@ -36,6 +37,7 @@ function Article(props) {
     function saveChangedArticle (title, text) {
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/article/update/${props.article_id}`);
+        xhr.setRequestHeader("Authentication", props.token);
         let body = new FormData();
         body.append("title", title);
         body.append("text", text);
@@ -56,15 +58,16 @@ function Article(props) {
                 closeWithoutChanges={ closeArticleEdit }
             />
         )
-    }
+    } 
 
     //show Comments?
     let commentsList;
     if (comments && buttonState == "Close") {
-        commentsList = <Comments guestData={ props.user } 
-                                 comments={ comments } 
-                                 article_id={ props.article_id }
-                                 
+        commentsList = <Comments 
+                            guestData={ props.user } 
+                            comments={ comments } 
+                            article_id={ props.article_id }
+                            token = { props.token }     
                         />;
     } else {
         commentsList = "";
