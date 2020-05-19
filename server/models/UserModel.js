@@ -8,6 +8,15 @@ class UserModel extends Model {
             .where(`user_id <> ${user_id}`);
         this.pool.query(users, callback)
     }
+
+    getSecretUserData(user_id, callback) {
+        let user = this.sqlMaker
+            .select()
+            .from("users")
+            .where(`user_id = ${user_id}`);
+        this.pool.query(user, callback);
+    }
+
     getUserData(user_id, callback) {
         let user = this.sqlMaker
             .select(["user_id", "name", "country", "gender", "avatar_url_full"])
