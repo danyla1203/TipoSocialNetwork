@@ -13,6 +13,8 @@ const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
 const FriendsModel = require("./models/FriendsModel").FriendsModel;
 
+const Avatar = require("./lib/Avatar");
+
 const jwtKey = "myKey";
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
@@ -51,8 +53,8 @@ app.use("/data/*", (req, res, next) => {
             userModel.getSecretUserData(data.id, (err, result) => {
                 if (err) throw err;
                 delete result.password;
-                console.log(result);
                 req.user = result[0];
+                //console.log(req.user, "SUKA TOKENU");
                 next();
             })
         } catch(err) { throw err }
@@ -67,19 +69,36 @@ let Articles = require("./endpoints/Articles");
 let Comments = require("./endpoints/Comments");
 let Friends = require("./endpoints/Friends");
 let Messages = require("./endpoints/Messages");
+let User = require("./endpoints/User");
 
-require("./user");
 require("./users");
 
 let handelrs = [
     new Articles(articleModel),
     new Comments(articleModel),
     new Friends(friendsModel),
+    new User(userModel, new Avatar()),
     new Messages()
 ];
 handelrs.map((el) => { el.run() });  
 
 app.get("/favicon.ico", (req, res) => { res.setHeader("Cache-Control", "public, max-age=14400"); res.end() })
+
+app.get("/data/news", (req, res) => {
+    let sql = sqlMaker
+        .select(["id", "article_id", "user2_id", "avatar_url_icon", "title", "text", "name", "date"])
+        .from("friends")
+        .join("articles")
+        .on("user2_id = articles.user_id")
+        .join("users")
+        .on("user2_id = users.user_id")
+        .where(`user1_id = ${req.user.user_id}`);
+    pool.query(sql, (err, result) => {
+        if (err) throw err;
+        res.end(JSON.stringify(result));
+    })
+})
+
 
 app.all("*", (req, res) => {
     fs.readFile("public/index.html", "utf8", (err, file) => {
@@ -89,4 +108,4 @@ app.all("*", (req, res) => {
     });
 })
 
-app.listen(3001);
+app.listen(3002);
