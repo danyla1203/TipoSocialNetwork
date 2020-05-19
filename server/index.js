@@ -66,14 +66,16 @@ app.use("/data/*", (req, res, next) => {
 let Articles = require("./endpoints/Articles");
 let Comments = require("./endpoints/Comments");
 let Friends = require("./endpoints/Friends");
-require("./messages");
+let Messages = require("./endpoints/Messages");
+
 require("./user");
 require("./users");
 
 let handelrs = [
     new Articles(articleModel),
     new Comments(articleModel),
-    new Friends(friendsModel)
+    new Friends(friendsModel),
+    new Messages()
 ];
 handelrs.map((el) => { el.run() });  
 
