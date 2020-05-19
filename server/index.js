@@ -63,12 +63,18 @@ app.use("/data/*", (req, res, next) => {
 });
 
 //require handlers
-require("./articles");
-require("./comments");
+let Articles = require("./endpoints/Articles");
+let Comments = require("./endpoints/Comments");
 require("./friends");
 require("./messages");
 require("./user");
 require("./users");
+
+let handelrs = [
+    new Articles(articleModel),
+    new Comments(articleModel)
+];
+handelrs.map((el) => { el.run() });  
 
 app.get("/favicon.ico", (req, res) => { res.setHeader("Cache-Control", "public, max-age=14400"); res.end() })
 
