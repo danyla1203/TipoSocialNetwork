@@ -16,6 +16,14 @@ class UserModel extends Model {
         this.pool.query(user, callback);
     }
 
+    getSecretUserData(user_id, callback) {
+        let user = this.sqlMaker
+            .select()
+            .from("users")
+            .where(`user_id = ${user_id}`);
+        this.pool.query(user, callback);
+    }
+
     getFriendsList(user_id, callback) {
         let frinendsList = this.sqlMaker
             .select(["id", "user_id", "avatar_url_icon", "name"])
