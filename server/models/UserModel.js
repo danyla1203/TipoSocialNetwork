@@ -35,11 +35,16 @@ class UserModel extends Model {
         this.pool.query(frinendsList, callback);
     }
 
-    setUser(data, callback) {
-        let user = this.sqlMaker
-            .insert("users")
-            .set(data);
-        this.pool.query(user, callback)
+    setUser(data) {
+        return new Promise((resolve, reject) => {
+            let user = this.sqlMaker
+                .insert("users")
+                .set(data);
+            return this.pool.query(user, (err, result) => {
+                if (err) throw err;
+                resolve(result);
+            });
+        })
     }
 
     getEmails(callback) {
@@ -49,11 +54,31 @@ class UserModel extends Model {
         this.pool.query(emails, callback)
     }
 
+    checkUserForExist(name, email) {
+        let data = this.sqlMaker
+                .select(["user_id", "email", "name"])
+                .from("users")
+
+        return new Promise((resolve, reject) => {
+            this.pool.query(data, (err, result) => {
+                if (err) throw err;
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i].name == name || result[i].email == email) {
+                        reject("exist");
+                    }
+                } 
+                resolve(result[result.length -1].user_id);
+            })
+        })
+    }
+
+
     updateUserData(newData, user_id, callback) {
         let newUser = this.sqlMaker
             .update("users")
             .set(newData)
             .where(`user_id = ${user_id}`);
+        console.log(newUser);
         this.pool.query(newUser, callback);
     }
     checkUser(name, pass, callback) {
