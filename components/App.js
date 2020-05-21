@@ -14,6 +14,7 @@ class App extends Component {
         this.check = this.check.bind(this);
         this.changeUserData = this.changeUserData.bind(this);
         this.setError = this.setError.bind(this);
+        this.setUser = this.setUser.bind(this);
     }
 
     check() {
@@ -26,7 +27,7 @@ class App extends Component {
         xhr.send(userData);
         xhr.onload = () => {
             let result = JSON.parse(xhr.response);
-            if (xhr.status == 404) {
+            if (xhr.status == 400) {
                 this.setError("Login Error");
             } else {
                 let token = xhr.getResponseHeader("Authentication");
@@ -35,15 +36,12 @@ class App extends Component {
         }
     }
 
+    setUser(user, token) {
+        this.setState({isLogin: true, userData: user, token: token});
+    }
+
     setError(message) {
-        let errorsCopy = Object.assign([], this.state.errors);
-        for (let i = 0; i < errorsCopy.length; i++) {
-            if (errorsCopy[i] == message) {
-                return;
-            }
-        }
-        errorsCopy.push(message);
-        this.setState({ errors: errorsCopy });
+        this.setState({ errors: [message] });
     }
 
     changeUserData(userData) {
@@ -121,7 +119,10 @@ class App extends Component {
                         <button type="button" onClick={ this.check }>Go</button> 
                     </fieldset>
                 </form>
-                <RegForm sendError = { this.setError } />
+                <RegForm 
+                    sendError = { this.setError } 
+                    setUser={ this.setUser }
+                />
             </div>
         )
     }    

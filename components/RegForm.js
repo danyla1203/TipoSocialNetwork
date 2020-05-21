@@ -20,22 +20,20 @@ function RegForm(props) {
         } else if (formData.get("password").length <= 2) {
             isError = true;
         }
-        if (isError) { props.sendError("Something wrong in fields"); return }
+        if (isError) { props.sendError("Something wrong in registration's fields"); return }
         
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/user/signin");
         xhr.send(formData);
 
         xhr.onload = () => {
-            if (xhr.status == 418) {
+            if (xhr.status !== 200) {
                 props.sendError("Registration failed");
             } else {
-                location.reload();
+                props.setUser(JSON.parse(xhr.response), xhr.getResponseHeader("Authentication"));
             }
         }
     }
-
-    
 
     return (
         <div>   
