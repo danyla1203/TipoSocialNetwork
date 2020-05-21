@@ -5,11 +5,16 @@ const jwtKey = require("../index").jwtKey;
 
 const Endpoint = require("./Endpoint");
 const isLogin = require("../middlewares/isLogin");
+const UserSignin = require("../lib/UserSignin");
+const UserUpdate = require("../lib/UserSignin");
 
 class User extends Endpoint {
-    constructor(model, avatar) {
+    constructor(model) {
         super(model);
-        this.avatar = avatar;
+        this.signin = new UserSignin(model);
+        this.updateUser = new UserUpdate(model);
+        this.updateUser.run = this.updateUser.run.bind(this.updateUser);
+        this.signin.run = this.signin.run.bind(this.signin);
     }
 
     setNewUserData(body, userData) {
@@ -24,9 +29,12 @@ class User extends Endpoint {
     }
 
     extendBody(body) {
-        let img_names = {
-            avatar_url_full: `${body.name}_full.webp`,
-            avatar_url_icon: `${body.name}_icon.webp`
+        let img_names = {};
+        if (body.name.length > 1) {
+            img_names = {
+                avatar_url_full: `${body.name}_full.webp`,
+                avatar_url_icon: `${body.name}_icon.webp`
+            }
         }
         
         let values = Object.assign({}, body, img_names);
@@ -36,6 +44,7 @@ class User extends Endpoint {
 
     updateUser(body, user_id) {
         return new Promise((resolve, reject) => {
+            console.log(body);
             let dataToInsert = this.extendBody(body);
             console.log(dataToInsert);
             this.model.updateUserData(dataToInsert, user_id, (err, result) => {
@@ -101,6 +110,7 @@ class User extends Endpoint {
     
                 delete result[0].password;
                 res.set("Authentication", token);
+                console.log(result, 'return data');
                 res.end(JSON.stringify(result[0]));
     
             } else {
@@ -111,17 +121,8 @@ class User extends Endpoint {
     }
 
     run() {
-        app.post("/user/signin", upload.single("avatar"), (req, res) => {
-            if (req.file) {
-                this.avatar.makeAvatar(req.file.path, req.body.name);
-            }
-
-            this.checkUser(req.body)
-                .then(
-                    token => res.setHeader("Authentication", token),
-                    () => res.sendStatus(409) 
-                ).finally(() => res.end());
-        })
+        app.post("/user/signin", upload.single("avatar"), this.signin.run);
+        app.put("/data/user/:user_id", upload.single("avatar"), this.updateUser.run);
 
         app.put("/data/user/:user_id", upload.single("avatar"), (req, res) => {
             if (req.params.user_id != req.user.user_id) {
@@ -131,7 +132,7 @@ class User extends Endpoint {
             if (req.file) {
                 this.avatar.makeAvatar(req.file.path, req.body.name, req.user.name);
             } else if (!req.file && req.body.name.length > 1) {                
-                this.avatar.renameAvatars(req.user.name, req.body.name, req.file.path);
+                this.avatar.renameAvatars(req.user.name, req.body.name, req.file.path || nullrs);
             }
             //update user data and return to cliend new token
             let token = this.updateUser(req.body, req.user.user_id);
