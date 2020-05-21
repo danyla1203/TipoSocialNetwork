@@ -36,7 +36,7 @@ class UserModel extends Model {
     }
 
     setUser(data) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let user = this.sqlMaker
                 .insert("users")
                 .set(data);
@@ -78,15 +78,25 @@ class UserModel extends Model {
             .update("users")
             .set(newData)
             .where(`user_id = ${user_id}`);
-        console.log(newUser);
         this.pool.query(newUser, callback);
     }
+
     checkUser(name, pass, callback) {
         let sql = this.sqlMaker
             .select()
             .from("users")
             .where(`name = "${name}" AND password = "${pass}"`);
-        this.pool.query(sql, callback);
+        return new Promise((resolve, reject) => {
+            this.pool.query(sql, (err, result) => {
+                if (err) throw err;
+                if (result.length == 1) {
+                    delete result[0].password;
+                    resolve(result[0]);
+                } else {
+                    reject();
+                }
+            });
+        })
     }
 }
 

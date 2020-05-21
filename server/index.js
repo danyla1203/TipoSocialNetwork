@@ -13,8 +13,6 @@ const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
 const FriendsModel = require("./models/FriendsModel").FriendsModel;
 
-const Avatar = require("./lib/Avatar");
-
 const jwtKey = "myKey";
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
@@ -77,7 +75,7 @@ let handelrs = [
     new Articles(articleModel),
     new Comments(articleModel),
     new Friends(friendsModel),
-    new User(userModel, new Avatar()),
+    new User(userModel),
     new Messages()
 ];
 handelrs.map((el) => { el.run() });  
@@ -108,4 +106,4 @@ app.all("*", (req, res) => {
     });
 })
 
-app.listen(3002);
+app.listen(3003);
