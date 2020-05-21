@@ -8,6 +8,15 @@ class UserModel extends Model {
             .where(`user_id <> ${user_id}`);
         this.pool.query(users, callback)
     }
+
+    getSecretUserData(user_id, callback) {
+        let user = this.sqlMaker
+            .select()
+            .from("users")
+            .where(`user_id = ${user_id}`);
+        this.pool.query(user, callback);
+    }
+
     getUserData(user_id, callback) {
         let user = this.sqlMaker
             .select(["user_id", "name", "country", "gender", "avatar_url_full"])
@@ -34,11 +43,16 @@ class UserModel extends Model {
         this.pool.query(frinendsList, callback);
     }
 
-    setUser(data, callback) {
-        let user = this.sqlMaker
-            .insert("users")
-            .set(data);
-        this.pool.query(user, callback)
+    setUser(data) {
+        return new Promise((resolve) => {
+            let user = this.sqlMaker
+                .insert("users")
+                .set(data);
+            return this.pool.query(user, (err, result) => {
+                if (err) throw err;
+                resolve(result);
+            });
+        })
     }
 
     getEmails(callback) {
@@ -48,6 +62,25 @@ class UserModel extends Model {
         this.pool.query(emails, callback)
     }
 
+    checkUserForExist(name, email) {
+        let data = this.sqlMaker
+                .select(["user_id", "email", "name"])
+                .from("users")
+
+        return new Promise((resolve, reject) => {
+            this.pool.query(data, (err, result) => {
+                if (err) throw err;
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i].name == name || result[i].email == email) {
+                        reject("exist");
+                    }
+                } 
+                resolve(result[result.length -1].user_id);
+            })
+        })
+    }
+
+
     updateUserData(newData, user_id, callback) {
         let newUser = this.sqlMaker
             .update("users")
@@ -55,12 +88,23 @@ class UserModel extends Model {
             .where(`user_id = ${user_id}`);
         this.pool.query(newUser, callback);
     }
+
     checkUser(name, pass, callback) {
         let sql = this.sqlMaker
             .select()
             .from("users")
             .where(`name = "${name}" AND password = "${pass}"`);
-        this.pool.query(sql, callback);
+        return new Promise((resolve, reject) => {
+            this.pool.query(sql, (err, result) => {
+                if (err) throw err;
+                if (result.length == 1) {
+                    delete result[0].password;
+                    resolve(result[0]);
+                } else {
+                    reject();
+                }
+            });
+        })
     }
 }
 

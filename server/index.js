@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
+const checkToken = require("./middlewares/checkJwtToken");
 const sqlMaker = require("./test_liba").createDb();
 const jwt = require("jsonwebtoken");
 
@@ -43,34 +44,43 @@ app.use(session({ secret: 'danyla1203' }));
 app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next()});
 app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/data/*", (req, res, next) => {
-    let token = req.headers.authentication;
-    if (token) {
-        try {
-            let data = jwt.verify(token, jwtKey);
-            userModel.getSecretUserData(data.id, (err, result) => {
-                if (err) throw err;
-                delete result.password;
-                console.log(result);
-                req.user = result[0];
-                next();
-            })
-        } catch(err) { throw err }
-    } else {
-        res.sendStatus(403);
-        res.end("");
-    }
-});
+app.use("/data/*", checkToken)
 
 //require handlers
-require("./articles");
-require("./comments");
-require("./friends");
-require("./messages");
-require("./user");
-require("./users");
+let Articles = require("./endpoints/Articles");
+let Comments = require("./endpoints/Comments");
+let Friends = require("./endpoints/Friends");
+let Messages = require("./endpoints/Messages");
+let User = require("./endpoints/User");
+let Users = require("./endpoints/Users");
+
+let handelrs = [
+    new Articles(articleModel),
+    new Comments(articleModel),
+    new Friends(friendsModel),
+    new User(userModel),
+    new Messages(),
+    new Users(userModel)
+];
+handelrs.map((el) => { el.run() });  
 
 app.get("/favicon.ico", (req, res) => { res.setHeader("Cache-Control", "public, max-age=14400"); res.end() })
+
+app.get("/data/news", (req, res) => {
+    let sql = sqlMaker
+        .select(["id", "article_id", "user2_id", "avatar_url_icon", "title", "text", "name", "date"])
+        .from("friends")
+        .join("articles")
+        .on("user2_id = articles.user_id")
+        .join("users")
+        .on("user2_id = users.user_id")
+        .where(`user1_id = ${req.user.user_id}`);
+    pool.query(sql, (err, result) => {
+        if (err) throw err;
+        res.end(JSON.stringify(result));
+    })
+})
+
 
 app.all("*", (req, res) => {
     fs.readFile("public/index.html", "utf8", (err, file) => {
@@ -80,4 +90,4 @@ app.all("*", (req, res) => {
     });
 })
 
-app.listen(3001);
+app.listen(3003);
