@@ -6,7 +6,7 @@ const jwtKey = require("../index").jwtKey;
 const Endpoint = require("./Endpoint");
 const isLogin = require("../middlewares/isLogin");
 const UserSignin = require("../lib/UserSignin");
-const UserUpdate = require("../lib/UserSignin");
+const UserUpdate = require("../lib/UserUpdate");
 
 class User extends Endpoint {
     constructor(model) {
@@ -42,7 +42,7 @@ class User extends Endpoint {
         return data;
     }
 
-    updateUser(body, user_id) {
+    updateUserFUCKYOU(body, user_id) {
         return new Promise((resolve, reject) => {
             console.log(body);
             let dataToInsert = this.extendBody(body);
@@ -124,7 +124,7 @@ class User extends Endpoint {
         app.post("/user/signin", upload.single("avatar"), this.signin.run);
         app.put("/data/user/:user_id", upload.single("avatar"), this.updateUser.run);
 
-        app.put("/data/user/:user_id", upload.single("avatar"), (req, res) => {
+       /*  app.put("/data/user/:user_id", upload.single("avatar"), (req, res) => {
             if (req.params.user_id != req.user.user_id) {
                 res.sendStatus(403);
                 res.end("Go to hell, хацкер");
@@ -143,7 +143,7 @@ class User extends Endpoint {
                 }
             )
         })
-
+ */
         app.all("/user/check", isLogin, upload.none(), (req, res) => {          
             if (req.user) {
                 this.model.getSecretUserData(req.userData.id, (err, result) => {
