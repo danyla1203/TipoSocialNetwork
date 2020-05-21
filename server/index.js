@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
+const checkToken = require("./middlewares/checkJwtToken");
 const sqlMaker = require("./test_liba").createDb();
 const jwt = require("jsonwebtoken");
 
@@ -43,24 +44,7 @@ app.use(session({ secret: 'danyla1203' }));
 app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next()});
 app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/data/*", (req, res, next) => {
-    let token = req.headers.authentication;
-    if (token) {
-        try {
-            let data = jwt.verify(token, jwtKey);
-            userModel.getSecretUserData(data.id, (err, result) => {
-                if (err) throw err;
-                delete result.password;
-                req.user = result[0];
-                //console.log(req.user, "SUKA TOKENU");
-                next();
-            })
-        } catch(err) { throw err }
-    } else {
-        res.sendStatus(403);
-        res.end("");
-    }
-});
+app.use("/data/*", checkToken)
 
 //require handlers
 let Articles = require("./endpoints/Articles");
@@ -68,15 +52,15 @@ let Comments = require("./endpoints/Comments");
 let Friends = require("./endpoints/Friends");
 let Messages = require("./endpoints/Messages");
 let User = require("./endpoints/User");
-
-require("./users");
+let Users = require("./endpoints/Users");
 
 let handelrs = [
     new Articles(articleModel),
     new Comments(articleModel),
     new Friends(friendsModel),
     new User(userModel),
-    new Messages()
+    new Messages(),
+    new Users(userModel)
 ];
 handelrs.map((el) => { el.run() });  
 
