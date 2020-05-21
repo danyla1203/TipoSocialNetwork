@@ -1,5 +1,5 @@
-const app = require("../indexx").app;
-const Endpoint = require("./Enpoint");
+const app = require("../index").app;
+const Endpoint = require("./Endpoint");
 
 class Friends extends Endpoint {
     run() {

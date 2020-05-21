@@ -12,14 +12,11 @@ class Comments extends Endpoint{
                       "WHERE article_id = " + req.params.article_id + " ORDER BY comment_id DESC";
             pool.query(sql, (err, result) => {
                 if (err) throw err;
-                if(result == "[]") return;
-        
-                res.end(JSON.stringify(result));
+                res.end(result);
             })
         })
         
         app.post("/data/comments/add/:article_id", upload.none(), (req, res) => {
-            //insert into comments table sql
             let article_id = req.params.article_id;
             let autor = req.user.user_id;
             let date = "2009-12-30 12:30:23";

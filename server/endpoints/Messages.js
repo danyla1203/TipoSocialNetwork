@@ -1,7 +1,7 @@
-const app = require("./index").app;
-const upload = require("./index").upload;
-const pool = require("./index").pool;
-const makeSql = require("./index").makeSql;
+const app = require("../index").app;
+const upload = require("../index").upload;
+const pool = require("../index").pool;
+const makeSql = require("../index").makeSql;
 const Endpoint = require("./Endpoint");
 
 class Messages extends Endpoint {

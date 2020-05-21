@@ -46,39 +46,34 @@ class Articles extends Endpoint{
         })
         
         app.delete("/data/article/:article_id", (req, res) => {
-           this.model.deleteArticle(req.params.article_id, (err) => {
-                if (err) {
-                    res.setStatus(404);
-                }
-                res.end("deleted");
-           })
+            this.model.deleteArticle(req.params.article_id, (err) => {
+                if (err) res.setStatus(404);
+                res.end("Deleted");
+            })
         })
         
         app.put("/data/article/:article_id", upload.none(), (req, res) => {
             let article = req.params.article_id;
             let user = req.user;
-            this.updateArticle(article, user.user_id);
-            res.end("Updated");
+            this.updateArticle(article, user.user_id, (err) => {
+                if (err) res.sendStatus(404);
+                res.end("Updated");
+            });
         })
         
         app.get("/data/article/:article_id", (req, res) => {
-            console.log("get article");
             this.model.getArticle(req.params.article_id, req.user.user_id, (err, result) => {
                 if (err) throw err;
-                console.log("in CALLback");
                 res.end(JSON.stringify(result));
             })
-            console.log("out CALLback");
         })
         
         app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) => {
             let oldPath = `/home/daniil/Desktop/NodeProjects/AuthTest/server/uploads/${req.file.filename}`;
             let newPath = `/home/daniil/Desktop/NodeProjects/AuthTest/public/img/${req.file.filename}_article.webp`;
-        
             fs.rename(oldPath, newPath, (err) => {
                 if (err) throw err;
             });
-            
             res.end(`${req.file.filename}_article`);
         })
         
