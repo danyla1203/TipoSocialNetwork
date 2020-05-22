@@ -6,9 +6,7 @@ const cookieParser = require('cookie-parser');
 const mysql = require('mysql');
 const multer = require("multer");
 const path = require("path");
-const checkToken = require("./middlewares/checkJwtToken");
 const sqlMaker = require("./test_liba").createDb();
-const jwt = require("jsonwebtoken");
 
 const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
@@ -39,6 +37,7 @@ module.exports.pool = pool;
 module.exports.makeSql = sqlMaker;
 module.exports.jwtKey = jwtKey;
 
+const checkToken = require("./middlewares/checkJwtToken");
 app.use(cookieParser());
 app.use(session({ secret: 'danyla1203' }));
 app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next()});
