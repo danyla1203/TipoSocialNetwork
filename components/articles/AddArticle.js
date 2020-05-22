@@ -18,16 +18,22 @@ function AddArticle(props) {
         body.append("text", document.getElementById("text").value);
         body.append("title", document.getElementById("title").value);
 
-        let photos = articleData.photos.map((el) => {
-            return el.fileName;
-        });
-        body.append("photos_list", photos.join());
+        if (articleData.photos) {
+            if (articleData.photos.length < 3) {
+                let photos = articleData.photos.map((el) => {
+                    return el.fileName;
+                });
+                body.append("photos_list", photos.join());
+            }
+        }
 
         if (props.isEdit) {
-            xhr.open("POST", `/data/article/update/${props.match.params.article_id}`);
+            xhr.open("PUT", `/data/article/${props.match.params.article_id}`);
+            xhr.setRequestHeader("Authentication", props.token);
             xhr.send(body);
         } else {
-            xhr.open("POST", `/data/insert/${props.user_id}`);
+            xhr.open("POST", `/data/article/${props.user_id}`);
+            xhr.setRequestHeader("Authentication", props.token);
             xhr.send(body);
         }
         xhr.onload = () => {
@@ -121,6 +127,7 @@ function AddArticle(props) {
         
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/add-picture`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send(formData);
         
         xhr.onload = () => {
@@ -137,7 +144,8 @@ function AddArticle(props) {
     }
     let deleteImg = (filename) => {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/delete-picture/${filename}`);
+        xhr.open("DELETE", `/data/delete-picture/${filename}`);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         let newState = Object.assign({}, articleData);
@@ -185,6 +193,7 @@ function AddArticle(props) {
     if (props.isEdit & !articleData) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/article/${props.match.params.article_id}`, false);
+        xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         let result = JSON.parse(xhr.response)[0];
