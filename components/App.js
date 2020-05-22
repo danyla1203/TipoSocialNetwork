@@ -53,8 +53,8 @@ class App extends Component {
             newUserData[column] = userData[column];
         }
         newUserData.user_id = this.state.userData.user_id;
-        newUserData.avatar_url_full = `${newUserData.name}_full.webp`;
-        newUserData.avatar_url_icon = `${newUserData.name}_icon.webp`;
+        newUserData.avatar_url_full = `${newUserData.user_id}_full.webp`;
+        newUserData.avatar_url_icon = `${newUserData.user_id}_icon.webp`;
 
         this.setState({
             userData: newUserData
