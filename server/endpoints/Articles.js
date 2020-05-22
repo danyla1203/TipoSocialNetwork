@@ -37,12 +37,15 @@ class Articles extends Endpoint{
         app.post("/data/article/:user_id", upload.none(),  (req, res) => {
             let title = req.body.title;
             let text = req.body.text;
-            let photos_list = req.body.photos_list;
+            let photos_list = req.body.photos_list.split(",");
             let date = this.getDate();
             
             if (req.user.user_id == req.params.user_id) {
-                this.model.insertArticle(title, text, req.params.user_id, photos_list, date);
+                this.model.insertArticle(title, text, req.params.user_id, photos_list,  date, (err, result) => {
+                    if (err) throw err;
+                });
             }
+            res.end();
         })
         
         app.delete("/data/article/:article_id", (req, res) => {
