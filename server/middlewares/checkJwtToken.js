@@ -1,3 +1,7 @@
+const jwt = require("jsonwebtoken");
+const jwtKey = require("../index").jwtKey;
+const userModel = require("../index").userModel;
+
 function checkToken(req, res, next) {
     let token = req.headers.authentication;
     if (token) {
@@ -7,7 +11,6 @@ function checkToken(req, res, next) {
                 if (err) throw err;
                 delete result.password;
                 req.user = result[0];
-                //console.log(req.user, "SUKA TOKENU");
                 next();
             })
         } catch(err) { throw err }

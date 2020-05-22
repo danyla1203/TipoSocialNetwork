@@ -47,6 +47,7 @@ class UserSignin {
             return;
         }
         let body = await this.appendUser(req.body, lastUserId + 1, req.file);
+        body.user_id = lastUserId + 1;
         let token = await this.generateJwt(lastUserId + 1, body.email);
 
         res.setHeader("Authentication", token);
