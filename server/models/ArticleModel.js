@@ -45,10 +45,22 @@ class ArticleModel extends Model {
                 title: title,
                 text: text,
                 user_id: user_id,
-                photos_list: photos,
                 date: date
             })
-        this.pool.query(insertArticle, callback)
+        this.pool.query(insertArticle, (err, result) => {
+            if (err) throw err;
+            let imgs = photos.map((el) => {
+                return {
+                    article_id: result.insertId,
+                    path: el
+                }
+            });
+            let insertImgSql = this.sqlMaker
+                .insert("article_photos")
+                .setMany(imgs)
+            this.pool.query(insertImgSql, callback);
+        });
+
     }
 
 }
