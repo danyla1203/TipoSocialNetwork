@@ -124,12 +124,45 @@ function setForInsert(valuesObj) {
     return sql;
 }
 
+function setMany(objArray) {
+
+    let columns = "(";
+    let props = Object.keys(objArray[0]);
+    for (let column = 0; column < props.length; column++) {
+        if (column == 0) {
+            columns += `${props[column]}`;    
+        } else {
+            columns += `, ${props[column]}`;
+        }
+    }
+
+    let allSql = `${columns}) VALUES`;
+    for (let i = 0; i < objArray.length; i++) {
+        let value = "(";
+        for (let field in objArray[i]) {
+            if (typeof objArray[i][field] == "string") {
+                value = `${value}, "${objArray[i][field]}"`;
+            } else {
+                value = `${value} ${objArray[i][field]}`;
+            }
+        }
+        if (i == objArray.length - 1) {
+            value = `${value})`;
+        } else {
+            value = `${value}), `;
+        }
+        allSql = allSql + value;
+    }
+    return `${this.sql} ${allSql}`;
+}
+
 function insert(tableName) {
     let sql = `INSERT INTO ${tableName}`;
 
     return {
         sql: sql,
-        set: setForInsert
+        set: setForInsert,
+        setMany: setMany
     }
 }
 
