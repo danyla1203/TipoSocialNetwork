@@ -49,6 +49,10 @@ class ArticleModel extends Model {
             })
         this.pool.query(insertArticle, (err, result) => {
             if (err) throw err;
+            if (!photos) {
+                return;
+            }
+            
             let imgs = photos.map((el) => {
                 return {
                     article_id: result.insertId,

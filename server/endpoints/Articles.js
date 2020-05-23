@@ -35,9 +35,12 @@ class Articles extends Endpoint{
     }
     run() {
         app.post("/data/article/:user_id", upload.none(),  (req, res) => {
+            let photos_list;
+            if (req.body.photos_list) {
+                photos_list = req.body.photos_list.split(",");
+            }
             let title = req.body.title;
             let text = req.body.text;
-            let photos_list = req.body.photos_list.split(",");
             let date = this.getDate();
             
             if (req.user.user_id == req.params.user_id) {
