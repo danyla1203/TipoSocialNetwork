@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function UsersList(props) {
     const [ usersList, setUsers ] = useState("Nothing here");
+    const [ start, setStart ] = useState(0);
 
     let addFriend = (user_id) => {
         let xhr = new XMLHttpRequest();
@@ -58,6 +59,20 @@ function UsersList(props) {
         );
     };
 
+    let loadUsers = () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", `/data/users?start=${start}&end=10`);
+        xhr.setRequestHeader("Authentication", props.token);
+        xhr.send();
+
+        xhr.onload = () => {
+            let prevUsers = usersList.concat(JSON.parse(xhr.response));
+
+            setUsers(prevUsers);
+            setStart(start + 10);
+        };
+    };
+
     let getRenderedUsers = (users) => {
         if (typeof users == "string") {
             return users;
@@ -72,13 +87,13 @@ function UsersList(props) {
 
     if (typeof usersList == "string") {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", "/data/users");
+        xhr.open("GET", `/data/users?start=${start}&end=10`);
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
         xhr.onload = () => {
-            console.log(JSON.parse(xhr.response));
             setUsers(JSON.parse(xhr.response));
+            setStart(10);
         };
     }
 
@@ -86,6 +101,7 @@ function UsersList(props) {
     return (
         <div>
             { users }
+            <button onClick={ loadUsers }>Load more</button>
         </div>
     );
 }

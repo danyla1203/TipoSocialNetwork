@@ -1,11 +1,12 @@
 const Model = require("./Model");
 
 class UserModel extends Model {
-    getUsers(user_id, callback) {
+    getUsers(user_id, start, end, callback) {
         let users = this.sqlMaker
             .select(["user_id", "name", "avatar_url_icon"])
             .from("users")
             .where(`user_id <> ${user_id}`);
+        users = `${users} LIMIT ${start}, ${end}`;
         this.pool.query(users, callback);
     }
 

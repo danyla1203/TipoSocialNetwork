@@ -3,11 +3,14 @@ const app = require("../index").app;
 const Endpoint = require("./Endpoint");
 
 class Users extends Endpoint {
-    run() {
-        app.get("/data/users", (req, res) => { 
-            this.model.getUsers(req.user.user_id, (err, usersList) => {
+    run() {        
+        app.get("/data/users", (req, res) => {
+            let start = req.query.start;
+            let end = req.query.end;
+
+            this.model.getUsers(req.user.user_id, start, end, (err, usersList) => {
                 if (err) throw err;
-        
+
                 this.model.getFriendsList(req.user.user_id, (err, friendsList) => {
                     if (err) throw err;
                     for (let i = 0; i < usersList.length; i++) {
@@ -20,10 +23,10 @@ class Users extends Endpoint {
                     }
                     res.setHeader("Cache-Control", "public, max-age=3600");
                     res.end(JSON.stringify(usersList));
-                })
-            })
-        })
-        
+                });
+            });
+        });
+
         app.get("/data/user/:user_id", (req, res) => {
             let id =  parseInt(req.params.user_id);
             if (id == req.user.user_id){
@@ -33,8 +36,8 @@ class Users extends Endpoint {
                 if (err) throw err;
                 res.setHeader("Cache-Control", "public, max-age=900");
                 res.end(JSON.stringify(result));
-            })
-        })
+            });
+        });
     }
 }
 
