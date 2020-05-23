@@ -31,7 +31,7 @@ class Articles extends Endpoint{
                 this.model.updatePhotos(article_id, photos_list, (err) => { if(err) throw err });
                 this.model.updateArticle(article_id, title, text, (err) => { if(err) throw err });
             }
-        })
+        });
     }
     run() {
         app.post("/data/article/:user_id", upload.none(),  (req, res) => {
@@ -49,14 +49,14 @@ class Articles extends Endpoint{
                 });
             }
             res.end();
-        })
+        });
         
         app.delete("/data/article/:article_id", (req, res) => {
             this.model.deleteArticle(req.params.article_id, (err) => {
                 if (err) res.setStatus(404);
                 res.end("Deleted");
-            })
-        })
+            });
+        });
         
         app.put("/data/article/:article_id", upload.none(), (req, res) => {
             let article = req.params.article_id;
@@ -65,14 +65,14 @@ class Articles extends Endpoint{
                 if (err) res.sendStatus(404);
                 res.end("Updated");
             });
-        })
+        });
         
         app.get("/data/article/:article_id", (req, res) => {
             this.model.getArticle(req.params.article_id, req.user.user_id, (err, result) => {
                 if (err) throw err;
                 res.end(JSON.stringify(result));
-            })
-        })
+            });
+        });
         
         app.post("/data/add-picture", upload.single("picture-to-article"), (req, res) => {
             let oldPath = `/home/daniil/Desktop/NodeProjects/AuthTest/server/uploads/${req.file.filename}`;
@@ -81,15 +81,15 @@ class Articles extends Endpoint{
                 if (err) throw err;
             });
             res.end(`${req.file.filename}_article`);
-        })
+        });
         
         app.get("/data/articles/:user_id", (req, res) => { 
             this.model.getArticles(req.params.user_id, (err, result) => {
                 if (err) throw err;
                 res.setHeader("Cache-Control", "public, max-age=60");
                 res.end(JSON.stringify(result));
-            })
-        })
+            });
+        });
         
     }
 }

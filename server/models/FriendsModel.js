@@ -1,5 +1,4 @@
 const Model = require("./Model");
-
 class FriendsModel extends Model {
     getFriends(user_id, callback) {
         let sql = this.sqlMaker
@@ -39,7 +38,7 @@ class FriendsModel extends Model {
                 .set({
                     user1_id: user1_id,
                     user2_id: user2_id    
-                })
+                });
             
             this.pool.query(sql, callback);
         } else {

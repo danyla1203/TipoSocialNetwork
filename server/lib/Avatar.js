@@ -5,16 +5,12 @@ const sharp = require("sharp");
 class Avatar {
     deleteOldAvatars(id) {
         let path = `/home/daniil/Desktop/NodeProjects/AuthTest/public/img/${id}`;
-        try {
-            fs.unlink(`${path}_icon.webp`, (err) => {
-                if (err) throw err;
-            });
-            fs.unlink(`${path}_full.webp`, (err) => {
-                if (err) throw err;
-            });
-        } catch(err) {
-            return;
-        }
+        fs.unlink(`${path}_icon.webp`, (err) => {
+            if (err) { console.log("user have a default icon"); }
+        });
+        fs.unlink(`${path}_full.webp`, (err) => {
+            if (err) { console.log("user have a default icon"); }
+        });
     }
 
     makeAvatar(filePath, id) {

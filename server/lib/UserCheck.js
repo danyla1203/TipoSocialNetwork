@@ -19,7 +19,7 @@ class UserCheck {
             this.model.getSecretUserData(req.user.user_id, (err, result) => {
                 if (err) throw err;
                 res.end(result);
-            }) 
+            });
         }
         if ( !(req.body.name && req.body.password) ) {  
             res.status(400);
@@ -36,7 +36,7 @@ class UserCheck {
                     res.status(404);
                     res.end("{}");
                 }
-            )
+            );
     }
 }
 

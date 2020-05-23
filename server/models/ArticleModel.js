@@ -46,7 +46,7 @@ class ArticleModel extends Model {
                 text: text,
                 user_id: user_id,
                 date: date
-            })
+            });
         this.pool.query(insertArticle, (err, result) => {
             if (err) throw err;
             if (!photos) {
@@ -57,11 +57,11 @@ class ArticleModel extends Model {
                 return {
                     article_id: result.insertId,
                     path: el
-                }
+                };
             });
             let insertImgSql = this.sqlMaker
                 .insert("article_photos")
-                .setMany(imgs)
+                .setMany(imgs);
             this.pool.query(insertImgSql, callback);
         });
 

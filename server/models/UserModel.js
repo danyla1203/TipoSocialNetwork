@@ -6,7 +6,7 @@ class UserModel extends Model {
             .select(["user_id", "name", "avatar_url_icon"])
             .from("users")
             .where(`user_id <> ${user_id}`);
-        this.pool.query(users, callback)
+        this.pool.query(users, callback);
     }
 
     getSecretUserData(user_id, callback) {
@@ -52,20 +52,20 @@ class UserModel extends Model {
                 if (err) throw err;
                 resolve(result);
             });
-        })
+        });
     }
 
     getEmails(callback) {
         let emails = this.sqlMaker
             .select(["email", "name"])
-            .from("users")
-        this.pool.query(emails, callback)
+            .from("users");
+        this.pool.query(emails, callback);
     }
 
     checkUserForExist(name, email) {
         let data = this.sqlMaker
                 .select(["user_id", "email", "name"])
-                .from("users")
+                .from("users");
 
         return new Promise((resolve, reject) => {
             this.pool.query(data, (err, result) => {
@@ -76,10 +76,9 @@ class UserModel extends Model {
                     }
                 } 
                 resolve(result[result.length -1].user_id);
-            })
-        })
+            });
+        });
     }
-
 
     updateUserData(newData, user_id, callback) {
         let newUser = this.sqlMaker
@@ -104,7 +103,7 @@ class UserModel extends Model {
                     reject();
                 }
             });
-        })
+        });
     }
 }
 
