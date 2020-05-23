@@ -46,7 +46,9 @@ function UsersList(props) {
         return (
             <div className="user_small" key={ user.user_id }>
                 <div className="img">
-                    <Link to={"/users/" + user.user_id}><img src={ "/assets/img/" + user.avatar_url_icon } /></Link>
+                    <Link to={"/users/" + user.user_id}>
+                        <img src={ "/assets/img/" + (user.avatar_url_icon || "default_icon.webp") } />
+                    </Link>
                 </div>
                 <div>
                     <h3>{ user.name }</h3>

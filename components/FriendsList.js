@@ -8,7 +8,9 @@ function FriendsList(props) {
         return (
             <div key={ data.id } className="user_small">
                 <div className="img">
-                <Link to={ "/users/" + data.user_id }><img src={ "/assets/img/" + data.avatar_url_icon } /></Link>
+                <Link to={ "/users/" + data.user_id }>
+                    <img src={ "/assets/img/" + (data.avatar_url_icon || "default_icon.webp") } />
+                </Link>
                 </div>
                 <div>
                     <h3>{ data.name }</h3>

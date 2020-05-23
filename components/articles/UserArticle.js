@@ -54,7 +54,9 @@ function UserArticle(props) {
     return (
         <div className="article" >
             <h4>Autor: { props.userData.name }</h4>
-            <Link to={ "/users/" + props.userData.user_id }><img src={ "/assets/img/" + props.userData.name + "_icon.webp" }/></Link>
+            <Link to={ "/users/" + props.userData.user_id }>
+                <img src={ "/assets/img/" + ( props.userData.avatar_url_icon || "default_icon.webp" )}/>
+            </Link>
             
             <h3>{ props.title} </h3>
             { textDiv }

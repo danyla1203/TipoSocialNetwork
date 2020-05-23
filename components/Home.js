@@ -10,7 +10,7 @@ function Home(props) {
             <div id="user">
                 <div>
                     <div id="img" >
-                        <img src={ "/assets/img/" + userData.avatar_url_full } />    
+                        <img src={ "/assets/img/" + (userData.avatar_url_full || "default_full.webp") } />    
                     </div>
                         <div>
                             <div id="user-data">
