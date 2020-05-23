@@ -21,8 +21,8 @@ function UserMessages(props) {
                      key={ data.message_id } 
                      className={ className }
             />
-        )
-    }
+        );
+    };
 
     let sendMessage = (form_id) => {
         let forms = document.querySelectorAll("form");
@@ -51,11 +51,11 @@ function UserMessages(props) {
             date: "2009-05-12 10:10:23",
             recipient_id: props.user2.user_id,
             sender_id: props.user_data.id
-        }
+        };
 
         let newMessageArray = messages.concat([message]);
         setMessages(newMessageArray);
-    }
+    };
 
     // props match isn't valid. Remake
     if (!messages) {
@@ -77,8 +77,8 @@ function UserMessages(props) {
 
                 setMessages(list);
                 setRecipient(JSON.parse(xhr.response)[0].user_id);
-            }
-        }
+            };
+        };
     }
 
     let rendered = messages.map((element) => {
@@ -88,7 +88,9 @@ function UserMessages(props) {
     return (
         <div className="message_prev">
             <div id='user_info'>
-            <Link to={ "/users/" + user.user_id }><img src={ "/assets/img/" + user.name + "_icon.webp" } /></Link>
+                <Link to={ "/users/" + user.user_id }>
+                    <img src={ "/assets/img/" + user.user_id + "_icon.webp" } />
+                </Link>
                 <h3>{ user.name }</h3>
             </div>
             <div className="messages">
@@ -101,7 +103,7 @@ function UserMessages(props) {
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 UserMessages.propTypes = {
@@ -119,6 +121,6 @@ UserMessages.propTypes = {
         avatar_url: propTypes.string,
     }),
     messages: propTypes.array.isRequired
-}
+};
 
 export default UserMessages;

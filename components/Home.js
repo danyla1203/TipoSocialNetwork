@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import propTypes from "prop-types";
 
-import ArticleList from './articles/ArticleList';
+import ArticleList from "./articles/ArticleList";
 
 function Home(props) {
     let userData = props.user;
@@ -10,7 +10,7 @@ function Home(props) {
             <div id="user">
                 <div>
                     <div id="img" >
-                        <img src={ "/assets/img/" + (userData.avatar_url_full || "default_full.webp") } />    
+                        <img src={ "/assets/img/" + userData.avatar_url_full} />    
                     </div>
                         <div>
                             <div id="user-data">
@@ -28,10 +28,11 @@ function Home(props) {
                 token={ props.token }
             />
         </div>
-    )
+    );
 }
 
 Home.propTypes = {
+    token: propTypes.string.isRequired,
     user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

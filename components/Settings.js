@@ -24,16 +24,11 @@ function Settings(props) {
         xhr.open("PUT", `/data/user/${ props.userData.user_id }`);
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send(data);
-
-        let changedData = {
-            name: data.get("name"),
-            email: data.get("email"),
-            gender: data.get("gender"),
-            country: data.get("country"),
-        }
-        props.changeUserData(changedData);
-        setSendState(true);
-    }
+        xhr.onload = () => {
+            props.changeUserData(JSON.parse(xhr.response));
+            setSendState(true);
+        };
+    };
 
     if (isSend) {
         return <Redirect to="/user" />
@@ -42,7 +37,7 @@ function Settings(props) {
     return (
         <div>
             <div id="edit-data">
-                <img src={ "/assets/img/" + props.userData.avatar_url_full } />
+                <img src={ "/assets/img/" + props.userData.avatar_url_full  } />
                 <h4>{ props.userData.name }</h4>
                 <h4>{ props.userData.country }</h4>
                 <h4>{ props.userData.gender }</h4>

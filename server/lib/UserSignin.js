@@ -18,11 +18,11 @@ class UserSignin {
         return token;
     }
 
-    makeImgNames(id) {
+    makeImgNames(id = "default") {
         return {
             avatar_url_icon: `${id}_icon.webp`,
             avatar_url_full: `${id}_full.webp`
-        }
+        };
     }
 
     async appendUser(body, newUserId, file) {
@@ -30,6 +30,8 @@ class UserSignin {
         if (file) {
             images = this.makeImgNames(newUserId);
             this.avatar.makeAvatar(file.path, newUserId);
+        } else {
+            images = this.makeImgNames();
         }
         body = Object.assign(body, images);
         this.model.setUser(body);
@@ -41,7 +43,7 @@ class UserSignin {
         let lastUserId = await this.model.checkUserForExist(req.body.name, req.body.email).catch(() => {
             flag = false;
             res.status(409);
-        })
+        });
         
         if (!flag) {
             res.end();

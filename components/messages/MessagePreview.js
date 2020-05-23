@@ -12,12 +12,12 @@ function MessagePreview(props) {
         user_id: messages[0].user_id,
         name: messages[0].name,
         avatar_url: messages[0].avatar_url_icon,
-    }
+    };
 
     let showMessages = () => {
         if (isOpen == "Close") setMode("Open");
         else setMode("Close");
-    }
+    };
 
     let messagesToRender;
     if (isOpen == "Open") {
@@ -27,19 +27,21 @@ function MessagePreview(props) {
                              user_data={ props.user_data } 
                              key={ secondUser.user_id }
                             
-                />
+                />;
     } else {
         messagesToRender = "";
     }
 
     return (
         <div className="message_prev">
-            <Link to={ "/users/" + secondUser.user_id }><img src={ "/assets/img/" + secondUser.name + "_icon.webp" }/></Link>
+            <Link to={ "/users/" + secondUser.user_id }>
+                <img src={ "/assets/img/" + secondUser.user_id + "_icon.webp" }/>
+            </Link>
             <h4>{ secondUser.name }</h4>
             <button onClick={ showMessages }>See all</button>
             { messagesToRender }
         </div>
-    )
+    );
 }
 
 MessagePreview.propTypes = {
@@ -52,6 +54,6 @@ MessagePreview.propTypes = {
         avatar_url_icon: propTypes.string,
     }),
     all_messages: propTypes.array.isRequired
-}
+};
 
 export default MessagePreview;

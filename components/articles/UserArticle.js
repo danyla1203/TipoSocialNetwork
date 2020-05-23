@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import DOMPurify from "dompurify";
 import propTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -7,12 +7,11 @@ import Comments from "../Comments";
 import { processInputData } from "../user_func/textProcess";
 
 function UserArticle(props) {
-    const [ comments, setComments ] = useState(null);
-    const [ buttonState, setButton ] = useState("Show");
+    const [ comments, setComments ] = useState();
+    const [ buttonState ] = useState("Show");
     
     let getComments = () => {
         if (comments) {
-            let button = buttonState == "Show" ? setButton("Close") : setButton("Show");
             return;
         }
         let xhr = new XMLHttpRequest();
@@ -21,15 +20,14 @@ function UserArticle(props) {
         xhr.send();
         xhr.onload = () => {
             setComments(JSON.parse(xhr.response));
-        }
-        let button = buttonState == "Show" ? setButton("Close") : setButton("Show");
-    }
+        };
+    };
     
     let addComment = (obj) => {
         let newComments = [...comments];
         newComments.unshift(obj);
         setComments(newComments);
-    }
+    };
 
     //show Comments?
     let commentsList;
@@ -37,7 +35,7 @@ function UserArticle(props) {
         commentsList = <Comments 
                             user_autor={ props.userData } 
                             comments={ comments }
-                            guestData = { props.guest_user }
+                            guestData = { props.guestData }
                             article_id={ props.article_id } 
                             addComment={ addComment }                                
                         />;
@@ -45,17 +43,17 @@ function UserArticle(props) {
         commentsList = "";
     }
 
-    let btnGetComments = <button onClick={ getComments }>{ buttonState}</button>
+    let btnGetComments = <button onClick={ getComments }>{ buttonState}</button>;
     let showFullBtn = props.isFull ? <button onClick={ () => props.closeArticle (props.article_id) }>Close</button> :
-                                     <button onClick={ () => props.openArticle(props.article_id) }>Show full</button>
+                                     <button onClick={ () => props.openArticle(props.article_id) }>Show full</button>;
     
     let textDiv = props.isFull ? <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(props.text, false))}}></div> : 
-                                 <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(props.text, true))}}></div>    
+                                 <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(props.text, true))}}></div>; 
     return (
         <div className="article" >
             <h4>Autor: { props.userData.name }</h4>
             <Link to={ "/users/" + props.userData.user_id }>
-                <img src={ "/assets/img/" + ( props.userData.avatar_url_icon || "default_icon.webp" )}/>
+                <img src={ "/assets/img/" + props.userData.avatar_url_icon )}/>
             </Link>
             
             <h3>{ props.title} </h3>
@@ -68,14 +66,21 @@ function UserArticle(props) {
             </div>
             { commentsList }
         </div>
-    )
+    );
 }
 
 UserArticle.propTypes = {
+    token: propTypes.string.isRequired,
+
     article_id: propTypes.number.isRequired,
-    
+    closeArticle: propTypes.func.isRequired,
+    openArticle: propTypes.func.isRequired,
+
+    isFull: propTypes.bool.isRequired,
+
     text: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
+    date: propTypes.string.isRequired,
 
     userData: propTypes.exact({
         user_id: propTypes.number,
@@ -88,5 +93,5 @@ UserArticle.propTypes = {
         avatar_url_icon: propTypes.string,
     }),
 
-}
+};
 export default UserArticle;

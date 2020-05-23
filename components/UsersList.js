@@ -18,7 +18,7 @@ function UsersList(props) {
             }
         }
         setUsers(newState);
-    }
+    };
 
     let deleteFriend = (user_id) => {
         let xhr = new XMLHttpRequest();
@@ -33,21 +33,21 @@ function UsersList(props) {
             }
         }
         setUsers(newState);
-    }
+    };
 
     let renderUser = (user) => {
         let addFriendBtn;
         if (!user.isFriend) {
-            addFriendBtn = <button onClick={ () => { addFriend(user.user_id) } }>Add friend</button>;
+            addFriendBtn = <button onClick={ () => { addFriend(user.user_id); } }>Add friend</button>;
         } else {
-            addFriendBtn =  <button onClick={ () => { deleteFriend(user.user_id) } }>Delete friend</button>;
+            addFriendBtn =  <button onClick={ () => { deleteFriend(user.user_id); } }>Delete friend</button>;
         }
 
         return (
             <div className="user_small" key={ user.user_id }>
                 <div className="img">
                     <Link to={"/users/" + user.user_id}>
-                        <img src={ "/assets/img/" + (user.avatar_url_icon || "default_icon.webp") } />
+                        <img src={ "/assets/img/" + user.avatar_url_icon } />
                     </Link>
                 </div>
                 <div>
@@ -55,8 +55,8 @@ function UsersList(props) {
                     { addFriendBtn }
                 </div>
             </div>
-        )
-    } 
+        );
+    };
 
     let getRenderedUsers = (users) => {
         if (typeof users == "string") {
@@ -68,7 +68,7 @@ function UsersList(props) {
             });
             return rendered;
         }
-    }
+    };
 
     if (typeof usersList == "string") {
         let xhr = new XMLHttpRequest();
@@ -79,7 +79,7 @@ function UsersList(props) {
         xhr.onload = () => {
             console.log(JSON.parse(xhr.response));
             setUsers(JSON.parse(xhr.response));
-        }
+        };
     }
 
     let users = getRenderedUsers(usersList);
@@ -87,7 +87,7 @@ function UsersList(props) {
         <div>
             { users }
         </div>
-    )
+    );
 }
 
 //no props
