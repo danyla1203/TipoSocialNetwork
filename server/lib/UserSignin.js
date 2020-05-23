@@ -25,13 +25,14 @@ class UserSignin {
         }
     }
 
-    async appendUser(body, newUserId, file = false) {
-        let images = this.makeImgNames(newUserId);
-        body = Object.assign(body, images);
-        this.model.setUser(body);
+    async appendUser(body, newUserId, file) {
+        let images = {};
         if (file) {
+            images = this.makeImgNames(newUserId);
             this.avatar.makeAvatar(file.path, newUserId);
         }
+        body = Object.assign(body, images);
+        this.model.setUser(body);
         return body;
     }
 
@@ -47,6 +48,7 @@ class UserSignin {
             return;
         }
         let body = await this.appendUser(req.body, lastUserId + 1, req.file);
+        delete body.password;
         body.user_id = lastUserId + 1;
         let token = await this.generateJwt(lastUserId + 1, body.email);
 
