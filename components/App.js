@@ -1,8 +1,8 @@
-import React, { Component }  from 'react';
+import React, { Component }  from "react";
 
 import RegForm from "./RegForm";
-import ErrorAlert from './ErrorAlert';
-import UserRouter from './UserRouter';
+import ErrorAlert from "./ErrorAlert";
+import UserRouter from "./UserRouter";
 
 class App extends Component {
     constructor() {
@@ -10,7 +10,7 @@ class App extends Component {
         this.state = {  
             errors: [],
             userData: {}
-        }
+        };
         this.check = this.check.bind(this);
         this.changeUserData = this.changeUserData.bind(this);
         this.setError = this.setError.bind(this);
@@ -33,7 +33,7 @@ class App extends Component {
                 let token = xhr.getResponseHeader("Authentication");
                 this.setState({isLogin: true, userData: result, token: token});
             }
-        }
+        };
     }
 
     setUser(user, token) {
@@ -70,14 +70,14 @@ class App extends Component {
             if (Object.keys(result).length === 0 && result.constructor === Object) {
                 return;
             } else {
-                let token = xhr.getResponseHeader("Authentication")
+                let token = xhr.getResponseHeader("Authentication");
                 this.setState({
                     isLogin: true,
                     userData: result,
                     token: token
-                })
+                });
             }
-        }
+        };
     }
 
     render() {
@@ -86,7 +86,7 @@ class App extends Component {
 
         if (this.state.errors.length > 0) {
             renderedErrors = this.state.errors.map((el) => {
-                return <ErrorAlert message={el} />
+                return <ErrorAlert message={el} />;
             });
         }
 
@@ -103,7 +103,7 @@ class App extends Component {
                     changeUserData = { this.changeUserData }
                     token = { this.state.token }
                 />
-            )
+            );
         }
 
         return (
@@ -124,7 +124,7 @@ class App extends Component {
                     setUser={ this.setUser }
                 />
             </div>
-        )
+        );
     }    
 }
 

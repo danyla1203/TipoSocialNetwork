@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 
@@ -41,7 +41,7 @@ function UserMessages(props) {
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send(formData);
         
-        let id = messages[messages.length - 1].key ? messages[messages.length - 1].key + 1 : 0
+        let id = messages[messages.length - 1].key ? messages[messages.length - 1].key + 1 : 0;
         let recipient_id = messages[0].recipient_id == props.user_data.id ? messages[0].sender_id : messages[0].recipient_id;
         
         let message = {
@@ -62,7 +62,7 @@ function UserMessages(props) {
         let xhr = new XMLHttpRequest();
        
         xhr.open("GET", "/data/user/" + props.match.params.user_id);
-        xhr.send()
+        xhr.send();
     
         xhr.onload = () => {
             let req = new XMLHttpRequest();
@@ -107,6 +107,7 @@ function UserMessages(props) {
 }
 
 UserMessages.propTypes = {
+    token: propTypes.string.isRequired,
     user_data: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

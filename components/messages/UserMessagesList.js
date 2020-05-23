@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import propTypes from "prop-types";
 
 import MessagePreview from "./MessagePreview";
@@ -19,8 +19,8 @@ function UserMessagesList(props) {
             let result = JSON.parse(xhr.response);
             console.log(result);
             setMessages(result);
-        }
-    }
+        };
+    };
 
     let getMessagesToRender = () => {
         let messagesCopy = Object.assign([], messages);
@@ -53,7 +53,7 @@ function UserMessagesList(props) {
             i--;
         }
         return returnArray;
-    }
+    };
 
     if (messages) {
         let groupMessages = getMessagesToRender();
@@ -66,19 +66,19 @@ function UserMessagesList(props) {
                         all_messages={ element }
                         user_data={ props.user_data }
                         key={ i }
-                   />
+                   />;
         });
 
-        messages2Render = messages2Render.length >= 1 ? messages2Render : <h3>Nothing here</h3>
+        messages2Render = messages2Render.length >= 1 ? messages2Render : <h3>Nothing here</h3>;
         return (
             <div>
                 { messages2Render }
             </div>
-        )
+        );
 
     } else {
         getMessages();
-        return ( <h3>Loading...</h3> );
+        return <h3>Loading...</h3>;
     }
 }
 
@@ -91,6 +91,6 @@ UserMessagesList.propTypes = {
         country: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
-}
+};
 
 export default UserMessagesList;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 
@@ -31,7 +31,7 @@ function Settings(props) {
     };
 
     if (isSend) {
-        return <Redirect to="/user" />
+        return <Redirect to="/user" />;
     }
 
     return (
@@ -54,10 +54,11 @@ function Settings(props) {
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 Settings.propTypes = {
+    token: propTypes.string.isRequired,
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
@@ -67,6 +68,6 @@ Settings.propTypes = {
         avatar_url_full: propTypes.string,
     }),
     changeUserData: propTypes.func.isRequired
-}
+};
 
-export default Settings
+export default Settings;

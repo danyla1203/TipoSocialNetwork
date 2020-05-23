@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import propTypes from "prop-types";
 
 import countries from "./countryList";
@@ -20,7 +20,10 @@ function RegForm(props) {
         } else if (formData.get("password").length <= 2) {
             isError = true;
         }
-        if (isError) { props.sendError("Something wrong in registration's fields"); return }
+        if (isError) { 
+            props.sendError("Something wrong in registration's fields"); 
+            return; 
+        }
         
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/user/signin");
@@ -32,8 +35,8 @@ function RegForm(props) {
             } else {
                 props.setUser(JSON.parse(xhr.response), xhr.getResponseHeader("Authentication"));
             }
-        }
-    }
+        };
+    };
 
     return (
         <div>   
@@ -51,11 +54,12 @@ function RegForm(props) {
                 </fieldset>
         </form>
         </div>
-    )
+    );
 }
 
 RegForm.propTypes = {
+    setUser: propTypes.func.isRequired,
     sendError: propTypes.func.isRequired
-}
+};
 
 export default RegForm;

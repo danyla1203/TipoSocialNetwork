@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import UserArticleList from './articles/UserArticleList'
-import propTypes from "prop-types"
+import React, { useState } from "react";
+import UserArticleList from "./articles/UserArticleList";
+import propTypes from "prop-types";
 
 function UserHome(props) {
     const [ messageState, setMessageState ] = useState("Close");  
@@ -17,9 +17,9 @@ function UserHome(props) {
 
         xhr.onload = () => {
             console.log(xhr.response);
-        }
+        };
         setFriend(true);
-    }
+    };
 
     let deleteFriend = () => {
         let id = userData.user_id;
@@ -31,14 +31,14 @@ function UserHome(props) {
 
         xhr.onload = () => {
             console.log(xhr.response);
-        }
+        };
         setFriend(false);
-    }
+    };
 
     let sendMessageButton = () => {
         if (messageState == "Close") setMessageState("Show");
         else setMessageState("Close");
-    }
+    };
 
     let getForm = () => {
         let sendMessage = () => {
@@ -52,16 +52,16 @@ function UserHome(props) {
 
             xhr.onload = () => {
                 console.log("Message added");
-            }
-        }
+            };
+        };
 
         return (
             <form id="send_message">
                 <input name="text"></input>
                 <button onClick={ sendMessage } type="button">Send!</button>
             </form>
-        )
-    }
+        );
+    };
 
     if (!userData) {
         let xhr = new XMLHttpRequest(); 
@@ -78,7 +78,6 @@ function UserHome(props) {
         xhr.send();
         setFriend(JSON.parse(xhr.response));
     }
-
 
     let form;
     if (messageState == "Show") {
@@ -115,10 +114,11 @@ function UserHome(props) {
             </div>
             <UserArticleList userData={ userData } guest_user={ props.guest_user } token={ props.token }/>            
         </div>
-    )
+    );
 }
 
 UserHome.propTypes = {
+    token: propTypes.string.isRequired,
     guest_user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
@@ -127,6 +127,6 @@ UserHome.propTypes = {
         country: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
-}
+};
 
 export default UserHome;

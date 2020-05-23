@@ -15,10 +15,10 @@ function News(props) {
         });
         
         setArticle(article[0]);
-    }
+    };
     let closeArticle = () => {
         setArticle(false);
-    }
+    };
 
     if (!newsList) {
         let xhr = new XMLHttpRequest();
@@ -28,7 +28,7 @@ function News(props) {
 
         xhr.onload = () => {
             setNews(JSON.parse(xhr.response));
-        }
+        };
     }
 
     let news = "";
@@ -38,7 +38,7 @@ function News(props) {
                 <div id="news">
                     <h2>Nothing here</h2>
                 </div>
-            )
+            );
         }
 
         if(article) {
@@ -50,7 +50,7 @@ function News(props) {
                 user_id: article.user2_id,
                 name: article.name, 
                 avatar_url: article.avatar_url_icon
-            }
+            };
 
             return (
                 <UserArticle
@@ -66,7 +66,7 @@ function News(props) {
                     key={ article.article_id } 
                     like_count={ article.likes }
                 />
-            )
+            );
         }
 
         news = newsList.map( (element) => {
@@ -74,7 +74,7 @@ function News(props) {
                 user_id: element.user2_id,
                 name: element.name,
                 avatar_url: element.avatar_url_icon
-            }
+            };
 
             return <UserArticle 
                         userData={ user }
@@ -86,7 +86,7 @@ function News(props) {
                         text={ element.text }
                         like_count={ element.likes }
                         key={ element.id }
-                    />
+                    />;
         });
     }
 
@@ -94,10 +94,11 @@ function News(props) {
         <div>
             { news }
         </div>
-    )
+    );
 }
 
 News.propTypes = {
+    token: propTypes.string.isRequired,
     guest_user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
@@ -106,7 +107,7 @@ News.propTypes = {
         country: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
-}
+};
 
 export default News;
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
@@ -12,13 +12,13 @@ function Header() {
             header.className = "close";
             
         }
-    }
+    };
     let test = (e) => {
         if (e.target.id == "header") {
             let header = document.getElementById("header");
             header.className = "close";
         }
-    }
+    };
     return (
         <header id="header" className="close" onClick={ test }>
             <button onClick={ toggleHeaderForMobile }>X</button>
@@ -32,7 +32,7 @@ function Header() {
                 <Link to="/settings" ><li>Settings</li></Link>
             </ul>
         </header>
-    )
+    );
 }
 
 //no props

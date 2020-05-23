@@ -8,16 +8,15 @@ function ArticleEditForm(props) {
     let titleHandler = (event) => {
         console.log(event.target);
         setTitle(event.target.value);
-    }
+    };
     let textHandler = (event) => {
         console.log(event.target);
         setText(event.target.value);
-    }
+    };
 
     let saveChanges = () => {
         props.saveChanges(title, text);
-
-    }
+    };
 
     return (
         <form>
@@ -26,7 +25,7 @@ function ArticleEditForm(props) {
             <button onClick={ saveChanges } type="button">Save changes!</button>
             <button type="button" onClick={ props.closeWithoutChanges }>Close without changes</button>
         </form>
-    )
+    );
 }
 
 ArticleEditForm.propTypes = {
@@ -34,6 +33,6 @@ ArticleEditForm.propTypes = {
     text: propTypes.string.isRequired,
     saveChanges: propTypes.func.isRequired,
     closeWithoutChanges: propTypes.func.isRequired
-}
+};
 
 export default ArticleEditForm;

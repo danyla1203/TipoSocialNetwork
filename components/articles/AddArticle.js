@@ -1,6 +1,6 @@
-import React, { useState }  from 'react';
+import React, { useState } from "react";
 import propTypes from "prop-types";
-import { Redirect } from 'react-router';
+import { Redirect } from "react-router";
 
 import { formatText, findAffectedRow } from "../user_func/textProcess";
 import PhotosList from "./PhotosList";
@@ -38,17 +38,16 @@ function AddArticle(props) {
         }
         xhr.onload = () => {
             setDone(true);
-        }
-    }
+        };
+    };
 
     let normalizeNameForP = () => {
         let pTags = document.getElementsByClassName("output_p");
         for (let i = 0; i < pTags.length; i++) {    
             pTags[i].attributes[0].value = i;
         }
-    }
+    };
     let formHandler = (event) => {
-        let lable;
         event.persist();
         let titleOutput = document.getElementById("titleOut");
         let textOutput = document.getElementById("textOut");
@@ -63,8 +62,6 @@ function AddArticle(props) {
             }
 
             let splitedText = inputText.split("\n");
-            
-            console.log(oldStringArray, splitedText);
 
             if (oldStringArray.length >= 1) {              
                 if (splitedText.length > oldStringArray.length) {
@@ -76,7 +73,7 @@ function AddArticle(props) {
                 } else if (splitedText.length < oldStringArray.length) {
                     //done for 85%.
                     let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);
-                    let pTags = document.getElementsByClassName(`output_p`);
+                    let pTags = document.getElementsByClassName("output_p");
                     let nextPTagIndex = pIndexForDelete + countPForDelete;
                     console.log(nextPTagIndex, splitedText);
 
@@ -118,7 +115,7 @@ function AddArticle(props) {
             }
 
         }
-    }
+    };
 
     let uploadPhoto = (e) => {
         let target = e.target;
@@ -126,7 +123,7 @@ function AddArticle(props) {
         formData.append("picture-to-article", target.files[0]);
         
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", `/data/add-picture`);
+        xhr.open("POST", "/data/add-picture");
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send(formData);
         
@@ -140,8 +137,8 @@ function AddArticle(props) {
             let newState = Object.assign({}, articleData);
             newState.photos = buttons;
             setArticleData(newState);
-        }
-    }
+        };
+    };
     let deleteImg = (filename) => {
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", `/data/delete-picture/${filename}`);
@@ -155,39 +152,38 @@ function AddArticle(props) {
             }
         });
         newState.photos = newPhotosList;
-        debugger;
         setArticleData(newState);
-    }
+    };
 
     let getDeleteButtons = () => {
         let result;
         if (articleData.photos) {
             result = articleData.photos.map((el) => {
                 return (
-                    <button key={ el.id } onClick={ () => { deleteImg(el.fileName) } }>Delete img</button>
-                )
+                    <button key={ el.id } onClick={ () => { deleteImg(el.fileName); } }>Delete img</button>
+                );
             });
         } else {
             result = "";
         }
         return result;
-    }
+    };
     let getImgTags = () => {
         let result;
         if (articleData.photos) {
             result = articleData.photos.map((el) => {
-                return el.fileName
+                return el.fileName;
             });
             result = result.join();
         } else {
             result = "";
         }
         return result;
-    }
+    };
 
 
     if (isDone) {
-        return <Redirect to="/user" />
+        return <Redirect to="/user" />;
     }
 
     if (props.isEdit & !articleData) {
@@ -207,8 +203,8 @@ function AddArticle(props) {
             return {
                 id: i,
                 fileName: el,
-            }
-        })
+            };
+        });
 
         setArticleData({
             title: title,
@@ -216,7 +212,6 @@ function AddArticle(props) {
             photos: photosList[0].fileName.length > 2 ? photosList : []
         });
     } else if (!props.isEdit & Object.keys(articleData).length > 1) {
-        debugger;
         setArticleData([]);
     }
 
@@ -251,12 +246,14 @@ function AddArticle(props) {
                 </div>
             </div>
         </div>
-    )
+    );
 } 
 
 AddArticle.propTypes = {
+    token: propTypes.string.isRequired,
+
     user_id: propTypes.number.isRequired,
     isEdit: propTypes.bool.isRequired
-}
+};
 
 export default AddArticle;

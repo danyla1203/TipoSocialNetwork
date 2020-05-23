@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import propTypes from "prop-types";
 
@@ -10,7 +10,7 @@ class ArticleList extends Component {
         this.state = {
             articles: "Nothing here",
             article: false
-        }
+        };
         this.addArticle = this.addArticle.bind(this);
         this.deleteArticle = this.deleteArticle.bind(this);
         this.showFullArticle = this.showFullArticle.bind(this);
@@ -28,7 +28,7 @@ class ArticleList extends Component {
             this.setState({
                 articles: JSON.parse(xhr.response)
             });
-        }
+        };
     }
 
     closeArticle() {
@@ -75,7 +75,7 @@ class ArticleList extends Component {
                     id: userProps.user_id,
                     name: userProps.name,
                     avatar_url: userProps.avatar_url_full
-                }
+                };
                 let date = el.date.split(/[A-z]{1}/);
                 date[1] = date[1].split(":");
                 let date2Render = `Date: ${date[0]}, Time: ${parseInt(date[1][0]) + 2}:${date[1][1]}`;
@@ -93,7 +93,7 @@ class ArticleList extends Component {
                                 delete={ this.deleteArticle } 
                                 like_count={ el.likes }
                                 key={ el.article_id }         
-                        />
+                        />;
             });
             return renderedArticles;
         }
@@ -102,7 +102,7 @@ class ArticleList extends Component {
     setLike(article_id) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/article/like" + article_id);
-        xhr.send()
+        xhr.send();
     }
 
     addArticle() {
@@ -142,7 +142,7 @@ class ArticleList extends Component {
                     </div>
 
                 </div>
-            )
+            );
         }
 
         let renderedArticles = this.getRenderedArticles(this.state.articles);
@@ -157,11 +157,12 @@ class ArticleList extends Component {
                 </div>
 
             </div>
-        )
+        );
     }
 }
 
 ArticleList.propTypes = {
+    token: propTypes.string.isRequired,
     user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
@@ -170,6 +171,6 @@ ArticleList.propTypes = {
         country: propTypes.string,
         avatar_url_full: propTypes.string,
     })
-}
+};
 
 export default ArticleList;

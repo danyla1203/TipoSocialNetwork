@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import UserArticle from './UserArticle';
+import React, { useState } from "react";
+import UserArticle from "./UserArticle";
 import propTypes from "prop-types";
 
 function UserArticleList(props) {
@@ -13,11 +13,11 @@ function UserArticleList(props) {
             }
         });
         setArticle(article[0]);
-    }
+    };
 
     let closeArticle = () => {
         setArticle(false);
-    }
+    };
 
     if(!articles) {
         let xhr = new XMLHttpRequest();
@@ -28,12 +28,12 @@ function UserArticleList(props) {
         xhr.onload = () => {
             let result = JSON.parse(xhr.response);
             setArticles(result);
-        }
+        };
         return (
             <div>
                 <h3>Loading...</h3>
             </div>  
-        )
+        );
     }
 
     let renderedArticles;
@@ -55,7 +55,7 @@ function UserArticleList(props) {
                         date={ toRender }
                         key={ el.article_id } 
                         like_count={ el.likes }
-                    />
+                    />;
         });
     } else {
         let date = article.date.split(/[A-z]{1}/);
@@ -74,16 +74,17 @@ function UserArticleList(props) {
                                 date={ toRender }
                                 key={ article.article_id } 
                                 like_count={ article.likes }
-                            />
+                            />;
     }
 
     return (
         <div id="articles">
             { renderedArticles }
         </div>
-    )
+    );
 }
 UserArticleList.propTypes = {
+    token: propTypes.string.isRequired,
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
@@ -99,5 +100,5 @@ UserArticleList.propTypes = {
         country: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
-}
+};
 export default UserArticleList; 

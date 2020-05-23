@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import propsTypes from "prop-types";
 
 function Comments(props) {
@@ -35,7 +35,7 @@ function Comments(props) {
                 article_id: article_id
             };
 
-            let newComments
+            let newComments;
             if (props.comments) {
                 let arrayedComments = [...comments];
                 arrayedComments.unshift(obj);
@@ -45,8 +45,8 @@ function Comments(props) {
             }
             
             setComments(newComments);
-        }
-    }
+        };
+    };
 
     let renderedComments;
     if (props.comments || comments) {
@@ -58,8 +58,8 @@ function Comments(props) {
                     <p>{ element.text }</p>
                     <h4>{ element.date }</h4>
                 </div>
-            )
-        })
+            );
+        });
         return (
             <div className="comments">
                  <form className="comment" name="send_comment" id={ props.article_id }>
@@ -68,12 +68,12 @@ function Comments(props) {
                 </form>
                 { renderedComments }
             </div>
-        )
+        );
 
     } else {
         return (
             <div></div>
-        )
+        );
     }
 }
 
@@ -85,6 +85,6 @@ Comments.propsTypes = {
         name: propsTypes.string,
         avatar_url_icon: propsTypes.string
     })
-}
+};
 
-export default Comments
+export default Comments;

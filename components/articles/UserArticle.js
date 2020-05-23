@@ -53,7 +53,7 @@ function UserArticle(props) {
         <div className="article" >
             <h4>Autor: { props.userData.name }</h4>
             <Link to={ "/users/" + props.userData.user_id }>
-                <img src={ "/assets/img/" + props.userData.avatar_url_icon )}/>
+                <img src={ "/assets/img/" + props.userData.avatar_url_icon}/>
             </Link>
             
             <h3>{ props.title} </h3>
