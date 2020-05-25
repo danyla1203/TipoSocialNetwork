@@ -1,28 +1,29 @@
 const fs = require("fs");
 const express = require("express");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const session = require("express-session");
-const cookieParser = require('cookie-parser');
-const mysql = require('mysql');
+const cookieParser = require("cookie-parser");
+const mysql = require("mysql");
 const multer = require("multer");
 const path = require("path");
+const dotenv = require("dotenv").config();
 const sqlMaker = require("./test_liba").createDb();
 
 const UserModel = require("./models/UserModel").UserModel;
 const ArticleModel = require("./models/ArticleModel").ArticleModel;
 const FriendsModel = require("./models/FriendsModel").FriendsModel;
 
-const jwtKey = "myKey";
+const jwtKey = process.env.JWT_KEY;
 
 const upload = multer({ dest: path.join(__dirname, "/uploads") });
 const app = express();
 const pool = mysql.createPool({
     connectionLimit: 5,
-    host: "localhost",
-    user: "danyla1203",
-    database: "Test",
-    password: "root"
-})
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASS
+});
 
 let userModel = new UserModel(pool, sqlMaker);
 let articleModel = new ArticleModel(pool, sqlMaker);
@@ -39,11 +40,11 @@ module.exports.jwtKey = jwtKey;
 
 const checkToken = require("./middlewares/checkJwtToken");
 app.use(cookieParser());
-app.use(session({ secret: 'danyla1203' }));
-app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next()});
+app.use(session({ secret: "danyla1203" }));
+app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next();});
 app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/data/*", checkToken)
+app.use("/data/*", checkToken);
 
 //require handlers
 let Articles = require("./endpoints/Articles");
@@ -61,9 +62,9 @@ let handelrs = [
     new Messages(),
     new Users(userModel)
 ];
-handelrs.map((el) => { el.run() });  
+handelrs.map((el) => { el.run(); });  
 
-app.get("/favicon.ico", (req, res) => { res.setHeader("Cache-Control", "public, max-age=14400"); res.end() })
+app.get("/favicon.ico", (req, res) => { res.setHeader("Cache-Control", "public, max-age=14400"); res.end(); });
 
 app.get("/data/news", (req, res) => {
     let sql = sqlMaker
@@ -77,8 +78,8 @@ app.get("/data/news", (req, res) => {
     pool.query(sql, (err, result) => {
         if (err) throw err;
         res.end(JSON.stringify(result));
-    })
-})
+    });
+});
 
 
 app.all("*", (req, res) => {
@@ -87,6 +88,8 @@ app.all("*", (req, res) => {
         res.setHeader("Cache-Control", "public, max-age=7200");
         res.send(file);
     });
-})
+});
 
-app.listen(3003);
+app.listen(process.env.PORT, () => {
+    console.log("Listen on port " + process.env.PORT);
+});
