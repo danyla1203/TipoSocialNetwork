@@ -6,11 +6,11 @@ function where(expression) {
 function on(values) {
     let returnSql = `${this.sql} ON ${values}`;
     return {
-        toString: () => { return returnSql },
+        toString: () => { return returnSql; },
         sql: returnSql,
         where: where,
         join: join
-    }
+    };
 }
 
 function join(table) {
@@ -19,17 +19,27 @@ function join(table) {
     return {
         sql: sql,
         on: on
-    }
+    };
+}
+
+function leftJoin(table) {
+    let sql = this.sql;
+    sql = `${sql} LEFT JOIN ${table}`;
+    return {
+        sql: sql,
+        on: on
+    };
 }
 
 function from(tbName) {
     let returnSql = `${this.sql}FROM ${tbName}`;
     return {
-        toString: () => { return this.sql },
+        toString: () => { return this.sql; },
         sql: returnSql,
         join: join,
+        leftJoin: leftJoin,
         where: where
-    }
+    };
 }
 
 function select(params) {
@@ -52,7 +62,7 @@ function select(params) {
     return {
         sql: sql,
         from: from
-    }
+    };
 }
 
 function setForUpdate(valuesObj) {
@@ -61,7 +71,7 @@ function setForUpdate(valuesObj) {
     let count = 0;
     let length = Object.keys(valuesObj).length;
     for (let column in valuesObj) {
-        count++
+        count++;
         if (count == length) {
             sql += ` ${column} = "${valuesObj[column]}" `;
             break;
@@ -73,7 +83,7 @@ function setForUpdate(valuesObj) {
     return {
         sql: sql,
         where: where
-    }
+    };
 }
 
 function update(table) {
@@ -81,7 +91,7 @@ function update(table) {
     return {
         sql: sql,
         set: setForUpdate
-    }
+    };
 }
 
 function deleteItem(tableName) {
@@ -90,7 +100,7 @@ function deleteItem(tableName) {
     return {
         sql: sql,
         where: where
-    }
+    };
 }
 
 function setForInsert(valuesObj) {
@@ -163,7 +173,7 @@ function insert(tableName) {
         sql: sql,
         set: setForInsert,
         setMany: setMany
-    }
+    };
 }
 
 function createDb() {
@@ -172,7 +182,7 @@ function createDb() {
         select: select,
         update: update,
         delete: deleteItem
-    }
+    };
 }
 
 module.exports.createDb = createDb;
