@@ -5,15 +5,27 @@ class ArticleModel extends Model {
             .select(["*"])
             .from("articles")
             .where(`article_id = ${article_id} AND user_id = ${user_id}`);
-            this.pool.query(article, callback);
+        this.pool.query(article, callback);
     }
 
     getArticles(user_id, callback) {
         let articles = this.sqlMaker
-            .select(["*"])
+            .select()
             .from("articles")
-            .where(`user_id = ${user_id} ORDER BY article_id DESC`);
-        this.pool.query(articles, callback);
+            .leftJoin("article_photos")
+            .on("articles.article_id = article_photos.article_id")
+            .where(`articles.user_id = ${user_id} ORDER BY articles.article_id DESC`);
+        
+        this.pool.query(articles, (err, result) => {
+            if (err) throw err;
+            let returnData = result[0];
+            if (result.length > 1) {
+                for (let i = 0; i < result.length - 1; i++) {
+                    returnData.path += `,${result[i].path}`;
+                }
+            }
+            callback(returnData);
+        });
     }
 
     updateArticle(article_id, title, text, callback) {

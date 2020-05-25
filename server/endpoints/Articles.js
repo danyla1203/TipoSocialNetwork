@@ -84,8 +84,7 @@ class Articles extends Endpoint{
         });
         
         app.get("/data/articles/:user_id", (req, res) => { 
-            this.model.getArticles(req.params.user_id, (err, result) => {
-                if (err) throw err;
+            this.model.getArticles(req.params.user_id, (result) => {
                 res.setHeader("Cache-Control", "public, max-age=60");
                 res.end(JSON.stringify(result));
             });
