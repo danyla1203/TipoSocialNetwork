@@ -12,9 +12,9 @@ class Comments extends Endpoint{
                       "WHERE article_id = " + req.params.article_id + " ORDER BY comment_id DESC";
             pool.query(sql, (err, result) => {
                 if (err) throw err;
-                res.end(result);
-            })
-        })
+                res.end(JSON.stringify(result));
+            });
+        });
         
         app.post("/data/comments/add/:article_id", upload.none(), (req, res) => {
             let article_id = req.params.article_id;
@@ -27,7 +27,7 @@ class Comments extends Endpoint{
                 if (err) throw err;
                 res.end(JSON.stringify(result));
             });
-        })
+        });
     }
 }
 module.exports = Comments;
