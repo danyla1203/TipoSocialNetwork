@@ -18,18 +18,17 @@ class Articles extends Endpoint{
         return insertDate;
     }
 
-    updateArticle(article, user_id) {
+    updateArticle(article, user_id, body, callback) {
         this.model.getArticle(article, user_id, (err, result) => {
             if (err) throw err;
     
             if (result.length > 0) {
-                let title = req.body.title;
-                let text = req.body.text;
-                let article_id = req.params.article_id;
-                let photos_list = req.body.photos_list;
+                let title = body.title;
+                let text = body.text;
+                let photos_list = body.photos_list;
     
-                this.model.updatePhotos(article_id, photos_list, (err) => { if(err) throw err });
-                this.model.updateArticle(article_id, title, text, (err) => { if(err) throw err });
+                this.model.updatePhotos(article, photos_list, (err) => { if(err) throw err; });
+                this.model.updateArticle(article, title, text, callback);
             }
         });
     }
@@ -61,15 +60,14 @@ class Articles extends Endpoint{
         app.put("/data/article/:article_id", upload.none(), (req, res) => {
             let article = req.params.article_id;
             let user = req.user;
-            this.updateArticle(article, user.user_id, (err) => {
+            this.updateArticle(article, user.user_id, req.body, (err) => {
                 if (err) res.sendStatus(404);
                 res.end("Updated");
             });
         });
         
         app.get("/data/article/:article_id", (req, res) => {
-            this.model.getArticle(req.params.article_id, req.user.user_id, (err, result) => {
-                if (err) throw err;
+            this.model.getArticle(req.params.article_id, req.user.user_id, (result) => {
                 res.end(JSON.stringify(result));
             });
         });
@@ -85,7 +83,7 @@ class Articles extends Endpoint{
         
         app.get("/data/articles/:user_id", (req, res) => { 
             this.model.getArticles(req.params.user_id, (result) => {
-                res.setHeader("Cache-Control", "public, max-age=60");
+                res.setHeader("Cache-Control", "30");
                 res.end(JSON.stringify(result));
             });
         });
