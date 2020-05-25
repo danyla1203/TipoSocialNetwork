@@ -10,7 +10,7 @@ class ArticleModel extends Model {
 
     getArticles(user_id, callback) {
         let articles = this.sqlMaker
-            .select()
+            .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
             .from("articles")
             .leftJoin("article_photos")
             .on("articles.article_id = article_photos.article_id")
@@ -18,10 +18,19 @@ class ArticleModel extends Model {
         
         this.pool.query(articles, (err, result) => {
             if (err) throw err;
-            let returnData = result[0];
+            let returnData = [];
             if (result.length > 1) {
-                for (let i = 0; i < result.length - 1; i++) {
-                    returnData.path += `,${result[i].path}`;
+                for (let i = 0; i < result.length; i++) {
+                    let currentRecord = result[i];
+                    for (let j = i + 1; j < result.length; j++) {
+                        if (result[j].article_id != currentRecord.article_id) {
+                            break;
+                        } else {
+                            currentRecord.path += `,${result[j].path}`;
+                            i++;
+                        }
+                    }
+                    returnData.push(currentRecord);
                 }
             }
             callback(returnData);
