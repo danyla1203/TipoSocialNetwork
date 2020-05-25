@@ -2,10 +2,20 @@ const Model = require("./Model");
 class ArticleModel extends Model {
     getArticle(article_id, user_id, callback) {
         let article = this.sqlMaker
-            .select(["*"])
+            .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
             .from("articles")
-            .where(`article_id = ${article_id} AND user_id = ${user_id}`);
-        this.pool.query(article, callback);
+            .join("article_photos")
+            .on("articles.article_id = article_photos.article_id")
+            .where(`articles.article_id = ${article_id} AND articles.user_id = ${user_id}`);
+            
+        this.pool.query(article, (err, result) => {
+            if (err) throw err;
+            let returnData = result[0];
+            for (let i = 1; i < result.length; i++) {
+                returnData.path += `,${result[i].path}`;
+            }
+            callback(returnData);
+        });
     }
 
     getArticles(user_id, callback) {
