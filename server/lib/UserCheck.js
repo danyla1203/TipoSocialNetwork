@@ -33,7 +33,7 @@ class UserCheck {
                     res.end(JSON.stringify(result));
                 },
                 () => {
-                    res.status(404);
+                    res.status(400);
                     res.end("{}");
                 }
             );

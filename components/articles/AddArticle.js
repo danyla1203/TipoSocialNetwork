@@ -140,11 +140,6 @@ function AddArticle(props) {
         };
     };
     let deleteImg = (filename) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("DELETE", `/data/delete-picture/${filename}`);
-        xhr.setRequestHeader("Authentication", props.token);
-        xhr.send();
-
         let newState = Object.assign({}, articleData);
         let newPhotosList = newState.photos.filter((el) => {
             if (el.fileName != filename) {
@@ -192,10 +187,10 @@ function AddArticle(props) {
         xhr.setRequestHeader("Authentication", props.token);
         xhr.send();
 
-        let result = JSON.parse(xhr.response)[0];
+        let result = JSON.parse(xhr.response);
         let title = result.title;
         let textOut = result.text;
-        let photosList = result.photos_list || "";
+        let photosList = result.path || "";
 
         let i = 0;
         photosList = photosList.split(",").map((el) => {

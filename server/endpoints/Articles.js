@@ -19,10 +19,8 @@ class Articles extends Endpoint{
     }
 
     updateArticle(article, user_id, body, callback) {
-        this.model.getArticle(article, user_id, (err, result) => {
-            if (err) throw err;
-    
-            if (result.length > 0) {
+        this.model.getArticle(article, user_id, (result) => {
+            if (result) {
                 let title = body.title;
                 let text = body.text;
                 let photos_list = body.photos_list;
@@ -41,7 +39,6 @@ class Articles extends Endpoint{
             let title = req.body.title;
             let text = req.body.text;
             let date = this.getDate();
-            
             if (req.user.user_id == req.params.user_id) {
                 this.model.insertArticle(title, text, req.params.user_id, photos_list,  date, (err, result) => {
                     if (err) throw err;
@@ -84,6 +81,7 @@ class Articles extends Endpoint{
         app.get("/data/articles/:user_id", (req, res) => { 
             this.model.getArticles(req.params.user_id, (result) => {
                 res.setHeader("Cache-Control", "30");
+                
                 res.end(JSON.stringify(result));
             });
         });

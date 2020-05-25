@@ -56,9 +56,12 @@ class ArticleModel extends Model {
     }
 
     updatePhotos(article_id, photos_list, callback) {
+        if (!photos_list) {
+            return;
+        }
         let updatePhotosForArticle = this.sqlMaker
             .update("article_photos")
-            .set({ path: photos_list || "" })
+            .set({ path: photos_list })
             .where(`article_id = ${article_id}`);
         this.pool.query(updatePhotosForArticle, callback);
     }
