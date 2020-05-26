@@ -40,7 +40,8 @@ Home.propTypes = {
         email: propTypes.string,
         country: propTypes.string,
         avatar_url_full: propTypes.string,
+        avatar_url_icon: propTypes.string,
     })
-}
+};
 
 export default Home;
