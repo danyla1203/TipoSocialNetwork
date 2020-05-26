@@ -29,7 +29,7 @@ function Comments(props) {
             let obj = {
                 comment_id: comment_id,
                 autor_id: sender.id,
-                avatar_url_icon: sender.avatar_url_icon,
+                avatar_url_icon: sender.avatar_url,
                 date: "2009-12-30T09:30:23.000Z",
                 text: text,
                 article_id: article_id
@@ -43,7 +43,6 @@ function Comments(props) {
             } else {
                 newComments = [obj];
             }
-            
             setComments(newComments);
         };
     };
