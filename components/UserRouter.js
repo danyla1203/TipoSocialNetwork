@@ -15,8 +15,7 @@ import HelloPage from "./HelloPage";
 import Header from "./Header";
 
 function UserRouter(props) {
-    let user = props.smallUser;
-    let fullUser = props.fullUser;
+    let user = props.user;
     let thisProps = props;
     let token = props.token;
     return (
@@ -27,7 +26,7 @@ function UserRouter(props) {
                     <HelloPage token={token} name={ user.name } />
                 </Route>
                 <Route exact path="/user" >
-                    <Home user={ fullUser } token={token}/>
+                    <Home user={ user } token={token}/>
                 </Route>
 
                 <Route exact path="/users/list" >
@@ -47,7 +46,7 @@ function UserRouter(props) {
                 />
 
                 <Route exact path="/settings">
-                    <Settings token={token} userData={ fullUser } changeUserData={ props.changeUserData }/>
+                    <Settings token={token} userData={ user } changeUserData={ props.changeUserData }/>
                 </Route>
 
                 <Route exact path="/add-article">
@@ -63,7 +62,7 @@ function UserRouter(props) {
                 </Route>
 
                 <Route exact path="/news">
-                    <News guest _user={ user } token={token}/>
+                    <News guest_user={ user } token={token}/>
                 </Route>
                 
                 <Route>Error 404.</Route>
@@ -75,21 +74,14 @@ function UserRouter(props) {
 UserRouter.propTypes = {
     token: propTypes.string.isRequired,
     changeUserData: propTypes.func.isRequired,
-    fullUser: propTypes.exact({
+    user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
         email: propTypes.string,
         country: propTypes.string,
         gender: propTypes.string,
         avatar_url_full: propTypes.string,
-    }),
-    smallUser: propTypes.exact({
-        user_id: propTypes.number,
-        name: propTypes.string,
-        country: propTypes.string,
-        email: propTypes.string,
-        gender: propTypes.string,
-        avatar_url_icon: propTypes.string,
+        avatar_url_icon: propTypes.string
     }),
 };
 

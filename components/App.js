@@ -91,15 +91,10 @@ class App extends Component {
         }
 
         if (this.state.isLogin) { 
-            let smallUser = Object.assign({}, stateUser);
-            let fullUser = Object.assign({}, stateUser);   
-            
-            delete fullUser.avatar_url_icon;
-            delete smallUser.avatar_url_full;
+           
             return (
                 <UserRouter 
-                    fullUser={ fullUser } 
-                    smallUser = { smallUser } 
+                    user = { stateUser }
                     changeUserData = { this.changeUserData }
                     token = { this.state.token }
                 />
