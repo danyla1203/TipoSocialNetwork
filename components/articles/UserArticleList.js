@@ -55,6 +55,8 @@ function UserArticleList(props) {
                         date={ toRender }
                         key={ el.article_id } 
                         like_count={ el.likes }
+                        token={ props.token } 
+                        photos={ el.path }
                     />;
         });
     } else {
@@ -72,7 +74,9 @@ function UserArticleList(props) {
                                 title={ article.title } 
                                 text={ article.text } 
                                 date={ toRender }
-                                key={ article.article_id } 
+                                key={ article.article_id }
+                                photos={ article.path }
+                                token={ props.token } 
                                 like_count={ article.likes }
                             />;
     }
@@ -88,9 +92,11 @@ UserArticleList.propTypes = {
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,
-        avatar_url_full: propTypes.string,
+        gender: propTypes.string,
+        email: propTypes.string,
         country: propTypes.string,
-        gender: propTypes.string
+        avatar_url_full: propTypes.string,
+        avatar_url_icon: propTypes.string,
     }),
     guest_user: propTypes.exact({
         user_id: propTypes.number,
@@ -98,6 +104,7 @@ UserArticleList.propTypes = {
         gender: propTypes.string,
         email: propTypes.string,
         country: propTypes.string,
+        avatar_url_full: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
 };

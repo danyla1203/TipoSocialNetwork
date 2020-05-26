@@ -4,14 +4,19 @@ import propTypes from "prop-types";
 import { Link } from "react-router-dom";
         
 import Comments from "../Comments";
+import PhotosList from "./PhotosList";
 import { processInputData } from "../user_func/textProcess";
 
 function UserArticle(props) {
     const [ comments, setComments ] = useState();
-    const [ buttonState ] = useState("Show");
+    const [ buttonState, toogleComments ] = useState("Show");
     
     let getComments = () => {
-        if (comments) {
+        if (comments && buttonState == "Close") {
+            toogleComments("Show");
+            return;
+        } else if (comments && buttonState == "Show") {
+            toogleComments("Close");
             return;
         }
         let xhr = new XMLHttpRequest();
@@ -20,6 +25,7 @@ function UserArticle(props) {
         xhr.send();
         xhr.onload = () => {
             setComments(JSON.parse(xhr.response));
+            toogleComments("Close");
         };
     };
     
@@ -36,14 +42,15 @@ function UserArticle(props) {
                             user_autor={ props.userData } 
                             comments={ comments }
                             guestData = { props.guestData }
-                            article_id={ props.article_id } 
+                            article_id={ props.article_id }
+                            token={ props.token }
                             addComment={ addComment }                                
                         />;
     } else {
         commentsList = "";
     }
 
-    let btnGetComments = <button onClick={ getComments }>{ buttonState}</button>;
+    let btnGetComments = <button onClick={ getComments }>{ buttonState }</button>;
     let showFullBtn = props.isFull ? <button onClick={ () => props.closeArticle (props.article_id) }>Close</button> :
                                      <button onClick={ () => props.openArticle(props.article_id) }>Show full</button>;
     
@@ -55,7 +62,7 @@ function UserArticle(props) {
             <Link to={ "/users/" + props.userData.user_id }>
                 <img src={ "/assets/img/" + props.userData.avatar_url_icon}/>
             </Link>
-            
+            <PhotosList photosString={ props.photos } article_id={ props.article_id }/>
             <h3>{ props.title} </h3>
             { textDiv }
             <h5>{ props.date }</h5>
@@ -71,7 +78,7 @@ function UserArticle(props) {
 
 UserArticle.propTypes = {
     token: propTypes.string.isRequired,
-
+    photos: propTypes.string,
     article_id: propTypes.number.isRequired,
     closeArticle: propTypes.func.isRequired,
     openArticle: propTypes.func.isRequired,
