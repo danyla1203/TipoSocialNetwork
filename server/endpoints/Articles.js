@@ -18,15 +18,15 @@ class Articles extends Endpoint{
         return insertDate;
     }
 
-    updateArticle(article, user_id, body, callback) {
-        this.model.getArticle(article, user_id, (result) => {
+    updateArticle(article_id, user_id, body, callback) {
+        this.model.getArticle(article_id, user_id, (result) => {
             if (result) {
                 let title = body.title;
                 let text = body.text;
                 let photos_list = body.photos_list;
-    
-                this.model.updatePhotos(article, photos_list, (err) => { if(err) throw err; });
-                this.model.updateArticle(article, title, text, callback);
+            
+                this.model.updatePhotos(article_id, photos_list, (err, result) => { if(err) throw err; });
+                this.model.updateArticle(article_id, title, text, callback);
             }
         });
     }
@@ -55,9 +55,9 @@ class Articles extends Endpoint{
         });
         
         app.put("/data/article/:article_id", upload.none(), (req, res) => {
-            let article = req.params.article_id;
+            let article_id = req.params.article_id;
             let user = req.user;
-            this.updateArticle(article, user.user_id, req.body, (err) => {
+            this.updateArticle(article_id, user.user_id, req.body, (err) => {
                 if (err) res.sendStatus(404);
                 res.end("Updated");
             });
@@ -65,6 +65,7 @@ class Articles extends Endpoint{
         
         app.get("/data/article/:article_id", (req, res) => {
             this.model.getArticle(req.params.article_id, req.user.user_id, (result) => {
+                
                 res.end(JSON.stringify(result));
             });
         });

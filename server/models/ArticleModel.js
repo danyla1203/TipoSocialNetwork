@@ -4,7 +4,7 @@ class ArticleModel extends Model {
         let article = this.sqlMaker
             .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
             .from("articles")
-            .join("article_photos")
+            .leftJoin("article_photos")
             .on("articles.article_id = article_photos.article_id")
             .where(`articles.article_id = ${article_id} AND articles.user_id = ${user_id}`);
             
@@ -14,6 +14,7 @@ class ArticleModel extends Model {
             for (let i = 1; i < result.length; i++) {
                 returnData.path += `,${result[i].path}`;
             }
+            console.log(result);
             callback(returnData);
         });
     }
@@ -55,15 +56,23 @@ class ArticleModel extends Model {
         this.pool.query(updateArticle, callback);
     }
 
-    updatePhotos(article_id, photos_list, callback) {
-        if (!photos_list) {
-            return;
-        }
-        let updatePhotosForArticle = this.sqlMaker
-            .update("article_photos")
-            .set({ path: photos_list })
+    updatePhotos(article_id, photosString, callback) {
+        let deletePhotos = this.sqlMaker
+            .delete("article_photos")
             .where(`article_id = ${article_id}`);
-        this.pool.query(updatePhotosForArticle, callback);
+        this.pool.query(deletePhotos, (err) => {
+            if (err) throw err;
+            
+            if (photosString.length > 1) {
+                let paths = photosString.split(",");
+                paths.map((el) => {
+                    let updatePhotosForArticle = this.sqlMaker
+                        .insert("article_photos")
+                        .set({ path: el, article_id: article_id }); 
+                    this.pool.query(updatePhotosForArticle, callback);
+                });
+            }
+        });
     }
 
     deleteArticle(article_id, callback) {
