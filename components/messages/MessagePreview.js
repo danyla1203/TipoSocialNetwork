@@ -22,11 +22,12 @@ function MessagePreview(props) {
     let messagesToRender;
     if (isOpen == "Open") {
         
-        return <UserMessages messages={ props.all_messages } 
-                             user2={ secondUser }    
-                             user_data={ props.user_data } 
-                             key={ secondUser.user_id }
-                            
+        return <UserMessages 
+                    messages={ props.all_messages } 
+                    user2={ secondUser }    
+                    user_data={ props.user_data } 
+                    key={ secondUser.user_id }
+                    token={ props.token }        
                 />;
     } else {
         messagesToRender = "";

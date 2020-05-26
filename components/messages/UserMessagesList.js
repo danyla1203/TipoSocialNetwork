@@ -5,7 +5,6 @@ import MessagePreview from "./MessagePreview";
 
 function UserMessagesList(props) {
     const [messages, setMessages] = useState(null);
-    const [socketInstance, setSocket] = useState(null);
 
     let getMessages = () => {
         if (messages) return;
@@ -64,6 +63,7 @@ function UserMessagesList(props) {
             i++;   
             return <MessagePreview
                         all_messages={ element }
+                        token={ props.token }
                         user_data={ props.user_data }
                         key={ i }
                    />;

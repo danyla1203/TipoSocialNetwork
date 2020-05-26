@@ -17,9 +17,10 @@ function UserMessages(props) {
         }
 
         return (
-            <Message text={ data.text }
-                     key={ data.message_id } 
-                     className={ className }
+            <Message 
+                text={ data.text }
+                key={ data.message_id } 
+                className={ className }
             />
         );
     };
