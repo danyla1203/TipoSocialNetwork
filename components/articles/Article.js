@@ -4,20 +4,19 @@ import DOMPurify from "dompurify";
 import { Link } from "react-router-dom";
 
 import Comments from "../Comments";
-import ArticleEditForm from "./ArticleEditForm";
 import { processInputData } from "../user_func/textProcess";
 import PhotosList from "./PhotosList";
 
 function Article(props) {
     const [comments, setComments] = useState(null);
     const [ buttonState, setButton ] = useState("Show");
-    const [ isEdit, setMode ] = useState("Read");
-    
-    const [ title, setTitle ] = useState(props.title);
-    const [ text, setText ] = useState(props.text);
 
     function getComments () {
-        if (comments) {
+        if (comments && buttonState == "Close") {
+            setButton("Show");
+            return;
+        } else if (comments && buttonState == "Show") {
+            setButton("Close");
             return;
         }
         let xhr = new XMLHttpRequest();
@@ -30,35 +29,6 @@ function Article(props) {
             setButton("Close");
         };
     }
-
-    function closeArticleEdit () {
-        setMode("Read");
-    }
-    function saveChangedArticle (title, text) {
-        let xhr = new XMLHttpRequest();
-        xhr.open("PUT", `/data/article/${props.article_id}`);
-        xhr.setRequestHeader("Authentication", props.token);
-        let body = new FormData();
-        body.append("title", title);
-        body.append("text", text);
-
-        xhr.send(body);
-
-        setTitle(title);
-        setText(text);
-        setMode("Read");
-    }
-
-    if (isEdit == "Edit") {
-        return (
-            <ArticleEditForm 
-                title={ title } 
-                text={ text } 
-                saveChanges={ saveChangedArticle }
-                closeWithoutChanges={ closeArticleEdit }
-            />
-        );
-    } 
 
     //show Comments?
     let commentsList;
@@ -74,8 +44,8 @@ function Article(props) {
     }
 
     let btnGetComments = <button onClick={ getComments }>{ buttonState}</button>;
-    let textDiv = props.isFull ? <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(text, false))}}></div> : 
-                              <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(text, true))}}></div>;
+    let textDiv = props.isFull ? <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(props.text, false))}}></div> : 
+                              <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(processInputData(props.text, true))}}></div>;
 
     let showFullBtn = props.isFull ? <button onClick={ () => props.closeArticle(props.article_id) }>Close</button> :
                                      <button onClick={ () => props.openArticle(props.article_id) }>Show full</button>;
@@ -84,13 +54,12 @@ function Article(props) {
         <div className="article">
             <PhotosList photosString={ props.photos } article_id={ props.article_id }/>
             <h4>Autor: { props.user.name }</h4>
-            <h3>{ title }</h3>
+            <h3>{ props.text }</h3>
             { textDiv }
             <h5>{ props.date }</h5>
             <div className="buttons">
                 { showFullBtn }
                 <button onClick={ () => props.delete(props.article_id) }>Delete</button>
-                <button onClick={ () => isEdit == "Read" ? setMode("Edit") : setMode("Read") }>Add some changes</button>
                 <button><Link to={"/edit-article/" + props.article_id}>Full edit</Link></button>
                 { btnGetComments }
             </div>
