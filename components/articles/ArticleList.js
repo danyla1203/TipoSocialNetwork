@@ -23,7 +23,6 @@ class ArticleList extends Component {
         xhr.open("GET", url);
         xhr.setRequestHeader("Authentication", this.props.token);
         xhr.send();
-        
         xhr.onload = () => {
             this.setState({
                 articles: JSON.parse(xhr.response)
@@ -74,7 +73,7 @@ class ArticleList extends Component {
                 let user = {
                     id: userProps.user_id,
                     name: userProps.name,
-                    avatar_url: userProps.avatar_url_full
+                    avatar_url: userProps.avatar_url_icon
                 };
                 let date = el.date.split(/[A-z]{1}/);
                 date[1] = date[1].split(":");
@@ -89,7 +88,7 @@ class ArticleList extends Component {
                                 title={ el.title } 
                                 text={ el.text } 
                                 date={ date2Render }
-                                photos={ el.photos_list }
+                                photos={ el.path }
                                 delete={ this.deleteArticle } 
                                 like_count={ el.likes }
                                 key={ el.article_id }         
@@ -170,6 +169,7 @@ ArticleList.propTypes = {
         email: propTypes.string,
         country: propTypes.string,
         avatar_url_full: propTypes.string,
+        avatar_url_icon: propTypes.string,
     })
 };
 

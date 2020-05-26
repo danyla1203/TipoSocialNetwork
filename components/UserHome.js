@@ -95,7 +95,7 @@ function UserHome(props) {
             <div id="user">
                 <div>                    
                     <div id="img" >
-                        <img src={ "/assets/img/" + (userData.avatar_url_full || "default_full.webp" ) } />    
+                        <img src={ "/assets/img/" + userData.avatar_url_full } />    
                     </div>
                     <div>
                         <div id="user-data">
@@ -125,8 +125,10 @@ UserHome.propTypes = {
         gender: propTypes.string,
         email: propTypes.string,
         country: propTypes.string,
+        avatar_url_full: propTypes.string,
         avatar_url_icon: propTypes.string,
     })
+    
 };
 
 export default UserHome;
