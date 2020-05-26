@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Redirect } from "react-router";
 
-import { formatText, findAffectedRow } from "../user_func/textProcess";
+import { formHandler as textProcess } from "../user_func/textProcess";
 import PhotosList from "./PhotosList";
 
 function AddArticle(props) {
@@ -41,80 +41,9 @@ function AddArticle(props) {
         };
     };
 
-    let normalizeNameForP = () => {
-        let pTags = document.getElementsByClassName("output_p");
-        for (let i = 0; i < pTags.length; i++) {    
-            pTags[i].attributes[0].value = i;
-        }
-    };
     let formHandler = (event) => {
         event.persist();
-        let titleOutput = document.getElementById("titleOut");
-        let textOutput = document.getElementById("textOut");
-        
-        if (event.target.name == "title") {
-            titleOutput.innerHTML = event.target.value;
-
-        } else if (event.target.name == "text") {
-            let inputText = event.target.value;
-            if (inputText == "") {
-                textOutput.value = ""; 
-            }
-
-            let splitedText = inputText.split("\n");
-
-            if (oldStringArray.length >= 1) {              
-                if (splitedText.length > oldStringArray.length) {
-                    //many bugs...
-                    let pIndexForAdd = findAffectedRow(splitedText, oldStringArray);
-                    let pBefore = document.querySelector(`p[data_id="${pIndexForAdd - 1}"]`);
-                    pBefore.insertAdjacentHTML("afterend", `<p data_id="${pIndexForAdd}" class="output_p"></p>`);
-
-                } else if (splitedText.length < oldStringArray.length) {
-                    //done for 85%.
-                    let pIndexForDelete = findAffectedRow(oldStringArray, splitedText);
-                    let pTags = document.getElementsByClassName("output_p");
-                    let nextPTagIndex = pIndexForDelete + countPForDelete;
-                    console.log(nextPTagIndex, splitedText);
-
-                    let countPForDelete = oldStringArray.length - splitedText.length;
-                    for (let i = 0; i < countPForDelete; i++) {
-                        pTags[pIndexForDelete].remove();
-                    }
-
-                
-                } else if (splitedText.length == oldStringArray.length) {
-                    //done 100%
-                    for (let i = 0; i < splitedText.length; i++) {
-                        if (splitedText[i] != oldStringArray[i]) {
-                            let formatedText = formatText(splitedText[i]);
-                            
-                            let pTags = document.getElementsByTagName("p");
-                            pTags[i].innerHTML = formatedText === undefined ? "" : formatedText;
-                        }
-                    }
-                    
-                    
-                }
-                normalizeNameForP();
-                oldStringArray = splitedText;
-
-            } else {
-                let pTags = "";
-                for (let i = 0; i < splitedText.length; i++) {
-                    pTags += `<p data_id="${i}" class="output_p"></p>`;
-                }
-                textOutput.innerHTML = pTags;
-
-                for (let i = 0; i < splitedText.length; i++) {
-                    let dataToP = formatText(splitedText[i]);
-                    let p = document.querySelector(`p[data_id="${i}"]`);
-                    p.innerHTML = dataToP;
-                }
-                oldStringArray = splitedText;
-            }
-
-        }
+        textProcess(event);
     };
 
     let uploadPhoto = (e) => {

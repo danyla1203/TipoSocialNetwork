@@ -54,7 +54,7 @@ function Article(props) {
         <div className="article">
             <PhotosList photosString={ props.photos } article_id={ props.article_id }/>
             <h4>Autor: { props.user.name }</h4>
-            <h3>{ props.text }</h3>
+            <h3>{ props.title }</h3>
             { textDiv }
             <h5>{ props.date }</h5>
             <div className="buttons">
