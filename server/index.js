@@ -7,6 +7,8 @@ const mysql = require("mysql");
 const multer = require("multer");
 const path = require("path");
 const dotenv = require("dotenv").config();
+const redis = require("redis"); 
+const RedisStore = require("connect-redis")(session);
 const sqlMaker = require("./test_liba").createDb();
 
 const UserModel = require("./models/UserModel").UserModel;
@@ -24,6 +26,10 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASS
 });
+const redisClient = redis.createClient(6379);
+redisClient.on("error", (err) => {
+  console.error(err);
+});
 
 let userModel = new UserModel(pool, sqlMaker);
 let articleModel = new ArticleModel(pool, sqlMaker);
@@ -37,15 +43,24 @@ module.exports.upload = upload;
 module.exports.pool = pool;
 module.exports.makeSql = sqlMaker;
 module.exports.jwtKey = jwtKey;
+module.exports.redis = redisClient;
 
 const checkToken = require("./middlewares/checkJwtToken");
+app.use(session({
+    store: new RedisStore({ host: "localhost", port: 6379, client: redisClient, ttl: 260 }),
+    secret: "danyla1203",
+    saveUninitialized: false,
+    resave: false,
+}));
 app.use(cookieParser());
-app.use(session({ secret: "danyla1203" }));
-app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=3600"); next();});
+app.use("/assets", (req, res, next) => { res.setHeader("Cache-Control", "public, max-age=10000000"); next();});
 app.use("/assets", express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/data/*", checkToken);
-
+app.use("/data/*", (req, res, next) => {
+    console.log(req.session, "session");
+    next();
+});
 //require handlers
 let Articles = require("./endpoints/Articles");
 let Comments = require("./endpoints/Comments");
@@ -85,7 +100,7 @@ app.get("/data/news", (req, res) => {
 app.all("*", (req, res) => {
     fs.readFile("public/index.html", "utf8", (err, file) => {
         if (err) throw err;
-        res.setHeader("Cache-Control", "public, max-age=7200");
+        res.setHeader("Cache-Control", "public, max-age=3600");
         res.send(file);
     });
 });
