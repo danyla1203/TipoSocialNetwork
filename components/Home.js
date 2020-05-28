@@ -25,14 +25,12 @@ function Home(props) {
             </div>
             <ArticleList
                 user={ userData } 
-                token={ props.token }
             />
         </div>
     );
 }
 
 Home.propTypes = {
-    token: propTypes.string.isRequired,
     user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

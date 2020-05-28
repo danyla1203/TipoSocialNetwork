@@ -4,6 +4,7 @@ import Header from "./Header";
 
 import App from "./App";
 
+window.token = null;
 function Main() {
     return (
         <App />

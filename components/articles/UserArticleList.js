@@ -22,10 +22,11 @@ function UserArticleList(props) {
     if(!articles) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/articles/" + props.userData.user_id);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             let result = JSON.parse(xhr.response);
             setArticles(result);
         };
@@ -55,7 +56,6 @@ function UserArticleList(props) {
                         date={ toRender }
                         key={ el.article_id } 
                         like_count={ el.likes }
-                        token={ props.token } 
                         photos={ el.path }
                     />;
         });
@@ -76,7 +76,6 @@ function UserArticleList(props) {
                                 date={ toRender }
                                 key={ article.article_id }
                                 photos={ article.path }
-                                token={ props.token } 
                                 like_count={ article.likes }
                             />;
     }
@@ -88,7 +87,6 @@ function UserArticleList(props) {
     );
 }
 UserArticleList.propTypes = {
-    token: propTypes.string.isRequired,
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

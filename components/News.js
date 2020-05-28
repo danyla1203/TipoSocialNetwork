@@ -23,10 +23,11 @@ function News(props) {
     if (!newsList) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/news");
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             setNews(JSON.parse(xhr.response));
         };
     }
@@ -98,7 +99,6 @@ function News(props) {
 }
 
 News.propTypes = {
-    token: propTypes.string.isRequired,
     guest_user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

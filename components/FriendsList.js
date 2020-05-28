@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { propTypes } from "prop-types";
+import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function FriendsList(props) {
+function FriendsList() {
     const [ friendsList, setFriends ] = useState(false);
 
     let getFriend = (data) => {
@@ -20,16 +20,17 @@ function FriendsList(props) {
         );
     };
 
-    let getFriendsList = () => {
+    let getFriendsList = () => {    
         if (friendsList) {
             return;
         } else {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", "/data/friends");
-            xhr.setRequestHeader("Authentication", props.token);
+            xhr.setRequestHeader("Authentication", window.token);
             xhr.send();
             
             xhr.onload = () => {
+                window.token = xhr.getResponseHeader("Authentication");
                 let list = [];
                 let res = JSON.parse(xhr.response);
                 for (let i = 0; i < res.length; i++) {
@@ -50,8 +51,5 @@ function FriendsList(props) {
     );
 }
 
-FriendsList.propTypes = {
-    token: propTypes.string.isRequired
-};
 
 export default FriendsList;

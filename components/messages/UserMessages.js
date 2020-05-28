@@ -39,8 +39,11 @@ function UserMessages(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", `/data/messages/add/${props.user2.user_id}/${props.user2.name}`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send(formData);
+        xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
+        };
         
         let id = messages[messages.length - 1].key ? messages[messages.length - 1].key + 1 : 0;
         let recipient_id = messages[0].recipient_id == props.user_data.id ? messages[0].sender_id : messages[0].recipient_id;

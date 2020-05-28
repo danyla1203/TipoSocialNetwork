@@ -8,9 +8,11 @@ function UsersList(props) {
     let addFriend = (user_id) => {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/add/friends/${user_id}`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
-
+        xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
+        };
         let newState = [];
         for (let i = 0; i < usersList.length; i++) {
             newState.push(usersList[i]);
@@ -23,9 +25,12 @@ function UsersList(props) {
 
     let deleteFriend = (user_id) => {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/delete/friends/${user_id}`);
+        xhr.open("DELETE", `/data/friends/${user_id}`);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
-
+        xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
+        };
         let newState = [];
         for (let i = 0; i < usersList.length; i++) {
             newState.push(usersList[i]);
@@ -62,12 +67,13 @@ function UsersList(props) {
     let loadUsers = () => {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/users?start=${start}&end=10`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             let prevUsers = usersList.concat(JSON.parse(xhr.response));
-
+            
             setUsers(prevUsers);
             setStart(start + 10);
         };
@@ -88,10 +94,11 @@ function UsersList(props) {
     if (typeof usersList == "string") {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/users?start=${start}&end=10`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             setUsers(JSON.parse(xhr.response));
             setStart(10);
         };

@@ -11,12 +11,12 @@ function UserMessagesList(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/messages/list");
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             let result = JSON.parse(xhr.response);
-            console.log(result);
             setMessages(result);
         };
     };
@@ -56,14 +56,12 @@ function UserMessagesList(props) {
 
     if (messages) {
         let groupMessages = getMessagesToRender();
-        console.log(groupMessages);
         
         let i = 0;
         let messages2Render = groupMessages.map((element) => {
             i++;   
             return <MessagePreview
                         all_messages={ element }
-                        token={ props.token }
                         user_data={ props.user_data }
                         key={ i }
                    />;

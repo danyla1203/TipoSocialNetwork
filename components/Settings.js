@@ -22,9 +22,10 @@ function Settings(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("PUT", `/data/user/${ props.userData.user_id }`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send(data);
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             props.changeUserData(JSON.parse(xhr.response));
             setSendState(true);
         };
@@ -58,7 +59,6 @@ function Settings(props) {
 }
 
 Settings.propTypes = {
-    token: propTypes.string.isRequired,
     userData: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

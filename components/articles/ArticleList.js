@@ -21,12 +21,13 @@ class ArticleList extends Component {
         let url = "/data/articles/" + this.props.user.user_id;
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url);
-        xhr.setRequestHeader("Authentication", this.props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
         xhr.onload = () => {
             this.setState({
                 articles: JSON.parse(xhr.response)
             });
+            window.token = xhr.getResponseHeader("Authentication");
         };
     }
 
@@ -46,8 +47,11 @@ class ArticleList extends Component {
     deleteArticle(id) {
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", `/data/delete/${id}`);
-        xhr.setRequestHeader("Authentication", this.props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
+        xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
+        };
 
         let newArticles = this.state.articles.filter((el) => {
             if (el.article_id != id) {
@@ -81,7 +85,6 @@ class ArticleList extends Component {
                 let isFull = isOne ? true : false;
                 return <Article user={ user } 
                                 article_id={ el.article_id }
-                                token={ this.props.token }
                                 openArticle={ this.showFullArticle }
                                 closeArticle={ this.closeArticle }
                                 isFull={ isFull }
@@ -111,8 +114,11 @@ class ArticleList extends Component {
 
         let xhr = new XMLHttpRequest();  
         xhr.open("POST", "/data/article/" + this.props.user.user_id);
-        xhr.setRequestHeader("Authentication", this.props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send(formData);
+        xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
+        };
         
         let id = null;
         if (articles.length == 0) {
@@ -161,7 +167,6 @@ class ArticleList extends Component {
 }
 
 ArticleList.propTypes = {
-    token: propTypes.string.isRequired,
     user: propTypes.exact({
         user_id: propTypes.number,
         name: propTypes.string,

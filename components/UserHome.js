@@ -4,18 +4,19 @@ import propTypes from "prop-types";
 
 function UserHome(props) {
     const [ messageState, setMessageState ] = useState("Close");  
-    const [ userData, setUser ] = useState(false);  
-    const [ isFriend, setFriend ] = useState("no");
+    const [ userData, setUser ] = useState(false);
+    const [ isFriend, setFriend ] = useState(false);
  
     let addFriend = () => {
         let id = userData.user_id;
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", `/data/friends/${id}`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.open("GET", `/data/add/friends/${id}`);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             console.log(xhr.response);
         };
         setFriend(true);
@@ -26,11 +27,11 @@ function UserHome(props) {
 
         let xhr = new XMLHttpRequest();
         xhr.open("DELETE", `/data/friends/${id}`);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
 
         xhr.onload = () => {
-            console.log(xhr.response);
+            window.token = xhr.getResponseHeader("Authentication");
         };
         setFriend(false);
     };
@@ -47,10 +48,11 @@ function UserHome(props) {
             let xhr = new XMLHttpRequest();
             
             xhr.open("POST", `/data/messages/add/${userData.user_id}/${userData.name}`);
-            xhr.setRequestHeader("Authentication", props.token);
+            xhr.setRequestHeader("Authentication", window.token);
             xhr.send(form);
 
             xhr.onload = () => {
+                window.token = xhr.getResponseHeader("Authentication");
                 console.log("Message added");
             };
         };
@@ -66,17 +68,12 @@ function UserHome(props) {
     if (!userData) {
         let xhr = new XMLHttpRequest(); 
         xhr.open("GET", `/data/user/${props.match.params.userID}`, false);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
-        setUser(JSON.parse(xhr.response)[0]);
-    }
-    
-    if (isFriend == "no") {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", `/data/is-friend/${props.match.params.userID}`, false);
-        xhr.setRequestHeader("Authentication", props.token);
-        xhr.send();
-        setFriend(JSON.parse(xhr.response));
+        window.token = xhr.getResponseHeader("Authentication");
+        let response = JSON.parse(xhr.response);
+        setUser(response);
+        setFriend(response.isFriend);
     }
 
     let form;
@@ -88,7 +85,6 @@ function UserHome(props) {
     
     let addFriendBtn = isFriend ? <h4>Your friend</h4> : <button onClick={ addFriend }>Add friend</button>;
     let deleteFriendBtn = isFriend ? <button onClick={ deleteFriend }>DISfriend</button> : "";
-    
     return (
         <div>
             
@@ -112,7 +108,7 @@ function UserHome(props) {
                 </div>
                 
             </div>
-            <UserArticleList userData={ userData } guest_user={ props.guest_user } token={ props.token }/>            
+            <UserArticleList userData={ userData } guest_user={ props.guest_user }/>            
         </div>
     );
 }

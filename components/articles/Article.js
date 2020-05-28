@@ -21,10 +21,11 @@ function Article(props) {
         }
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/comments/" + props.article_id);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
         
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             setComments(JSON.parse(xhr.response));
             setButton("Close");
         };
@@ -36,8 +37,7 @@ function Article(props) {
         commentsList = <Comments 
                             guestData={ props.user } 
                             comments={ comments } 
-                            article_id={ props.article_id }
-                            token = { props.token }     
+                            article_id={ props.article_id } 
                         />;
     } else {
         commentsList = "";
@@ -69,7 +69,6 @@ function Article(props) {
 }
 
 Article.propTypes = {
-    token: propTypes.string.isRequired,
     isFull: propTypes.bool.isRequired,
     article_id: propTypes.number.isRequired,
     text: propTypes.string.isRequired,

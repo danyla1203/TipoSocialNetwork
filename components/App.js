@@ -31,7 +31,8 @@ class App extends Component {
                 this.setError("Login Error");
             } else {
                 let token = xhr.getResponseHeader("Authentication");
-                this.setState({isLogin: true, userData: result, token: token});
+                window.token = token;
+                this.setState({isLogin: true, userData: result});
             }
         };
     }
@@ -71,11 +72,12 @@ class App extends Component {
                 return;
             } else {
                 let token = xhr.getResponseHeader("Authentication");
+                window.token = token;
                 this.setState({
                     isLogin: true,
                     userData: result,
-                    token: token
                 });
+
             }
         };
     }
@@ -91,12 +93,10 @@ class App extends Component {
         }
 
         if (this.state.isLogin) { 
-           
             return (
                 <UserRouter 
                     user = { stateUser }
                     changeUserData = { this.changeUserData }
-                    token = { this.state.token }
                 />
             );
         }

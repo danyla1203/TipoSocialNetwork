@@ -9,8 +9,6 @@ function AddArticle(props) {
     const [ isDone, setDone ] = useState(false);
     const [ articleData, setArticleData ] = useState(false);
 
-    let oldStringArray = [];
-
     let addArticle = () => {
         let xhr = new XMLHttpRequest();
 
@@ -29,14 +27,15 @@ function AddArticle(props) {
 
         if (props.isEdit) {
             xhr.open("PUT", `/data/article/${props.match.params.article_id}`);
-            xhr.setRequestHeader("Authentication", props.token);
+            xhr.setRequestHeader("Authentication", window.token);
             xhr.send(body);
         } else {
             xhr.open("POST", `/data/article/${props.user_id}`);
-            xhr.setRequestHeader("Authentication", props.token);
+            xhr.setRequestHeader("Authentication", window.token);
             xhr.send(body);
         }
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             setDone(true);
         };
     };
@@ -53,10 +52,11 @@ function AddArticle(props) {
         
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/data/add-picture");
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send(formData);
         
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             let buttons = articleData.photos ? [...articleData.photos] : [];
             let referenceId = buttons.length > 0 ? buttons[buttons.length - 1].id + 1: 0;
             buttons.push({
@@ -113,8 +113,9 @@ function AddArticle(props) {
     if (props.isEdit & !articleData) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `/data/article/${props.match.params.article_id}`, false);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
+        window.token = xhr.getResponseHeader("Authentication");
 
         let result = JSON.parse(xhr.response);
         let title = result.title;
@@ -174,8 +175,6 @@ function AddArticle(props) {
 } 
 
 AddArticle.propTypes = {
-    token: propTypes.string.isRequired,
-
     user_id: propTypes.number.isRequired,
     isEdit: propTypes.bool.isRequired
 };

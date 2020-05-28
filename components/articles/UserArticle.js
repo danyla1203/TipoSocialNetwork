@@ -21,9 +21,10 @@ function UserArticle(props) {
         }
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/data/comments/" + props.article_id);
-        xhr.setRequestHeader("Authentication", props.token);
+        xhr.setRequestHeader("Authentication", window.token);
         xhr.send();
         xhr.onload = () => {
+            window.token = xhr.getResponseHeader("Authentication");
             setComments(JSON.parse(xhr.response));
             toogleComments("Close");
         };
@@ -43,7 +44,6 @@ function UserArticle(props) {
                             comments={ comments }
                             guestData = { props.guestData }
                             article_id={ props.article_id }
-                            token={ props.token }
                             addComment={ addComment }                                
                         />;
     } else {
@@ -77,7 +77,6 @@ function UserArticle(props) {
 }
 
 UserArticle.propTypes = {
-    token: propTypes.string.isRequired,
     photos: propTypes.string,
     article_id: propTypes.number.isRequired,
     closeArticle: propTypes.func.isRequired,

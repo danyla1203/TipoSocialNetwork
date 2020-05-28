@@ -36,7 +36,7 @@ function PhotosList(props) {
         divs[currentDiv].removeAttribute("data-current");
         divs[currentDiv - 1].setAttribute("data-current", "");
     }
-    console.log(props);
+    
     if (!props.photosString) {
         return "";
     }
@@ -71,7 +71,7 @@ function PhotosList(props) {
 }
 
 PhotosList.propTypes = {
-    photosString: propTypes.string.isRequired,
+    photosString: propTypes.string,
     article_id: propTypes.number.isRequired
 };
 export default PhotosList;
