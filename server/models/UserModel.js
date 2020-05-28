@@ -3,11 +3,23 @@ const Model = require("./Model");
 class UserModel extends Model {
     getUsers(user_id, start, end, callback) {
         let users = this.sqlMaker
-            .select(["user_id", "name", "avatar_url_icon"])
+            .select(["user_id", "name", "avatar_url_icon", "user1_id"])
             .from("users")
+            .leftJoin("friends")
+            .on(`users.user_id = friends.user2_id and friends.user1_id = ${user_id}`)
             .where(`user_id <> ${user_id}`);
         users = `${users} LIMIT ${start}, ${end}`;
-        this.pool.query(users, callback);
+        this.pool.query(users, (err, result) => {
+            if (err) throw err;
+            for (let i = 0; i < result.length; i++) {
+                if (result[i].user1_id) {
+                    result[i].isFriend = true;
+                } else {
+                    result[i].isFriend = false;
+                }
+            }
+            callback(result);
+        });
     }
 
     getSecretUserData(user_id, callback) {
@@ -18,12 +30,23 @@ class UserModel extends Model {
         this.pool.query(user, callback);
     }
 
-    getUserData(user_id, callback) {
+    getUserData(user_id, id, callback) {
         let user = this.sqlMaker
-            .select(["user_id", "name", "country", "gender", "avatar_url_full"])
+            .select(["user_id", "name", "country", "gender", "avatar_url_full", "avatar_url_icon", "user1_id"])
             .from("users")
-            .where(`user_id = ${user_id}`);
-        this.pool.query(user, callback);
+            .leftJoin("friends")
+            .on("users.user_id = friends.user2_id")
+            .where(`users.user_id = ${user_id}`);
+        this.pool.query(user, (err, result) => {
+            if (err) throw err;
+            if (result[0].user1_id) {
+                result[0].isFriend = true;
+            } else {
+                result[0].isFriend = false;
+            }
+            delete result[0].user1_id;
+            callback(result[0]);
+        });
     }
 
     getSecretUserData(user_id, callback) {

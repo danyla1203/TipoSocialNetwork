@@ -8,22 +8,8 @@ class Users extends Endpoint {
             let start = req.query.start;
             let end = req.query.end;
 
-            this.model.getUsers(req.user.user_id, start, end, (err, usersList) => {
-                if (err) throw err;
-
-                this.model.getFriendsList(req.user.user_id, (err, friendsList) => {
-                    if (err) throw err;
-                    for (let i = 0; i < usersList.length; i++) {
-                        for (let j = 0; j < friendsList.length; j++) {
-                            if (usersList[i].user_id == friendsList[j].user_id) {
-                                usersList[i].isFriend = true;
-                                break;
-                            }
-                        }
-                    }
-                    res.setHeader("Cache-Control", "public, max-age=3600");
-                    res.end(JSON.stringify(usersList));
-                });
+            this.model.getUsers(req.user.user_id, start, end, (usersList) => {
+                res.json(usersList);
             });
         });
 
@@ -32,10 +18,9 @@ class Users extends Endpoint {
             if (id == req.user.user_id){
                 res.end();
             } 
-            this.model.getUserData(id, (err, result) => {
-                if (err) throw err;
+            this.model.getUserData(id, req.user.user_id, (result) => {
                 res.setHeader("Cache-Control", "public, max-age=900");
-                res.end(JSON.stringify(result));
+                res.json(result);
             });
         });
     }
