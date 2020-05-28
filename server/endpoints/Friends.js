@@ -7,8 +7,8 @@ class Friends extends Endpoint {
             this.model.getFriends(req.user.user_id, (err, result) => {
                 if (err) throw err;
                 res.end(JSON.stringify(result));
-            })    
-        })
+            });  
+        });
         
         app.get("/data/is-friend/:user2_id", (req ,res) => {
             this.model.isFriend(req.user.user_id, req.params.user2_id, (err, result) => {
@@ -19,14 +19,14 @@ class Friends extends Endpoint {
                 } else {
                     res.end("false");
                 }
-            })
+            });
         });
         
-        app.post("/data/friends/:user_id", (req, res) => {
+        app.get("/data/add/friends/:user_id", (req, res) => {
             this.model.addFriend(req.user.user_id, req.params.user_id, (err, result) => {
                 if (err) throw err;
                 res.end("added");
-            })
+            });
         });
         
         app.delete("/data/friends/:user_id", (req, res) => {
@@ -34,7 +34,7 @@ class Friends extends Endpoint {
                 if (err) throw err;
                 res.end("deleted");
             });
-        })
+        });
     }
 }
 module.exports = Friends;

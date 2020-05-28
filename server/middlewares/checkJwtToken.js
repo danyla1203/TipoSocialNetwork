@@ -6,10 +6,7 @@ const crypto = require("crypto");
 
 function checkToken(req, res, next) {
     let token = req.headers.authentication;
-    console.log(token, "check token");
-
     if (req.session.authCode == token) {
-        console.log("DICK");
         let hash = crypto.createHash("md5").update(makeId(20)).digest("hex");
         req.session.authCode = hash;
         res.set("Authentication", req.session.authCode);
@@ -21,7 +18,6 @@ function checkToken(req, res, next) {
         });
     } else if (!token && req.cookies.refresh_token) {
         //generate new authCode and ref token
-        console.log("NO AUTH CODE");
         let hash = crypto.createHash("md5").update(makeId(20)).digest("hex");
         req.session.authCode = hash;
         let refresh = jwt.sign({
