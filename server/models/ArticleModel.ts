@@ -1,6 +1,9 @@
-const Model = require("./Model");
-class ArticleModel extends Model {
-    getArticle(article_id, user_id, callback) {
+import { Model, ModelType } from "./Model";
+import { OkPacket, MysqlError } from "mysql";
+import { Article } from "../types/SqlTypes";
+
+export class ArticleModel extends Model implements ModelType {
+    getArticle(article_id: number, user_id: number, callback: Function) {
         let article = this.sqlMaker
             .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
             .from("articles")
@@ -8,7 +11,7 @@ class ArticleModel extends Model {
             .on("articles.article_id = article_photos.article_id")
             .where(`articles.article_id = ${article_id} AND articles.user_id = ${user_id}`);
             
-        this.pool.query(article, (err, result) => {
+        this.pool.query(article, (err: MysqlError, result: Article[]) => {
             if (err) throw err;
             let returnData = result[0];
             for (let i = 1; i < result.length; i++) {
@@ -19,7 +22,7 @@ class ArticleModel extends Model {
         });
     }
 
-    getArticles(user_id, callback) {
+    getArticles(user_id: number, callback: Function) {
         let articles = this.sqlMaker
             .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
             .from("articles")
@@ -27,7 +30,7 @@ class ArticleModel extends Model {
             .on("articles.article_id = article_photos.article_id")
             .where(`articles.user_id = ${user_id} ORDER BY articles.article_id DESC`);
         
-        this.pool.query(articles, (err, result) => {
+        this.pool.query(articles, (err: MysqlError, result: Article[]) => {
             if (err) throw err;
             let returnData = [];
             if (result.length > 1) {
@@ -48,7 +51,7 @@ class ArticleModel extends Model {
         });
     }
 
-    updateArticle(article_id, title, text, callback) {
+    updateArticle(article_id: number, title: string, text: string, callback: Function) {
         let updateArticle = this.sqlMaker
             .update("articles")
             .set({title: title, text: text})
@@ -56,7 +59,7 @@ class ArticleModel extends Model {
         this.pool.query(updateArticle, callback);
     }
 
-    updatePhotos(article_id, photosString, callback) {
+    updatePhotos(article_id: number, photosString: string, callback: Function) {
         let deletePhotos = this.sqlMaker
             .delete("article_photos")
             .where(`article_id = ${article_id}`);
@@ -75,13 +78,13 @@ class ArticleModel extends Model {
         });
     }
 
-    deleteArticle(article_id, callback) {
+    deleteArticle(article_id: number, callback: Function) {
         let deleteArticle = this.sqlMaker
             .delete("articles")
             .where(`article_id = ${article_id}`);
         this.pool.query(deleteArticle, callback);
     }
-    insertArticle(title, text, user_id, photos, date, callback) {
+    insertArticle(title: string, text: string, user_id: number, photos: string[], date: string, callback: Function) {
         let insertArticle = this.sqlMaker
             .insert("articles")
             .set({
@@ -111,5 +114,3 @@ class ArticleModel extends Model {
     }
 
 }
-
-module.exports.ArticleModel = ArticleModel;

@@ -1,6 +1,9 @@
-const Model = require("./Model");
-class FriendsModel extends Model {
-    getFriends(user_id, callback) {
+import { Model, ModelType } from "./Model";
+import { MysqlError, OkPacket } from "mysql";
+import { Friend } from "../types/SqlTypes";
+
+export class FriendsModel extends Model implements ModelType {
+    getFriends(user_id: number, callback: Function) {
         let sql = this.sqlMaker
                 .select(["id", "user_id", "avatar_url_icon", "name"])
                 .from("friends")
@@ -11,7 +14,7 @@ class FriendsModel extends Model {
         this.pool.query(sql, callback);
     }
 
-    isFriend(user1_id, user2_id, callback) {
+    isFriend(user1_id: number, user2_id: number, callback: Function) {
         let sql = this.sqlMaker
                 .select()
                 .from("friends")
@@ -20,12 +23,12 @@ class FriendsModel extends Model {
         this.pool.query(sql, callback);
     }
     
-    addFriend(user1_id, user2_id, callback) {
+    addFriend(user1_id: number, user2_id: number, callback: Function) {
         let isFriend;
-        this.getFriends(user1_id, (err, result) => {
+        this.getFriends(user1_id, (err: MysqlError, result: Friend[]) => {
             if (err) throw err;
             for (let i = 0; i < result.length; i++) {
-                if (parseInt(result[i].user2_id) == parseInt(user2_id)) {
+                if (result[i].user2_id == user2_id) {
                     isFriend = true;
                     return; 
                 }
@@ -46,7 +49,7 @@ class FriendsModel extends Model {
         }
     }
 
-    deleteFriend(user1_id, user2_id, callback) {
+    deleteFriend(user1_id: number, user2_id: number, callback: Function) {
         let sql = this.sqlMaker
             .delete("friends")
             .where(`user1_id = ${user1_id} AND user2_id = ${user2_id}`);
