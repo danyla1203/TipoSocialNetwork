@@ -86,7 +86,7 @@ export class UserModel extends Model {
                 .select(["user_id", "email", "name"])
                 .from("users");
 
-        return new Promise((resolve, reject) => {
+        return new Promise<number>((resolve, reject) => {
             this.pool.query(data, (err: MysqlError, result: CheckUserForExist[]) => {
                 if (err) throw err;
                 for (let i = 0; i < result.length; i++) {
