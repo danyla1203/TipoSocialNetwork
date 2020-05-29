@@ -46,3 +46,13 @@ export interface ChangeUserData {
     avatar_url_full?: string,
     avatar_url_icon?: string,
 }
+
+export interface Comments {
+    comment_id: number,
+    autor_id: number,
+    text: string,
+    date: string,
+    article_id: number,
+    name: string,
+    avatar_url_icon: string
+}
