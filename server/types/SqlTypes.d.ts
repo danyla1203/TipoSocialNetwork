@@ -56,3 +56,13 @@ export interface Comment {
     name: string,
     avatar_url_icon: string
 }
+
+export interface Message {
+    message_id: number,
+    recipient_id: number,
+    sender_id: number,
+    text: string,
+    time: string,
+    name: string,
+    avatar_url_icon: string,
+}

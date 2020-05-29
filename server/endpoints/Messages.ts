@@ -1,12 +1,15 @@
+import { Request, Response } from "express";
+import { MysqlError } from "mysql";
+import { Message } from "../types/SqlTypes";
+
 const app = require("../index").app;
 const upload = require("../index").upload;
 const pool = require("../index").pool;
 const makeSql = require("../index").makeSql;
-const Endpoint = require("./Endpoint");
 
-class Messages extends Endpoint {
+export class Messages {
     run() {
-        app.get("/data/messages/list", (req, res) => {
+        app.get("/data/messages/list", (req: Request, res: Response) => {
             let user = req.user.user_id;
             let sql = makeSql
                         .select(["message_id", "recipient_id", "sender_id", "text", "time", "user_id", "name", "avatar_url_icon"])
@@ -15,13 +18,13 @@ class Messages extends Endpoint {
                         .on("messages.sender_id = users.user_id OR messages.recipient_id = users.user_id")
                         .where(`(recipient_id = ${user} OR sender_id = ${user}) AND users.user_id <> ${user} ORDER BY message_id ASC`);
             
-            pool.query(sql, (err, result) => {
+            pool.query(sql, (err: MysqlError, result: Message[]) => {
                 if (err) throw err
                 res.end(JSON.stringify(result));
             })
         })
         
-        app.post("/data/messages/add/:user_id/:user_name", upload.none(), (req, res) => {
+        app.post("/data/messages/add/:user_id/:user_name", upload.none(), (req: Request, res: Response) => {
             let sender_id = req.user.user_id;
             let recipient_id = req.params.user_id;
         
@@ -36,12 +39,10 @@ class Messages extends Endpoint {
                             time: date
                         })
         
-            pool.query(sql, (err) => {
+            pool.query(sql, (err: MysqlError) => {
                 if (err) throw err;
             })
             res.end("Send");
         })
     }
 }
-
-module.exports = Messages;
