@@ -1,13 +1,20 @@
+import { UserModel } from "../models/UserModel";
+import { Request, Response } from "express";
+import { MysqlError } from "mysql";
+import { User } from "../types/SqlTypes";
+
 const jwtKey = require("../index").jwtKey;
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const makeId = require("./generateRand");
-class UserCheck {
-    constructor(model) {
+
+export class UserCheck {
+    model: UserModel;
+    constructor(model: UserModel) {
         this.model = model;
     }
 
-    generateJwt(id, name, email) {
+    generateJwt(id: number, name: string, email: string) {
         return jwt.sign({
             user_id: id,
             name: name,
@@ -15,14 +22,16 @@ class UserCheck {
         }, jwtKey, { expiresIn: "7d" });
     }
 
-    run(req, res) {
-        console.log(req.user);
+    run(req: Request, res: Response) {
         if (req.user) {
-            this.model.getSecretUserData(req.user.user_id, (err, result) => {
+            this.model.getSecretUserData(req.user.user_id, (err: MysqlError, result: User[]) => {
                 if (err) throw err;
                 let hash = crypto.createHash('md5').update(makeId(20)).digest("hex");
                 req.session.authCode = hash;
-                result.token = hash;
+                let returnObj = {
+                    token: hash,
+                }
+                Object.assign(returnObj, result);
                 req.session.user_id = result[0].user_id;
                 res.set("Authentication", hash);
                 delete result[0].password;
@@ -53,5 +62,3 @@ class UserCheck {
             );
     }
 }
-
-module.exports = UserCheck;

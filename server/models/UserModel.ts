@@ -107,12 +107,12 @@ export class UserModel extends Model {
         this.pool.query(newUser, callback);
     }
 
-    checkUser(name: string, pass: string, callback: Function) {
+    checkUser(name: string, pass: string) {
         let sql = this.sqlMaker
             .select()
             .from("users")
             .where(`name = "${name}" AND password = "${pass}"`);
-        return new Promise((resolve, reject) => {
+        return new Promise<User>((resolve, reject) => {
             this.pool.query(sql, (err: MysqlError, result: User[]) => {
                 if (err) throw err;
                 if (result.length == 1) {

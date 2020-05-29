@@ -27,6 +27,7 @@ export interface User {
     name: string,
     gender: string,
     country: string,
+    email: string,
     avatar_url_full: string,
     avatar_url_icon: string,
     user1_id: number,
