@@ -51,7 +51,7 @@ export class ArticleModel extends Model implements ModelType {
         });
     }
 
-    updateArticle(article_id: number, title: string, text: string, callback: Function) {
+    updateArticle(article_id: number, title: string|undefined, text: string|undefined, callback: Function) {
         let updateArticle = this.sqlMaker
             .update("articles")
             .set({title: title, text: text})

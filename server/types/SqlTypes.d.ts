@@ -5,6 +5,7 @@ export interface Article {
     text: string,
     path: string,
     date: string,
+    photos_list: string
 }
 
 export interface Friend {
