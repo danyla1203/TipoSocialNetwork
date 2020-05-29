@@ -1,5 +1,5 @@
 import { Model, ModelType } from "./Model";
-import { OkPacket, MysqlError } from "mysql";
+import { MysqlError } from "mysql";
 import { Article } from "../types/SqlTypes";
 
 export class ArticleModel extends Model implements ModelType {

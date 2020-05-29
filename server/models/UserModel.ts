@@ -3,7 +3,7 @@ import { Users, User, CheckUserForExist, ChangeUserData } from "../types/SqlType
 
 const Model = require("./Model");
 
-class UserModel extends Model {
+export class UserModel extends Model {
     getUsers(user_id: number, start: number, end: number, callback: Function) {
         let users = this.sqlMaker
             .select(["user_id", "name", "avatar_url_icon", "user1_id"])
