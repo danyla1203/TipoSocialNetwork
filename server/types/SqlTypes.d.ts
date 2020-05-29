@@ -47,7 +47,7 @@ export interface ChangeUserData {
     avatar_url_icon?: string,
 }
 
-export interface Comments {
+export interface Comment {
     comment_id: number,
     autor_id: number,
     text: string,

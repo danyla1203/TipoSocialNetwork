@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { MysqlError, OkPacket } from "mysql";
+import { Comment } from "../types/SqlTypes";
 
 const app = require("../index").app;
 const upload = require("../index").upload;
@@ -11,7 +12,7 @@ export class Comments {
             let sql = "SELECT comment_id, autor_id, text, date, article_id, name, avatar_url_icon FROM comments " +
                       "JOIN users ON autor_id = user_id " +
                       "WHERE article_id = " + req.params.article_id + " ORDER BY comment_id DESC";
-            pool.query(sql, (err: MysqlError, result: Comments) => {
+            pool.query(sql, (err: MysqlError, result: Comment[]) => {
                 if (err) throw err;
                 res.end(JSON.stringify(result));
             });
