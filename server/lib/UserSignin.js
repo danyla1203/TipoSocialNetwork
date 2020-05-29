@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 
 const Avatar = require("./Avatar");
-const jwtToken = require("../index").jwtKey;
+const jwtKey = require("../index").jwtKey;
+const makeId = require("./generateRand");
 
 class UserSignin {
     constructor(model) {
@@ -10,12 +11,12 @@ class UserSignin {
         this.appendUser = this.appendUser.bind(this);
     }
 
-    async generateJwt(id, email) {
-        let token = jwt.sign({
-            id: id,
+    generateJwt(id, name, email) {
+        return jwt.sign({
+            user_id: id,
+            name: name,
             email: email
-        }, jwtToken, { expiresIn: "30m" });
-        return token;
+        }, jwtKey, { expiresIn: "7d" });
     }
 
     makeImgNames(id = "default") {
@@ -39,6 +40,11 @@ class UserSignin {
     }
 
     async run(req, res) {
+        if (req.session.authCode) {
+            res.status(403);
+            res.end("{}");
+            return;
+        }
         let flag = true;
         let lastUserId = await this.model.checkUserForExist(req.body.name, req.body.email).catch(() => {
             flag = false;
@@ -52,9 +58,12 @@ class UserSignin {
         let body = await this.appendUser(req.body, lastUserId + 1, req.file);
         delete body.password;
         body.user_id = lastUserId + 1;
-        let token = await this.generateJwt(lastUserId + 1, body.email);
 
-        res.setHeader("Authentication", token);
+        let code = makeId(20);
+        req.session.authCode = code; 
+
+        res.cookie("refresh_token", this.generateJwt(body.user_id, body.name, body.email));
+        res.setHeader("Authentication", code);
         res.end(JSON.stringify(body));
     }
 }
