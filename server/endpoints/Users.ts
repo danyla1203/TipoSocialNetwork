@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/UserModel";
 import { User } from "../types/SqlTypes";
-
-const app = require("../index").app;
+import { app } from "../index";
 
 export class Users {
     model: UserModel;
@@ -11,6 +10,11 @@ export class Users {
     }
     run() {        
         app.get("/data/users", (req: Request, res: Response) => {
+            if (typeof req.query.start !== "number" || typeof req.query.end !== "number") {
+                res.sendStatus(400);
+                res.end();
+                return;
+            }
             let start: number = parseInt(req.query.start);
             let end: number = parseInt(req.query.end);
 

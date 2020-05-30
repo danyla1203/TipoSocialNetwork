@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import { MysqlError, OkPacket } from "mysql";
 import { Comment } from "../types/SqlTypes";
 
-const app = require("../index").app;
-const upload = require("../index").upload;
-const pool = require("../index").pool;
+import { app, upload, pool } from "../index";
 
 export class Comments {
     run() {

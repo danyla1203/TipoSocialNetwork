@@ -2,16 +2,13 @@ import { Request, Response } from "express";
 import { MysqlError } from "mysql";
 import { Message } from "../types/SqlTypes";
 
-const app = require("../index").app;
-const upload = require("../index").upload;
-const pool = require("../index").pool;
-const makeSql = require("../index").makeSql;
+import { app, upload, pool, sqlMaker } from "../index";
 
 export class Messages {
     run() {
         app.get("/data/messages/list", (req: Request, res: Response) => {
             let user = req.user.user_id;
-            let sql = makeSql
+            let sql = sqlMaker
                         .select(["message_id", "recipient_id", "sender_id", "text", "time", "user_id", "name", "avatar_url_icon"])
                         .from("messages") 
                         .join("users")
@@ -30,7 +27,7 @@ export class Messages {
         
             let text = req.body.text;
             let date = "2009-05-12 10:10:23";
-            let sql = makeSql
+            let sql = sqlMaker
                         .insert("messages")
                         .set({
                             sender_id: sender_id,

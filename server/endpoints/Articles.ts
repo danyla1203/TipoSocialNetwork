@@ -1,6 +1,5 @@
-const app = require("../index").app;
-const upload = require("../index").upload;
-const fs = require("fs");
+import * as fs from "fs";
+import { app, upload } from "../index";
 
 import { Article, User } from "../types/SqlTypes";
 import { MysqlError } from "mysql";
@@ -80,7 +79,7 @@ export class Articles {
         app.post("/data/add-picture", upload.single("picture-to-article"), (req: Request, res: Response) => {
             let oldPath = `/home/daniil/Desktop/NodeProjects/AuthTest/server/uploads/${req.file.filename}`;
             let newPath = `/home/daniil/Desktop/NodeProjects/AuthTest/public/img/${req.file.filename}_article.webp`;
-            fs.rename(oldPath, newPath, (err: MysqlError) => {
+            fs.rename(oldPath, newPath, (err: Error) => {
                 if (err) throw err;
             });
             res.end(`${req.file.filename}_article`);

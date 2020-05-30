@@ -1,12 +1,12 @@
 import { Avatar } from "./Avatar";
 import { UserModel } from "../models/UserModel";
 import { User } from "../types/SqlTypes";
-import { FieldInfo } from "mysql";
 import { Request, Response } from "express";
 
-const jwt = require("jsonwebtoken");
-const jwtKey = require("../index").jwtKey;
-const makeId = require("./generateRand");
+import { jwtKey } from "../index";
+import { makeid } from "./generateRand";
+
+import * as jwt from "jsonwebtoken";
 
 export class UserSignin {
     avatar: Avatar;
@@ -60,7 +60,7 @@ export class UserSignin {
                     delete body.password;
                     body.user_id = id + 1;
             
-                    let code = makeId(20);
+                    let code = makeid(20);
                     req.session.authCode = code; 
             
                     res.cookie("refresh_token", this.generateJwt(body.user_id, body.name, body.email));

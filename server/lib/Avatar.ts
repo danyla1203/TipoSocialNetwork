@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const sharp = require("sharp");
+import * as fs from "fs";
+import * as path from "path";
+import * as sharp from "sharp";
 
 export class Avatar {
     deleteOldAvatars(id: number) {

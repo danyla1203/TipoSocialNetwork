@@ -1,7 +1,7 @@
 import { MysqlError, OkPacket } from "mysql";
 import { Users, User, CheckUserForExist, ChangeUserData } from "../types/SqlTypes";
 
-const Model = require("./Model");
+import { Model } from "./Model";
 
 export class UserModel extends Model {
     getUsers(user_id: number, start: number, end: number, callback: Function) {

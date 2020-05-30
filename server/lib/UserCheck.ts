@@ -3,10 +3,11 @@ import { Request, Response } from "express";
 import { MysqlError } from "mysql";
 import { User } from "../types/SqlTypes";
 
-const jwtKey = require("../index").jwtKey;
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const makeId = require("./generateRand");
+import { jwtKey } from "../index";
+import { makeid } from "./generateRand";
+
+import * as jwt from "jsonwebtoken";
+import * as crypto from "crypto";
 
 export class UserCheck {
     model: UserModel;
@@ -26,7 +27,7 @@ export class UserCheck {
         if (req.user) {
             this.model.getSecretUserData(req.user.user_id, (err: MysqlError, result: User[]) => {
                 if (err) throw err;
-                let hash = crypto.createHash('md5').update(makeId(20)).digest("hex");
+                let hash = crypto.createHash('md5').update(makeid(20)).digest("hex");
                 req.session.authCode = hash;
                 let returnObj = {
                     token: hash,
@@ -49,7 +50,7 @@ export class UserCheck {
                 (result) => {
                     let refreshToken = this.generateJwt(result.user_id, result.name, result.email);
                     res.cookie("refresh_token", refreshToken);
-                    let hash = crypto.createHash('md5').update(makeId(20)).digest("hex");
+                    let hash = crypto.createHash('md5').update(makeid(20)).digest("hex");
                     req.session.authCode = hash;
                     req.session.user_id = result.user_id;
                     res.set("Authentication", hash);

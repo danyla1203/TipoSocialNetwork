@@ -3,9 +3,9 @@ import { Request, Response } from "express";
 import { MysqlError } from "mysql";
 import { Friend } from "../types/SqlTypes";
 
-const app = require("../index").app;
+import { app } from "../index";
 
-class Friends {
+export class Friends {
     model: FriendsModel;
     constructor(model: FriendsModel) {
         this.model = model;
@@ -46,4 +46,3 @@ class Friends {
         });
     }
 }
-module.exports = Friends;

@@ -1,8 +1,5 @@
-const app = require("../index").app;
-const upload = require("../index").upload;
-
-const isLogin = require("../middlewares/isLogin");
-
+import { app, upload } from "../index";
+import { isLogin } from "../middlewares/isLogin";
 import { UserModel } from "../models/UserModel";
 import { UserCheck } from "../lib/UserCheck";
 import { UserUpdate } from "../lib/UserUpdate";

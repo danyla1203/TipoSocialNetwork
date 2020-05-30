@@ -11,46 +11,37 @@ const path = require("path");
 const dotenv = require("dotenv").config();
 const redis = require("redis"); 
 const RedisStore = require("connect-redis")(session);
-const sqlMaker = require("./test_liba").createDb();
+export const sqlMaker = require("./test_liba").createDb();
 
-const UserModel = require("./models/UserModel").UserModel;
-const ArticleModel = require("./models/ArticleModel").ArticleModel;
-const FriendsModel = require("./models/FriendsModel").FriendsModel;
+import { UserModel } from "./models/UserModel";
+import { ArticleModel } from "./models/ArticleModel";
+import { FriendsModel } from "./models/FriendsModel";
 
-const jwtKey = process.env.JWT_KEY;
+export const jwtKey = process.env.JWT_KEY;
+export const app = express();
 
-
-const app = express();
-const upload = multer({ 
+export const upload = multer({ 
     dest: path.join(__dirname, "/uploads") 
 });
-const pool = mysql.createPool({
+
+export const pool = mysql.createPool({
     connectionLimit: 5,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
     password: process.env.DB_PASS
 });
-const redisClient = redis.createClient(6379);
+export const redisClient = redis.createClient(6379);
 redisClient.on("error", (err: Error) => {
   console.error(err);
 });
 
-let userModel = new UserModel(pool, sqlMaker);
-let articleModel = new ArticleModel(pool, sqlMaker);
-let friendsModel = new FriendsModel(pool, sqlMaker);
+export let userModel = new UserModel(pool, sqlMaker);
+export let articleModel = new ArticleModel(pool, sqlMaker);
+export let friendsModel = new FriendsModel(pool, sqlMaker);
 
-module.exports.userModel = userModel;
-module.exports.articleModel = articleModel;
-module.exports.friendsModel = friendsModel;
-module.exports.app = app;
-module.exports.upload = upload;
-module.exports.pool = pool;
-module.exports.makeSql = sqlMaker;
-module.exports.jwtKey = jwtKey;
-module.exports.redis = redisClient;
 
-const checkToken = require("./middlewares/checkJwtToken");
+import { checkToken } from "./middlewares/checkJwtToken";
 app.use(session({
     store: new RedisStore({ host: "localhost", port: 6379, client: redisClient, ttl: 260 }),
     secret: "danyla1203",
@@ -67,16 +58,16 @@ app.use("/data/*", (req: Request, res: Response, next: Function) => {
     next();
 });
 //require handlers
-let Articles = require("./endpoints/Articles");
-let Comments = require("./endpoints/Comments");
-let Friends = require("./endpoints/Friends");
-let Messages = require("./endpoints/Messages");
-let User = require("./endpoints/User");
-let Users = require("./endpoints/Users");
 
+import { Articles } from "./endpoints/Articles";
+import { Comments } from "./endpoints/Comments";
+import { Friends } from "./endpoints/Friends";
+import { User } from "./endpoints/User";
+import { Messages } from "./endpoints/Messages";
+import { Users } from "./endpoints/Users";
 let handelrs = [
     new Articles(articleModel),
-    new Comments(articleModel),
+    new Comments(),
     new Friends(friendsModel),
     new User(userModel),
     new Messages(),
