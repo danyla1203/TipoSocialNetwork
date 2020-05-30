@@ -4,8 +4,9 @@ import { MysqlError } from "mysql";
 import { Friend } from "../types/SqlTypes";
 
 import { app } from "../index";
+import { Endpoint } from "./Endpoint";
 
-export class Friends {
+export class Friends implements Endpoint{
     model: FriendsModel;
     constructor(model: FriendsModel) {
         this.model = model;
@@ -17,18 +18,6 @@ export class Friends {
                 if (err) throw err;
                 res.end(JSON.stringify(result));
             });  
-        });
-        
-        app.get("/data/is-friend/:user2_id", (req: Request ,res: Response) => {
-            this.model.isFriend(req.user.user_id, parseInt(req.params.user_id), (err: MysqlError, result: Friend[]) => {
-                if (err) throw err;
-                
-                if (result.length > 0) {
-                    res.end("true");
-                } else {
-                    res.end("false");
-                }
-            });
         });
         
         app.get("/data/add/friends/:user_id", (req: Request, res: Response) => {

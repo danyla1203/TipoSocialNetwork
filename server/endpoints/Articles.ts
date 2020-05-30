@@ -5,8 +5,9 @@ import { Article, User } from "../types/SqlTypes";
 import { MysqlError } from "mysql";
 import { ArticleModel } from "../models/ArticleModel";
 import { Request, Response } from "express";
+import { Endpoint } from "./Endpoint";
 
-export class Articles {
+export class Articles implements Endpoint {
     model: ArticleModel;
     constructor(model: ArticleModel) {
         this.model = model;

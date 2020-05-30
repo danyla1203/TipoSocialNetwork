@@ -4,12 +4,17 @@ import { UserModel } from "../models/UserModel";
 import { UserCheck } from "../lib/UserCheck";
 import { UserUpdate } from "../lib/UserUpdate";
 import { UserSignin } from "../lib/UserSignin";
+import { Endpoint } from "./Endpoint";
 
-export class User {
+export class User implements Endpoint{
     checkUser: UserCheck;
     updateUser: UserUpdate;
     signin: UserSignin;
+
+    model: UserModel;
     constructor(model: UserModel) {
+        this.model = model;
+        
         this.signin = new UserSignin(model);
         this.updateUser = new UserUpdate(model);
         this.checkUser = new UserCheck(model);

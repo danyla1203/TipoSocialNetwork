@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { UserModel } from "../models/UserModel";
 import { User } from "../types/SqlTypes";
 import { app } from "../index";
+import { Endpoint } from "./Endpoint";
 
-export class Users {
+export class Users implements Endpoint {
     model: UserModel;
     constructor(model: UserModel) {
         this.model = model;
