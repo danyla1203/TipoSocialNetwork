@@ -1,32 +1,31 @@
 import { Request, Response } from "express";
-import { MysqlError, OkPacket } from "mysql";
 import { Comment } from "../types/SqlTypes";
 
 import { app, upload, pool } from "../index";
+import { Endpoint } from "./Endpoint";
+import { CommentsModel } from "../models/CommentsModel";
 
-export class Comments {
+export class Comments implements Endpoint {
+    model: CommentsModel;
+    constructor(model: CommentsModel) {
+        this.model = model;
+    }
+    
     run() {
         app.get("/data/comments/:article_id", (req: Request, res: Response) => {
-            let sql = "SELECT comment_id, autor_id, text, date, article_id, name, avatar_url_icon FROM comments " +
-                      "JOIN users ON autor_id = user_id " +
-                      "WHERE article_id = " + req.params.article_id + " ORDER BY comment_id DESC";
-            pool.query(sql, (err: MysqlError, result: Comment[]) => {
-                if (err) throw err;
-                res.end(JSON.stringify(result));
-            });
+            this.model.selectComments(parseInt(req.params.article_id), (result: Comment[]) => {
+                res.json(result);
+            })
         });
         
         app.post("/data/comments/add/:article_id", upload.none(), (req: Request, res: Response) => {
-            let article_id = req.params.article_id;
+            let article_id = parseInt(req.params.article_id);
             let autor = req.user.user_id;
             let date = "2009-12-30 12:30:23";
             let text = req.body.text;
-        
-            let sql = `INSERT INTO comments(autor_id, text, date, article_id) VALUES(${autor}, "${text}", "${date}", ${article_id})`;
-            pool.query(sql, (err: MysqlError, result: OkPacket) => {
-                if (err) throw err;
+            this.model.addComment(article_id, autor, date, text, (result: string) => {
                 res.end(JSON.stringify(result));
-            });
+            })
         });
     }
 }
