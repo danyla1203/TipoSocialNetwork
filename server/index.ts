@@ -13,17 +13,11 @@ const redis = require("redis");
 const RedisStore = require("connect-redis")(session);
 export const sqlMaker = require("./test_liba").createDb();
 
-import { UserModel } from "./models/UserModel";
-import { ArticleModel } from "./models/ArticleModel";
-import { FriendsModel } from "./models/FriendsModel";
-
 export const jwtKey = process.env.JWT_KEY;
 export const app = express();
-
 export const upload = multer({ 
     dest: path.join(__dirname, "/uploads") 
 });
-
 export const pool = mysql.createPool({
     connectionLimit: 5,
     host: process.env.DB_HOST,
@@ -36,11 +30,19 @@ redisClient.on("error", (err: Error) => {
   console.error(err);
 });
 
+//models init
+import { UserModel } from "./models/UserModel";
+import { ArticleModel } from "./models/ArticleModel";
+import { FriendsModel } from "./models/FriendsModel";
+import { CommentsModel } from "./models/CommentsModel";
+import { MessagesModel } from "./models/MessagesModel";
 export let userModel = new UserModel(pool, sqlMaker);
 export let articleModel = new ArticleModel(pool, sqlMaker);
 export let friendsModel = new FriendsModel(pool, sqlMaker);
+export let commentsModel = new CommentsModel(pool, sqlMaker);
+export let messagesModel = new MessagesModel(pool, sqlMaker);
 
-
+//middlewares
 import { checkToken } from "./middlewares/checkJwtToken";
 app.use(session({
     store: new RedisStore({ host: "localhost", port: 6379, client: redisClient, ttl: 260 }),
@@ -57,8 +59,8 @@ app.use("/data/*", (req: Request, res: Response, next: Function) => {
     console.log(req.session, "session");
     next();
 });
-//require handlers
 
+//require handlers.
 import { Articles } from "./endpoints/Articles";
 import { Comments } from "./endpoints/Comments";
 import { Friends } from "./endpoints/Friends";
@@ -67,13 +69,14 @@ import { Messages } from "./endpoints/Messages";
 import { Users } from "./endpoints/Users";
 let handelrs = [
     new Articles(articleModel),
-    new Comments(),
+    new Comments(commentsModel),
     new Friends(friendsModel),
     new User(userModel),
-    new Messages(),
+    new Messages(messagesModel),
     new Users(userModel)
 ];
 handelrs.map((el) => { el.run(); });  
+
 
 app.get("/favicon.ico", (req: Request, res: Response) => {
      res.setHeader("Cache-Control", "public, max-age=14400"); res.end(); 
