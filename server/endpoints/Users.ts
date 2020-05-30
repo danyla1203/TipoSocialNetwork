@@ -10,7 +10,7 @@ export class Users {
     }
     run() {        
         app.get("/data/users", (req: Request, res: Response) => {
-            if (typeof req.query.start !== "number" || typeof req.query.end !== "number") {
+            if (typeof parseInt(req.query.start) !== "number" || typeof parseInt(req.query.end) !== "number") {
                 res.sendStatus(400);
                 res.end();
                 return;

@@ -7,9 +7,8 @@ export function isLogin(req: Request, res: Response, next: Function) {
     if (token) {
         try {
             let userData = jwt.verify(token, jwtKey);
-            req.user = typeof userData == "object" ? userData : null;
+            req.user = userData;
         } catch(err) { throw err; }
     }
     next();
 }
-module.exports = isLogin;
