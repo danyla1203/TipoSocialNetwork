@@ -3,6 +3,12 @@ import { MysqlError } from "mysql";
 import { Article } from "../types/SqlTypes";
 
 export class ArticleModel extends Model implements ModelType {
+    /**
+     * @param {number} article_id
+     * @param {number} user_id
+     * @param {Function} callback
+     *  get article with photos
+     */
     getArticle(article_id: number, user_id: number, callback: Function) {
         let article = this.sqlMaker
             .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
@@ -17,11 +23,15 @@ export class ArticleModel extends Model implements ModelType {
             for (let i = 1; i < result.length; i++) {
                 returnData.path += `,${result[i].path}`;
             }
-            console.log(result);
             callback(returnData);
         });
     }
 
+    /**
+     * @param {number} user_id
+     * @param {Function} callback
+     *  get user's articles with photos
+     */
     getArticles(user_id: number, callback: Function) {
         let articles = this.sqlMaker
             .select(["articles.article_id", "user_id", "title", "text", "date", "path"])
@@ -51,6 +61,13 @@ export class ArticleModel extends Model implements ModelType {
         });
     }
 
+    /**
+     * @param {number} article_id
+     * @param {(string|undefined)} title
+     * @param {(string|undefined)} text
+     * @param {Function} callback
+     * update article 
+     */
     updateArticle(article_id: number, title: string|undefined, text: string|undefined, callback: Function) {
         let updateArticle = this.sqlMaker
             .update("articles")
@@ -59,6 +76,12 @@ export class ArticleModel extends Model implements ModelType {
         this.pool.query(updateArticle, callback);
     }
 
+    /**
+     * @param {number} article_id
+     * @param {string} photosString
+     * @param {Function} callback
+     * delete article's photo, then insert new ( if new photos exist )
+     */
     updatePhotos(article_id: number, photosString: string, callback: Function) {
         let deletePhotos = this.sqlMaker
             .delete("article_photos")
@@ -78,13 +101,27 @@ export class ArticleModel extends Model implements ModelType {
         });
     }
 
+    /**
+     * @param {number} article_id
+     * @param {Function} callback
+     * delete article
+     */
     deleteArticle(article_id: number, callback: Function) {
         let deleteArticle = this.sqlMaker
             .delete("articles")
             .where(`article_id = ${article_id}`);
         this.pool.query(deleteArticle, callback);
     }
-    insertArticle(title: string, text: string, user_id: number, photos: string[], date: string, callback: Function) {
+    /**
+     * @param {string} title
+     * @param {string} text
+     * @param {number} user_id
+     * @param {string[] | null} photos
+     * @param {string} date
+     * @param {Function} callback
+     * add a new article
+     */
+    insertArticle(title: string, text: string, user_id: number, photos: string[] | null, date: string, callback: Function) {
         let insertArticle = this.sqlMaker
             .insert("articles")
             .set({
@@ -110,7 +147,5 @@ export class ArticleModel extends Model implements ModelType {
                 .setMany(imgs);
             this.pool.query(insertImgSql, callback);
         });
-
     }
-
 }

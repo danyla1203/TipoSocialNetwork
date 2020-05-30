@@ -4,6 +4,13 @@ import { Users, User, CheckUserForExist, ChangeUserData } from "../types/SqlType
 import { Model } from "./Model";
 
 export class UserModel extends Model {
+    /**
+     * @param {number} user_id
+     * @param {number} start
+     * @param {number} end
+     * @param {Function} callback
+     * get users ( if user are friend add property isFriend = true to result record )
+     */
     getUsers(user_id: number, start: number, end: number, callback: Function) {
         let users = this.sqlMaker
             .select(["user_id", "name", "avatar_url_icon", "user1_id"])
@@ -25,6 +32,12 @@ export class UserModel extends Model {
         });
     }
 
+    /**
+     * @param {number} user_id
+     * @param {number} id
+     * @param {Function} callback
+     * get user data ( is user are friend add property isFriend = true to result record )
+     */
     getUserData(user_id: number, id: number, callback: Function) {
         let user = this.sqlMaker
             .select(["user_id", "name", "country", "gender", "avatar_url_full", "avatar_url_icon", "user1_id"])
@@ -44,6 +57,11 @@ export class UserModel extends Model {
         });
     }
 
+    /**
+     * @param {number} user_id
+     * @param {Function} callback
+     * get user data ( with password )
+     */
     getSecretUserData(user_id: number, callback: Function) {
         let user = this.sqlMaker
             .select()
@@ -52,16 +70,11 @@ export class UserModel extends Model {
         this.pool.query(user, callback);
     }
 
-    getFriendsList(user_id: number, callback: Function) {
-        let frinendsList = this.sqlMaker
-            .select(["id", "user_id", "avatar_url_icon", "name"])
-            .from("friends")
-            .join("users")
-            .on("friends.user2_id = users.user_id")
-            .where(`user1_id = ${user_id}`);
-        this.pool.query(frinendsList, callback);
-    }
-
+    /**
+     * @param {ChangeUserData} data
+     * @returns Promise
+     * registration new user
+     */
     setUser(data: ChangeUserData) {
         return new Promise((resolve) => {
             let user = this.sqlMaker
@@ -74,13 +87,13 @@ export class UserModel extends Model {
         });
     }
 
-    getEmails(callback: Function) {
-        let emails = this.sqlMaker
-            .select(["email", "name"])
-            .from("users");
-        this.pool.query(emails, callback);
-    }
-
+    /**
+     * @param {string} name
+     * @param {string} email
+     * @returns Promise
+     * check user for exist.
+     * If user exist return call reject, else return id for last sigin user
+     */
     checkUserForExist(name: string, email: string) {
         let data = this.sqlMaker
                 .select(["user_id", "email", "name"])
@@ -99,6 +112,12 @@ export class UserModel extends Model {
         });
     }
 
+    /**
+     * @param {Object} newData
+     * @param {number} user_id
+     * @param {Function} callback
+     * update user data
+     */
     updateUserData(newData: Object, user_id: number, callback: Function) {
         let newUser = this.sqlMaker
             .update("users")
@@ -107,6 +126,13 @@ export class UserModel extends Model {
         this.pool.query(newUser, callback);
     }
 
+    /**
+     * @param {string} name
+     * @param {string} pass
+     * @returns Promise
+     * get users and check each record ( by params).
+     * if match password and name return this record with deleted password
+     */
     checkUser(name: string, pass: string) {
         let sql = this.sqlMaker
             .select()

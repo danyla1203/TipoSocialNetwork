@@ -3,6 +3,11 @@ import { MysqlError } from "mysql";
 import { Friend } from "../types/SqlTypes";
 
 export class FriendsModel extends Model implements ModelType {
+    /**
+     * @param {number} user_id
+     * @param {Function} callback
+     * get all friends for user
+     */
     getFriends(user_id: number, callback: Function) {
         let sql = this.sqlMaker
                 .select(["id", "user_id", "avatar_url_icon", "name"])
@@ -13,16 +18,13 @@ export class FriendsModel extends Model implements ModelType {
                 
         this.pool.query(sql, callback);
     }
-
-    isFriend(user1_id: number, user2_id: number, callback: Function) {
-        let sql = this.sqlMaker
-                .select()
-                .from("friends")
-                .where(`user1_id = ${user1_id} AND user2_id = ${user2_id}`);
-
-        this.pool.query(sql, callback);
-    }
     
+    /**
+     * @param {number} user1_id
+     * @param {number} user2_id
+     * @param {Function} callback
+     * add friend
+     */
     addFriend(user1_id: number, user2_id: number, callback: Function) {
         let isFriend;
         this.getFriends(user1_id, (err: MysqlError, result: Friend[]) => {
@@ -49,6 +51,13 @@ export class FriendsModel extends Model implements ModelType {
         }
     }
 
+    /**
+     * @param {number} user1_id
+     * @param {number} user2_id
+     * @param {Function} callback
+     * @memberof FriendsModel
+     * delete friend
+     */
     deleteFriend(user1_id: number, user2_id: number, callback: Function) {
         let sql = this.sqlMaker
             .delete("friends")
