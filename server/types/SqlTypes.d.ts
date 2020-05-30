@@ -67,3 +67,24 @@ export interface Message {
     name: string,
     avatar_url_icon: string,
 }
+
+export interface Comment {
+    comment_id: number;
+    autor_id: number,
+    article_id: number
+    text: string,
+    date: string,
+    name: string,
+    avatar_url_icon: string
+}
+
+export interface Message {
+    message_id: number,
+    recipient_id: number,
+    sender_id: number,
+    user_id: number
+    text: string,
+    time: string,
+    name: string,
+    avatar_url_icon: string,
+}
