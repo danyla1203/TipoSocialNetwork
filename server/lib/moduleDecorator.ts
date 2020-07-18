@@ -1,6 +1,11 @@
-export function Module(moduleData: any)  { 
-    let controller = moduleData.controller;
+import { Controller } from "./Controller";
+
+export function Module(moduleData: any)  {
+    let controller = new moduleData.controller();
+
     return (constructor: any) => {
-        constructor.prototype.controller = new controller();
+        return class extends constructor {
+            controller: Controller = controller;
+        }
     }
 }
