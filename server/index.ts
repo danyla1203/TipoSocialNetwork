@@ -1,5 +1,4 @@
-import { Response, Request } from "express";
-import { Factory } from "./lib/factory";
+import { Factory } from "./lib/Factory";
 
 let factory = new Factory();
 let app = factory.createApp();
