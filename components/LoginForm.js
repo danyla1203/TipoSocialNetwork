@@ -1,4 +1,5 @@
 import React from "react";
+import propTypes from "prop-types";
 
 function LoginForm(props) {
     const check = () => {
@@ -32,6 +33,11 @@ function LoginForm(props) {
             </fieldset>
         </form>
     )
+}
+
+LoginForm.propTypes = {
+    sendError: propTypes.func.isRequired,
+    setUser: propTypes.func.isRequired
 }
 
 export default LoginForm;
