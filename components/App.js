@@ -4,6 +4,7 @@ import RegForm from "./RegForm";
 import ErrorAlert from "./ErrorAlert";
 import UserRouter from "./UserRouter";
 import LoginForm from "./LoginForm";
+import User from "./lib/User";
 
 class App extends Component {
     constructor() {
@@ -56,7 +57,7 @@ class App extends Component {
                 window.token = token;
                 this.setState({
                     isLogin: true,
-                    userData: result,
+                    userData: new User(result),
                 });
 
             }
@@ -64,7 +65,7 @@ class App extends Component {
     }
 
     render() {
-        let stateUser = this.state.userData;
+        let stateUser = this.state.userData.getFull();
         let renderedErrors;
 
         if (this.state.errors.length > 0) {
@@ -80,7 +81,7 @@ class App extends Component {
                     changeUserData = { this.changeUserData }
                 />
             );
-            
+
         } else {
             return (
                 <div id="autorisation">
