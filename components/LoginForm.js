@@ -1,5 +1,6 @@
 import React from "react";
 import propTypes from "prop-types";
+import User from "./lib/User";
 
 function LoginForm(props) {
     const check = () => {
@@ -17,7 +18,7 @@ function LoginForm(props) {
             } else {
                 let token = xhr.getResponseHeader("Authentication");
                 window.token = token;
-                props.setUser(result, token);
+                props.setUser(new User(result), token);
             }
         };
     }
