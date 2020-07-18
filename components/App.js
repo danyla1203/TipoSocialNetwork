@@ -3,6 +3,7 @@ import React, { Component }  from "react";
 import RegForm from "./RegForm";
 import ErrorAlert from "./ErrorAlert";
 import UserRouter from "./UserRouter";
+import LoginForm from "./LoginForm";
 
 class App extends Component {
     constructor() {
@@ -15,26 +16,6 @@ class App extends Component {
         this.changeUserData = this.changeUserData.bind(this);
         this.setError = this.setError.bind(this);
         this.setUser = this.setUser.bind(this);
-    }
-
-    check() {
-        let form = document.forms.test;
-        let userData = new FormData(form);
-
-        let xhr = new XMLHttpRequest();        
-        xhr.open("POST", "/user/check");
-
-        xhr.send(userData);
-        xhr.onload = () => {
-            let result = JSON.parse(xhr.response);
-            if (xhr.status == 400) {
-                this.setError("Login Error");
-            } else {
-                let token = xhr.getResponseHeader("Authentication");
-                window.token = token;
-                this.setState({isLogin: true, userData: result});
-            }
-        };
     }
 
     setUser(user, token) {
@@ -106,14 +87,10 @@ class App extends Component {
                 <div id="errors">
                     { renderedErrors }
                 </div>
-                <form action="/admin/check" method="POST" name="test">
-                    <fieldset>
-                        <legend>Войдите</legend>
-                        <input type="name" name="name" placeholder="Name:"/>
-                        <input type="password" name="password" placeholder="Password"/>
-                        <button type="button" onClick={ this.check }>Go</button> 
-                    </fieldset>
-                </form>
+                <LoginForm
+                    setError={ this.setError }
+                    setUser={ this.setUser }
+                />
                 <RegForm 
                     sendError = { this.setError } 
                     setUser={ this.setUser }
