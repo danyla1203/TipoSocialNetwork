@@ -73,30 +73,31 @@ class App extends Component {
             });
         }
 
-        if (this.state.isLogin) { 
+        if (Object.keys(stateUser).length > 1) { 
             return (
                 <UserRouter 
                     user = { stateUser }
                     changeUserData = { this.changeUserData }
                 />
             );
-        }
-
-        return (
-            <div id="autorisation">
-                <div id="errors">
-                    { renderedErrors }
+            
+        } else {
+            return (
+                <div id="autorisation">
+                    <div id="errors">
+                        { renderedErrors }
+                    </div>
+                    <LoginForm
+                        setError={ this.setError }
+                        setUser={ this.setUser }
+                    />
+                    <RegForm 
+                        sendError = { this.setError } 
+                        setUser={ this.setUser }
+                    />
                 </div>
-                <LoginForm
-                    setError={ this.setError }
-                    setUser={ this.setUser }
-                />
-                <RegForm 
-                    sendError = { this.setError } 
-                    setUser={ this.setUser }
-                />
-            </div>
-        );
+            );
+        }
     }    
 }
 
