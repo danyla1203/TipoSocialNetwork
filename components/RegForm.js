@@ -33,8 +33,9 @@ function RegForm(props) {
             if (xhr.status !== 200) {
                 props.sendError("Registration failed");
             } else {
-                window.token = xhr.getResponseHeader("Authentication");
-                props.setUser(JSON.parse(xhr.response));
+                let token = xhr.getResponseHeader("Authentication");
+                window.token = token
+                props.setUser(new User(JSON.parse(xhr.response)), token);
             }
         };
     };
