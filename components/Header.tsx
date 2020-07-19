@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Header() {
-    let toggleHeaderForMobile = (e) => {
+export function Header() {
+    let toggleHeaderForMobile = (e: React.MouseEvent) => {
         e.persist();
         let header = document.getElementById("header");
         if (header.className == "close") {
@@ -13,7 +13,7 @@ function Header() {
             
         }
     };
-    let test = (e) => {
+    let test = (e: React.MouseEvent) => {
         if (e.target.id == "header") {
             let header = document.getElementById("header");
             header.className = "close";
@@ -34,7 +34,3 @@ function Header() {
         </header>
     );
 }
-
-//no props
-
-export default Header;
