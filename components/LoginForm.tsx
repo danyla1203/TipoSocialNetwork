@@ -1,10 +1,10 @@
 import React from "react";
-import propTypes from "prop-types";
-import User from "./lib/User";
+import { User } from "./lib/User";
+import { FormProps } from "./App";
 
-function LoginForm(props) {
+export function LoginForm(props: FormProps) {
     const check = () => {
-        let form = document.forms.test;
+        let form = document.querySelector<HTMLFormElement>("#login");
         let userData = new FormData(form);
 
         let xhr = new XMLHttpRequest();        
@@ -14,7 +14,7 @@ function LoginForm(props) {
         xhr.onload = () => {
             let result = JSON.parse(xhr.response);
             if (xhr.status == 400) {
-                props.setError("Login Error");
+                props.sendError("Login Error");
             } else {
                 let token = xhr.getResponseHeader("Authentication");
                 window.token = token;
@@ -25,7 +25,7 @@ function LoginForm(props) {
 
 
     return (
-        <form action="/admin/check" method="POST" name="test">
+        <form action="/admin/check" method="POST" id="login">
             <fieldset>
                 <legend>Войдите</legend>
                 <input type="name" name="name" placeholder="Name:"/>
@@ -35,10 +35,3 @@ function LoginForm(props) {
         </form>
     )
 }
-
-LoginForm.propTypes = {
-    sendError: propTypes.func.isRequired,
-    setUser: propTypes.func.isRequired
-}
-
-export default LoginForm;
