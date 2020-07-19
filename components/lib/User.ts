@@ -1,4 +1,4 @@
-export interface User {
+export interface UserType {
     id: number;
     name: string,
     email: string,
@@ -8,8 +8,8 @@ export interface User {
 }
 
 export class User {
-    private user: User;
-    constructor(user: User) {
+    private user: UserType;
+    constructor(user: UserType) {
         this.user = user;
     }
 
@@ -23,6 +23,14 @@ export class User {
             icon: this.user.avatar_url_icon
         }
     }
+    getField(fieldName: string) {
+        if (fieldName in this.user) {
+            return this.user[fieldName];
+        } else {
+            return false;
+        }
+    }
+
     changeData() {
 
     }
