@@ -11,7 +11,7 @@ class App extends Component {
         super();
         this.state = {  
             errors: [],
-            userData: {}
+            user: {}
         };
         this.check = this.check.bind(this);
         this.changeUserData = this.changeUserData.bind(this);
@@ -20,7 +20,7 @@ class App extends Component {
     }
 
     setUser(user, token) {
-        this.setState({isLogin: true, userData: user, token: token});
+        this.setState({isLogin: true, user: user, token: token});
     }
 
     setError(message) {
@@ -40,7 +40,7 @@ class App extends Component {
         newUserData.avatar_url_icon = `${newUserData.user_id}_icon.webp`;
 
         this.setState({
-            userData: newUserData
+            user: newUserData
         });
     }
 
@@ -57,7 +57,7 @@ class App extends Component {
                 window.token = token;
                 this.setState({
                     isLogin: true,
-                    userData: new User(result),
+                    user: new User(result),
                 });
 
             }
@@ -65,7 +65,7 @@ class App extends Component {
     }
 
     render() {
-        let stateUser = this.state.userData.getFull();
+        let user = this.state.user
         let renderedErrors;
 
         if (this.state.errors.length > 0) {
@@ -74,10 +74,10 @@ class App extends Component {
             });
         }
 
-        if (Object.keys(stateUser).length > 1) { 
+        if (Object.keys(user).length > 1) { 
             return (
                 <UserRouter 
-                    user = { stateUser }
+                    user = { user }
                     changeUserData = { this.changeUserData }
                 />
             );
