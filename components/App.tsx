@@ -1,9 +1,9 @@
 import React, { Component }  from "react";
 
-import RegForm from "./RegForm";
-import ErrorAlert from "./ErrorAlert";
+import { RegForm } from "./RegForm";
+import { ErrorAlert } from "./ErrorAlert";
 import UserRouter from "./UserRouter";
-import LoginForm from "./LoginForm";
+import { LoginForm } from "./LoginForm";
 import { User } from "./lib/User";
 
 type AppState = {
@@ -98,7 +98,7 @@ export class App extends Component<{}, AppState> {
                         { renderedErrors }
                     </div>
                     <LoginForm
-                        setError={ this.setError }
+                        sendError={ this.setError }
                         setUser={ this.setUser }
                     />
                     <RegForm 
