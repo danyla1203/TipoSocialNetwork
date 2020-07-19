@@ -13,6 +13,11 @@ type AppState = {
     token: string
 }
 
+export type FormProps = {
+    sendError: (message: string) => void;
+    setUser: (user: User, token: string) => void;
+}
+
 class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
