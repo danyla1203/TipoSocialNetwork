@@ -5,7 +5,7 @@ import countries from "./countryList";
 import { User } from "./lib/User";
 import { FormProps } from "./App";
 
-function RegForm(props: FormProps) {
+export function RegForm(props: FormProps) {
 
     const checkError = (name: string, email: string, password: string) => {
         let isError = false; 
@@ -71,5 +71,3 @@ function RegForm(props: FormProps) {
         </div>
     );
 }
-
-export default RegForm;

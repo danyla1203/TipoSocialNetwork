@@ -18,7 +18,7 @@ export type FormProps = {
     setUser: (user: User, token: string) => void;
 }
 
-class App extends Component<{}, AppState> {
+export class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
         
@@ -110,6 +110,3 @@ class App extends Component<{}, AppState> {
         }
     }    
 }
-
-//no props
-export default App;
