@@ -1,6 +1,7 @@
 import React from "react";
+import { UserType } from "./lib/User";
 
-function UserData(props) {
+function UserData(props: { user: UserType} ) {
     let userData = props.user;
     return (
         <div id="user">
