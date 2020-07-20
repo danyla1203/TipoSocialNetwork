@@ -1,11 +1,17 @@
 export interface UserType {
-    id: number;
+    id: number,
     name: string,
     email: string,
     gender: string,
     country: string,
-    avatar_url_icon: string,
-    avatar_url_full: string
+    icon: string,
+    big: string
+}
+
+export interface ShortUserType {
+    id: number,
+    name: string,
+    icon: string
 }
 
 export class User {
@@ -14,14 +20,14 @@ export class User {
         this.user = user;
     }
 
-    getFull() {
+    getFull(): UserType {
         return this.user;
     }
-    getShort() {
+    getShort(): ShortUserType  {
         return {
-            user_id: this.user.id,
+            id: this.user.id,
             name: this.user.name,
-            icon: this.user.avatar_url_icon
+            icon: this.user.icon
         }
     }
     getField(fieldName: string) {
