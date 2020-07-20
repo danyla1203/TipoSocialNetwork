@@ -2,9 +2,10 @@ export interface UserType {
     id: number;
     name: string,
     email: string,
-    gendert: string
+    gender: string,
+    country: string,
     avatar_url_icon: string,
-    avatar_full_icon: string
+    avatar_url_full: string
 }
 
 export class User {
