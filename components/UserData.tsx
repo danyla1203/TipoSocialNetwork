@@ -1,7 +1,7 @@
 import React from "react";
 import { UserType } from "./lib/User";
 
-function UserData(props: { user: UserType} ) {
+export function UserData(props: { user: UserType} ) {
     let userData = props.user;
     return (
         <div id="user">
@@ -22,7 +22,3 @@ function UserData(props: { user: UserType} ) {
             </div>
     )
 }
-
-
-
-export default UserData;
