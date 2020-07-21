@@ -1,4 +1,5 @@
 export interface UserType {
+    [index: string]: string | number,
     id: number,
     name: string,
     email: string,
@@ -12,6 +13,13 @@ export interface ShortUserType {
     id: number,
     name: string,
     icon: string
+}
+export interface ChangeUser {
+    [index: string]: string,
+    name?: string
+    email?: string,
+    gender?: string,
+    country?: string,
 }
 
 export class User {
@@ -38,7 +46,12 @@ export class User {
         }
     }
 
-    changeData() {
-
+    changeData(newData: ChangeUser): User {
+        for (let field in newData) {
+            if (newData[field].length > 3)  {
+                this.user[field] = newData[field];
+            }
+        }
+        return this;
     }
 }

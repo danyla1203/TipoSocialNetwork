@@ -4,7 +4,6 @@ import { Redirect } from "react-router-dom";
 import countries from "./countryList";
 import { UserType } from "./lib/User";
 
-
 type SettingsProps = {
     userData: UserType,
     changeUserData: Function
@@ -12,7 +11,7 @@ type SettingsProps = {
 export function Settings(props: SettingsProps) {
     const [isSend, setSendState] = useState(false);
 
-    let formCheck = (name: string, email: string): boolean => {
+    const formCheck = (name: string, email: string): boolean => {
         let returnValue = true;
         if (!email.match(/[A-z].+@[A-z]+(.[A-z]+)+/) && email.length < 5) {
             document.getElementsByName("email")[0].style.border = "2px solid red";  
@@ -25,7 +24,7 @@ export function Settings(props: SettingsProps) {
         return returnValue
     }
 
-    let changeData = () => {
+    const changeData = () => {
         let editForm = document.querySelector<HTMLFormElement>("form#edit");
         let data = new FormData(editForm);
         let email = data.get("email").toString();

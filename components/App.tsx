@@ -2,9 +2,9 @@ import React, { Component }  from "react";
 
 import { RegForm } from "./RegForm";
 import { ErrorAlert } from "./ErrorAlert";
-import UserRouter from "./UserRouter";
+import { UserRouter } from "./UserRouter";
 import { LoginForm } from "./LoginForm";
-import { User } from "./lib/User";
+import { User, ChangeUser } from "./lib/User";
 
 type AppState = {
     errors: string[],
@@ -35,21 +35,10 @@ export class App extends Component<{}, AppState> {
         this.setState({ errors: [message] });
     }
 
-    //TODO: write types, but later :)
-    changeUserData(userData) {
-        let newUserData = {};
-        for (let column in userData) {
-            if (userData[column].length < 2) {
-                newUserData[column] = this.state.userData[column];
-            }
-            newUserData[column] = userData[column];
-        }
-        newUserData.user_id = this.state.userData.user_id;
-        newUserData.avatar_url_full = `${newUserData.user_id}_full.webp`;
-        newUserData.avatar_url_icon = `${newUserData.user_id}_icon.webp`;
-
+    changeUserData(userData: ChangeUser) {
+        let newUser = this.state.user.changeData(userData); 
         this.setState({
-            user: newUserData
+            user: newUser
         });
     }
 
