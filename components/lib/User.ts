@@ -5,7 +5,7 @@ export interface UserType {
     gender: string,
     country: string,
     icon: string,
-    big: string
+    bigIcon: string
 }
 
 export interface ShortUserType {
