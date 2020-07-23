@@ -1,5 +1,5 @@
 import React from "react";
-import { MessagesGroup } from "./MessagesList";
+import { MessagesGroup } from "./MessagesRouter";
 import { Link } from "react-router-dom";
 
 export function MessagePreview(props: MessagesGroup) {
